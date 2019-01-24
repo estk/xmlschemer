@@ -178,12 +178,15 @@ mod xsd {
     pub struct GMonth(String);
 }
 use serde_derive::{Deserialize, Serialize};
-#[doc = " GPX is the root element in the XML file."]
+#[doc = "GPX is the root element in the XML file."]
 #[serde(rename = "gpx")]
+#[doc = "GPX documents contain a metadata header, followed by waypoints, routes, and tracks.  You can add your own elements\r\n\t\tto the extensions section of the GPX document."]
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct GpxType {
+    #[doc = "You must include the version number in your GPX document."]
     version: xsd::String,
+    #[doc = "You must include the name or URL of the software that created your GPX document.  This allows others to\r\n\t\tinform the creator of a GPX instance document that fails to validate."]
     creator: xsd::String,
     #[serde(rename = "$value")]
     body: Vec<GpxTypeBody>,
@@ -197,31 +200,32 @@ pub enum GpxTypeBody {
     Trk(TrkType),
     Extensions(ExtensionsType),
 }
-#[doc = " The latitude of the point.  Decimal degrees, WGS84 datum."]
+#[doc = "The latitude of the point.  Decimal degrees, WGS84 datum."]
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 #[serde(transparent)]
 pub struct LatitudeType(String);
-#[doc = " The longitude of the point.  Decimal degrees, WGS84 datum."]
+#[doc = "The longitude of the point.  Decimal degrees, WGS84 datum."]
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 #[serde(transparent)]
 pub struct LongitudeType(String);
-#[doc = " Used for bearing, heading, course.  Units are decimal degrees, true (not magnetic)."]
+#[doc = "Used for bearing, heading, course.  Units are decimal degrees, true (not magnetic)."]
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 #[serde(transparent)]
 pub struct DegreesType(String);
-#[doc = " Type of GPS fix.  none means GPS had no fix.  To signify \"the fix info is unknown, leave out fixType entirely. pps = military signal used"]
+#[doc = "Type of GPS fix.  none means GPS had no fix.  To signify \"the fix info is unknown, leave out fixType entirely. pps = military signal used"]
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 #[serde(transparent)]
 pub struct FixType(String);
-#[doc = " Represents a differential GPS station."]
+#[doc = "Represents a differential GPS station."]
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 #[serde(transparent)]
 pub struct DgpsStationType(String);
+#[doc = "Information about the GPX file, author, and copyright restrictions goes in the metadata section.  Providing rich,\r\n\t\tmeaningful information about your GPX files allows others to search for and use your GPS data."]
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct MetadataType {
@@ -241,10 +245,13 @@ pub enum MetadataTypeBody {
     Bounds(BoundsType),
     Extensions(ExtensionsType),
 }
+#[doc = "wpt represents a waypoint, point of interest, or named feature on a map."]
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct WptType {
+    #[doc = "The latitude of the point.  This is always in decimal degrees, and always in WGS84 datum."]
     lat: LatitudeType,
+    #[doc = "The longitude of the point.  This is always in decimal degrees, and always in WGS84 datum."]
     lon: LongitudeType,
     #[serde(rename = "$value")]
     body: Vec<WptTypeBody>,
@@ -272,6 +279,7 @@ pub enum WptTypeBody {
     Dgpsid(DgpsStationType),
     Extensions(ExtensionsType),
 }
+#[doc = "rte represents route - an ordered list of waypoints representing a series of turn points leading to a destination."]
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct RteType {
@@ -291,6 +299,7 @@ pub enum RteTypeBody {
     Extensions(ExtensionsType),
     Rtept(WptType),
 }
+#[doc = "trk represents a track - an ordered list of points describing a path."]
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct TrkType {
@@ -310,6 +319,7 @@ pub enum TrkTypeBody {
     Extensions(ExtensionsType),
     Trkseg(TrksegType),
 }
+#[doc = "You can add extend GPX by adding your own elements from another schema here."]
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct ExtensionsType {
@@ -319,6 +329,7 @@ pub struct ExtensionsType {
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub enum ExtensionsTypeBody {}
+#[doc = "A Track Segment holds a list of Track Points which are logically connected in order. To represent a single GPS track where GPS reception was lost, or the GPS receiver was turned off, start a new Track Segment for each continuous span of track data."]
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct TrksegType {
@@ -331,9 +342,11 @@ pub enum TrksegTypeBody {
     Trkpt(WptType),
     Extensions(ExtensionsType),
 }
+#[doc = "Information about the copyright holder and any license governing use of this file.  By linking to an appropriate license,\r\n\t you may place your data into the public domain or grant additional usage rights."]
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct CopyrightType {
+    #[doc = "Copyright holder (TopoSoft, Inc.)"]
     author: xsd::String,
     #[serde(rename = "$value")]
     body: Vec<CopyrightTypeBody>,
@@ -344,9 +357,11 @@ pub enum CopyrightTypeBody {
     Year(xsd::GYear),
     License(xsd::AnyUri),
 }
+#[doc = "A link to an external resource (Web page, digital photo, video clip, etc) with additional information."]
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct LinkType {
+    #[doc = "URL of hyperlink."]
     href: xsd::AnyUri,
     #[serde(rename = "$value")]
     body: Vec<LinkTypeBody>,
@@ -357,12 +372,16 @@ pub enum LinkTypeBody {
     Text(xsd::String),
     Type(xsd::String),
 }
+#[doc = "An email address.  Broken into two parts (id and domain) to help prevent email harvesting."]
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct EmailType {
+    #[doc = "id half of email address (billgates2004)"]
     id: xsd::String,
+    #[doc = "domain half of email address (hotmail.com)"]
     domain: xsd::String,
 }
+#[doc = "A person or organization."]
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct PersonType {
@@ -376,10 +395,13 @@ pub enum PersonTypeBody {
     Email(EmailType),
     Link(LinkType),
 }
+#[doc = "A geographic point with optional elevation and time.  Available for use by other schemas."]
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct PtType {
+    #[doc = "The latitude of the point.  Decimal degrees, WGS84 datum."]
     lat: LatitudeType,
+    #[doc = "The latitude of the point.  Decimal degrees, WGS84 datum."]
     lon: LongitudeType,
     #[serde(rename = "$value")]
     body: Vec<PtTypeBody>,
@@ -390,6 +412,7 @@ pub enum PtTypeBody {
     Ele(xsd::Decimal),
     Time(xsd::DateTime),
 }
+#[doc = "An ordered sequence of points.  (for polygons or polylines, e.g.)"]
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct PtsegType {
@@ -401,11 +424,16 @@ pub struct PtsegType {
 pub enum PtsegTypeBody {
     Pt(PtType),
 }
+#[doc = "Two lat/lon pairs defining the extent of an element."]
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct BoundsType {
+    #[doc = "The minimum latitude."]
     minlat: LatitudeType,
+    #[doc = "The minimum longitude."]
     minlon: LongitudeType,
+    #[doc = "The maximum latitude."]
     maxlat: LatitudeType,
+    #[doc = "The maximum longitude."]
     maxlon: LongitudeType,
 }
