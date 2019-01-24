@@ -1,15 +1,13 @@
 #![feature(unrestricted_attribute_tokens)]
 #![feature(type_alias_enum_variants)]
 #![feature(custom_attribute)]
+
 #[macro_use]
 extern crate clap;
-#[macro_use]
-extern crate serde_derive;
-#[macro_use]
-extern crate quote;
 
 use clap::{app_from_crate, Arg};
 use log::debug;
+use quote::quote;
 use rustfmt_nightly::{Config, Input, Session};
 use serde_xml_rs::{from_reader, from_str};
 use std::env;
@@ -22,7 +20,7 @@ use std::path::PathBuf;
 use xmlschemer::schema::CodeGenerator;
 use xmlschemer::schema::{Context, Schema};
 
-const PRIMITIVE_SCHEMA: &str = include_str!("./assets/primitives.xsd");
+const PRIMITIVE_SCHEMA: &str = include_str!("./schemas/primitives.xsd");
 
 fn main() -> Result<(), Box<dyn Error>> {
     let matches = app_from_crate!()

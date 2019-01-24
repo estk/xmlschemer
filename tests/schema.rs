@@ -19,8 +19,19 @@ fn test_read_gpx() {
     read_fixture("gpx.xsd").unwrap();
 }
 #[test]
-fn test_gen_gpx() {
+fn test_read_kml() {
     pretty_env_logger::init();
+    read_fixture("kml23.xsd").unwrap();
+}
+#[test]
+fn test_gen_kml() {
+    pretty_env_logger::init();
+    let kml = read_fixture("kml23.xsd").unwrap();
+    let ts = kml.codegen(&mut Context::default());
+    eprintln!("{}", ts.to_string());
+}
+#[test]
+fn test_gen_gpx() {
     let gpx = read_fixture("gpx.xsd").unwrap();
     let ts = gpx.codegen(&mut Context::default());
     eprintln!("{}", ts.to_string());

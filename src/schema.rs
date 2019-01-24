@@ -38,7 +38,8 @@ pub struct ID(String);
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub enum Final {
-    // #all
+    #[serde(rename = "#all")]
+    All,
     Extension,
     Restriction,
     List,
@@ -57,6 +58,8 @@ pub struct QName(String);
 pub struct Element {
     id: Option<String>,
     name: Option<String>,
+    default: Option<String>,
+    r#final: Option<Final>,
     r#abstract: Option<bool>,
     r#type: Option<QName>,
     substitution_group: Option<QName>,
@@ -149,7 +152,7 @@ impl CodeGenerator for SimpleType {
         let name_id = Ident::new(name, Span::call_site());
         let mut doc = TokenStream::new();
         if let Some(s) = self.get_doc() {
-            doc.append_all(TokenStream::from_str(&format!("/// {}", s)))
+            doc.append_all(TokenStream::from_str(&format!("/** {} */", s)))
         }
         doc.append_all(quote!(
             #[derive(Serialize, Deserialize, Debug)]
@@ -179,6 +182,7 @@ pub enum SimpleBody {
     Annotation(Annotation),
     Documentation(Documentation),
     Restriction(Restriction),
+    Extension(Extension),
     Union(Union),
     List(List),
 }
@@ -205,6 +209,7 @@ pub struct Union {
 pub struct ComplexType {
     name: Option<QName>,
     mixed: Option<bool>,
+    r#final: Option<Final>,
     r#abstract: Option<bool>,
     r#type: Option<QName>,
     #[serde(rename = "$value")]
@@ -278,11 +283,32 @@ impl CodeGenerator for ComplexType {
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub enum ComplexBody {
+    All(All),
+    Assert(Assert),
     Annotation(Annotation),
     Sequence(Sequence),
     Attribute(Attribute),
+    AttributeGroup(AttributeGroup),
     AnyAttribute(AnyAttribute),
     ComplexContent(ComplexContent),
+    SimpleContent(SimpleContent),
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+#[serde(deny_unknown_fields)]
+pub struct SimpleContent {
+    id: Option<ID>,
+    #[serde(rename = "$value")]
+    body: Option<SimpleContentBody>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+#[serde(deny_unknown_fields)]
+pub enum SimpleContentBody {
+    Restriction(Restriction),
+    Extension(Extension),
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -313,8 +339,11 @@ pub struct Extension {
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub enum ExtensionBody {
+    All(All),
+    Assert(Assert),
     Group(Group),
     Attribute(Attribute),
+    AnyAttribute(AnyAttribute),
     AttributeGroup(AttributeGroup),
     Sequence(Sequence),
     Choice(Choice),
@@ -333,6 +362,7 @@ pub struct Restriction {
 #[serde(rename_all = "camelCase")]
 pub enum RestrictionBody {
     Pattern(Pattern),
+    Length(Pattern),
     Annotation(Annotation),
     WhiteSpace(WhiteSpace),
     SimpleType(SimpleType),
@@ -364,6 +394,16 @@ pub enum RestrictionBody {
     Sequence(Sequence),
     Attribute(Attribute),
     Group(Group),
+}
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+#[serde(deny_unknown_fields)]
+pub struct Length {
+    id: Option<ID>,
+    value: String,
+
+    #[serde(rename = "$value")]
+    body: Option<Annotation>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -419,8 +459,12 @@ pub struct Attribute {
 }
 impl CodeGenerator for Attribute {
     fn codegen(&self, ctx: &mut Context) -> TokenStream {
-        let name = self.name.as_ref().unwrap();
-        let name_id = Ident::new(&name, Span::call_site());
+        let mut name = self.name.as_ref().unwrap().clone();
+        let name_id = if name == "type" {
+            syn::parse_str("r#type").unwrap()
+        } else {
+            Ident::new(&name, Span::call_site())
+        };
         let ty = to_type_path(&self.r#type.as_ref().unwrap().0);
         let mut doc = TokenStream::new();
         quote!(
@@ -580,9 +624,38 @@ pub struct Group {
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub enum GroupBody {
+    All(All),
     Annotation(Annotation),
+    Assert(Assert),
     Choice(Choice),
     Sequence(Sequence),
+}
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+#[serde(deny_unknown_fields)]
+pub struct Assert {
+    id: Option<ID>,
+    test: Option<String>,
+    #[serde(rename = "$value")]
+    body: Option<Annotation>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+#[serde(deny_unknown_fields)]
+pub struct All {
+    id: Option<ID>,
+    max_occurs: Option<u32>,
+    #[serde(rename = "$value")]
+    body: Option<Vec<AllBody>>,
+}
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+#[serde(deny_unknown_fields)]
+pub enum AllBody {
+    Element(Element),
+    Any(Any),
+    Group(Group),
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -645,6 +718,23 @@ impl Annotation {
         None
     }
 }
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+#[serde(deny_unknown_fields)]
+pub struct DefaultOpenContentt {
+    mode: Option<OpenContentMode>,
+    id: Option<ID>,
+    appliesToEmpty: Option<bool>,
+    #[serde(rename = "$value")]
+    body: Option<Vec<Any>>,
+}
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+#[serde(deny_unknown_fields)]
+pub enum OpenContentMode {
+    Interleave,
+    Suffix,
+}
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -655,7 +745,7 @@ pub enum SchemaBody {
     Redefine,
     Override,
     Annotation(Annotation),
-    DefaultOpenContent,
+    DefaultOpenContent(DefaultOpenContentt),
     SimpleType(SimpleType),
     ComplexType(ComplexType),
     Group(Group),
@@ -673,7 +763,7 @@ impl CodeGenerator for SchemaBody {
             Self::Redefine => TokenStream::new(),
             Self::Override => TokenStream::new(),
             Self::Annotation(i) => TokenStream::new(),
-            Self::DefaultOpenContent => TokenStream::new(),
+            Self::DefaultOpenContent(_) => TokenStream::new(),
             Self::SimpleType(i) => i.codegen(ctx),
             Self::ComplexType(i) => i.codegen(ctx),
             Self::Group(i) => TokenStream::new(),
@@ -709,6 +799,8 @@ pub struct Schema {
     target_namespace: Option<URI>,
     // TODO
     version: Option<String>,
+    // TODO
+    min_version: Option<String>,
     // TODO
     #[serde(rename = "lang")]
     xml_lang: Option<String>,
@@ -775,7 +867,7 @@ impl CodeGenerator for Schema {
         let (root_tn, root_doc) = if let Some(r) = root {
             let doc = r
                 .get_doc()
-                .map(|d| format!("/// {}", d))
+                .map(|d| format!("/** {} */", d))
                 .unwrap_or("".to_string());
             let mut doc_ts = TokenStream::from_str(&doc).unwrap();
             doc_ts.append_all(quote!(
