@@ -10,7 +10,6 @@ use log::debug;
 use quote::quote;
 use rustfmt_nightly::{Config, Input, Session};
 use serde_xml_rs::{from_reader, from_str};
-use std::env;
 use std::error::Error;
 use std::fs::File;
 use std::io::sink;
@@ -23,6 +22,7 @@ use xmlschemer::schema::{Context, Schema};
 const PRIMITIVE_SCHEMA: &str = include_str!("./schemas/primitives.xsd");
 
 fn main() -> Result<(), Box<dyn Error>> {
+    pretty_env_logger::init();
     let matches = app_from_crate!()
         .arg(
             Arg::with_name("in")
@@ -45,7 +45,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     let in_file = File::open(in_filename).expect("Unable to open in file");
 
     let out_filename = matches.value_of("out").expect("Output file is required");
-    let out_path = PathBuf::from(out_filename);
     debug!("opening output file: {}", out_filename);
     let out_file = File::create(out_filename).expect("Unable to open out file");
 

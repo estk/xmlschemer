@@ -72,18 +72,19 @@ pub struct Element {
 
 impl Element {
     fn get_doc(&self) -> Option<String> {
-        for e in self.body.as_ref()? {
-            if let ElementBody::Annotation(a) = e {
-                return a.get_doc();
+        if let Some(body) = self.body.as_ref() {
+            for e in body {
+                if let ElementBody::Annotation(a) = e {
+                    return a.get_doc();
+                }
             }
         }
-
         None
     }
 }
 
 impl CodeGenerator for Element {
-    fn codegen(&self, ctx: &mut Context) -> TokenStream {
+    fn codegen(&self, _ctx: &mut Context) -> TokenStream {
         unimplemented!()
     }
 }
@@ -136,9 +137,11 @@ pub struct SimpleType {
 
 impl SimpleType {
     fn get_doc(&self) -> Option<String> {
-        for e in self.body.as_ref()? {
-            if let SimpleBody::Annotation(a) = e {
-                return a.get_doc();
+        if let Some(body) = self.body.as_ref() {
+            for e in body {
+                if let SimpleBody::Annotation(a) = e {
+                    return a.get_doc();
+                }
             }
         }
         None
@@ -146,23 +149,18 @@ impl SimpleType {
 }
 
 impl CodeGenerator for SimpleType {
-    fn codegen(&self, ctx: &mut Context) -> TokenStream {
+    fn codegen(&self, _ctx: &mut Context) -> TokenStream {
         let name = &self.name.as_ref().unwrap().0.to_camel_case();
         let name_id = Ident::new(name, Span::call_site());
         let mut doc_ts = TokenStream::new();
-        if let Some(ds) = self.get_doc() {
-            doc_ts.append_all(quote!(
-                #[doc = #ds]
-            ));
-        }
+        let doc = format_doc_block(self.get_doc());
         doc_ts.append_all(quote!(
+            #doc
             #[derive(Serialize, Deserialize, Debug)]
             #[serde(rename_all = "camelCase")]
-        ));
-
-        doc_ts.append_all(quote!(
             #[serde(transparent)]
         ));
+
         if name == "String" {
             quote!(
                 #doc_ts
@@ -219,9 +217,11 @@ pub struct ComplexType {
 
 impl ComplexType {
     fn get_doc(&self) -> Option<String> {
-        for e in self.body.as_ref()? {
-            if let ComplexBody::Annotation(a) = e {
-                return a.get_doc();
+        if let Some(body) = self.body.as_ref() {
+            for e in body {
+                if let ComplexBody::Annotation(a) = e {
+                    return a.get_doc();
+                }
             }
         }
         None
@@ -236,14 +236,11 @@ impl CodeGenerator for ComplexType {
         };
         debug!("Building complex type: {}", name_str);
         let name = Ident::new(&name_str, Span::call_site());
-        let mut doc_ts = TokenStream::new();
-        if let Some(ds) = self.get_doc() {
-            doc_ts.append_all(quote!(
-                #[doc = #ds]
-            ));
-        }
 
+        let mut doc_ts = TokenStream::new();
+        let doc = format_doc_block(self.get_doc());
         doc_ts.append_all(quote!(
+            #doc
             #[derive(Serialize, Deserialize, Debug)]
             #[serde(rename_all = "camelCase")]
         ));
@@ -488,20 +485,15 @@ impl Attribute {
     }
 }
 impl CodeGenerator for Attribute {
-    fn codegen(&self, ctx: &mut Context) -> TokenStream {
+    fn codegen(&self, _ctx: &mut Context) -> TokenStream {
         let name = self.name.as_ref().unwrap().clone();
         let name_id = if name == "type" {
             syn::parse_str("r#type").unwrap()
         } else {
             Ident::new(&name, Span::call_site())
         };
-        let ty = to_type_path(&self.r#type.as_ref().unwrap().0);
-        let mut doc_ts = TokenStream::new();
-        if let Some(ds) = self.get_doc() {
-            doc_ts.append_all(quote!(
-                #[doc = #ds]
-            ));
-        }
+        let ty = resolve_type(&self.r#type.as_ref().unwrap().0);
+        let doc_ts = format_doc_block(self.get_doc());
         quote!(
             #doc_ts
             #name_id: #ty
@@ -548,6 +540,7 @@ impl CodeGenerator for Sequence {
             &ctx.name.as_ref().unwrap().to_camel_case(),
             Span::call_site(),
         );
+        // TODO: move into element codegen?
         let variants: Vec<TokenStream> = self
             .body
             .as_ref()
@@ -558,8 +551,16 @@ impl CodeGenerator for Sequence {
                 _ => None,
             })
             .map(|e| {
-                let name = Ident::new(&e.name.as_ref().unwrap().to_camel_case(), Span::call_site());
-                let ty_name = to_type_path(&e.r#type.as_ref().unwrap().0);
+                let (name, ty): (String, String) = if let Some(rf) = e.r#ref.as_ref() {
+                    (rf.clone(), rf.clone())
+                } else if let Some(nm) = e.name.as_ref() {
+                    let t = e.r#type.as_ref().unwrap().0.clone();
+                    (nm.clone(), t)
+                } else {
+                    panic!("element should have either a name, type pair or a ref")
+                };
+                let name = resolve_type_str(&name);
+                let ty_name = resolve_type(&ty);
                 quote!(
                     #name(#ty_name)
                 )
@@ -591,13 +592,32 @@ impl CodeGenerator for Sequence {
     }
 }
 
-fn to_type_path(s: &str) -> syn::TypePath {
+fn resolve_typ_inner(s: &str) -> Vec<String> {
+    println!("resolving: {}", s);
     let mut split = s.split(':').map(|e| e.to_string()).collect::<Vec<String>>();
+    if let Some(s) = split.first() {
+        if s == "kml" {
+            split.remove(0);
+        }
+    }
 
-    split.last_mut().map(|x| *x = x.to_camel_case());
-    let join = split.join("::");
+    if let Some(x) = split.last_mut() {
+        *x = x.to_camel_case();
+    }
+    println!("resolved: {:#?}", &split);
+    split
+}
 
-    syn::parse_str(&join).unwrap()
+fn resolve_type_str(s: &str) -> syn::Ident {
+    let tn = resolve_typ_inner(s).last().unwrap().clone();
+
+    syn::parse_str(&tn).unwrap()
+}
+
+fn resolve_type(s: &str) -> syn::TypePath {
+    let tp = resolve_typ_inner(s).join("::");
+
+    syn::parse_str(&tp).unwrap()
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -733,13 +753,9 @@ pub struct Documentation {
 #[serde(rename_all = "camelCase")]
 pub enum AnnotationBody {
     #[serde(rename = "appinfo")]
-    AppInfo(Any),
+    AppInfo(String),
     Documentation(Documentation),
 }
-
-#[serde(rename = "appinfo")]
-#[derive(Serialize, Deserialize, Debug)]
-pub struct AppInfo();
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -801,18 +817,18 @@ impl CodeGenerator for SchemaBody {
         let mut ts = TokenStream::new();
         let body = match self {
             Self::Include => TokenStream::new(),
-            Self::Import(i) => TokenStream::new(),
+            Self::Import(_) => TokenStream::new(),
             Self::Redefine => TokenStream::new(),
             Self::Override => TokenStream::new(),
-            Self::Annotation(i) => TokenStream::new(),
+            Self::Annotation(_) => TokenStream::new(),
             Self::DefaultOpenContent(_) => TokenStream::new(),
             Self::SimpleType(i) => i.codegen(ctx),
             Self::ComplexType(i) => i.codegen(ctx),
-            Self::Group(i) => TokenStream::new(),
-            Self::AttributeGroup(i) => TokenStream::new(),
+            Self::Group(_) => TokenStream::new(),
+            Self::AttributeGroup(_) => TokenStream::new(),
             Self::Element(i) => i.codegen(ctx),
             Self::Attribute => TokenStream::new(),
-            Self::Notation(i) => TokenStream::new(),
+            Self::Notation(_) => TokenStream::new(),
         };
         ts.append_all(body);
         ts
@@ -907,13 +923,10 @@ impl CodeGenerator for Schema {
 
         let (root_tn, root_doc) = if let Some(r) = root {
             let mut doc_ts = TokenStream::new();
-            if let Some(ds) = r.get_doc() {
-                doc_ts.append_all(quote!(
-                    #[doc = #ds]
-                ));
-            }
+            let doc = format_doc_block(r.get_doc());
 
             doc_ts.append_all(quote!(
+                #doc
                 #[serde(rename = #root_name_str)]
             ));
 
@@ -957,5 +970,17 @@ impl CodeGenerator for Schema {
             #root_ts
             #defs
         )
+    }
+}
+
+fn format_doc_block(doc: Option<String>) -> TokenStream {
+    if let Some(bod) = doc {
+        println!("making doc block: {}", &bod);
+        let ts = syn::LitStr::new(&bod, Span::call_site());
+        quote!(
+            #[doc = #ts]
+        )
+    } else {
+        TokenStream::new()
     }
 }

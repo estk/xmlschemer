@@ -178,8 +178,7 @@ mod xsd {
     pub struct GMonth(String);
 }
 use serde_derive::{Deserialize, Serialize};
-#[doc = "Elements that substitute for kml:AbstractBgColorGroup are kml:bgColor and kml:color."]
-#[serde(rename = "AbstractBgColorGroup")]
+#[serde(rename = "address")]
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 #[serde(transparent)]
@@ -203,16 +202,8 @@ pub struct Angle360Type(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 #[serde(transparent)]
-pub struct EnumBaseType(String);
-#[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
-#[serde(transparent)]
 pub struct AltitudeModeEnumType(String);
-#[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
-#[serde(transparent)]
-pub struct SeaFloorAltitudeModeEnumType(String);
-#[doc = "aabbggrr\n\n        ffffffff: opaque white\n        ff000000: opaque black"]
+#[doc = "aabbggrr\n        \n        ffffffff: opaque white\n        ff000000: opaque black"]
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 #[serde(transparent)]
@@ -236,10 +227,6 @@ pub struct DisplayModeEnumType(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 #[serde(transparent)]
-pub struct FlyToModeEnumType(String);
-#[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
-#[serde(transparent)]
 pub struct GridOriginEnumType(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -256,19 +243,7 @@ pub struct ListItemTypeEnumType(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 #[serde(transparent)]
-pub struct OuterWidthType(String);
-#[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
-#[serde(transparent)]
-pub struct PlayModeEnumType(String);
-#[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
-#[serde(transparent)]
 pub struct RefreshModeEnumType(String);
-#[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
-#[serde(transparent)]
-pub struct KmlVersionType(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 #[serde(transparent)]
@@ -290,12 +265,20 @@ pub struct UnitsEnumType(String);
 pub struct Vec2Type {
     x: Double,
     y: Double,
-    xunits: kml::UnitsEnumType,
-    yunits: kml::UnitsEnumType,
+    xunits: UnitsEnumType,
+    yunits: UnitsEnumType,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct AbstractObjectType {}
+pub struct AbstractObjectType {
+    #[serde(rename = "$value")]
+    body: Vec<AbstractObjectTypeBody>,
+}
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+pub enum AbstractObjectTypeBody {
+    ObjectSimpleExtensionGroup(ObjectSimpleExtensionGroup),
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct AbstractFeatureType {}
@@ -311,22 +294,34 @@ pub struct LookAtType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct CameraType {}
-#[doc = "kml:MetadataType was deprecated in KML 2.2"]
+#[doc = "MetadataType deprecated in 2.2"]
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct MetadataType {}
+pub struct MetadataType {
+    #[serde(rename = "$value")]
+    body: Vec<MetadataTypeBody>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct ExtendedDataType {}
+pub enum MetadataTypeBody {}
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+pub struct ExtendedDataType {
+    #[serde(rename = "$value")]
+    body: Vec<ExtendedDataTypeBody>,
+}
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+pub enum ExtendedDataTypeBody {
+    Data(Data),
+    SchemaData(SchemaData),
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct SchemaDataType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct SimpleDataType {}
-#[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
-pub struct SimpleArrayDataType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct DataType {}
@@ -349,11 +344,39 @@ pub struct AbstractTimePrimitiveType {}
 #[serde(rename_all = "camelCase")]
 pub struct KmlType {
     hint: String,
-    version: kml::KmlVersionType,
+    #[serde(rename = "$value")]
+    body: Vec<KmlTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct NetworkLinkControlType {}
+pub enum KmlTypeBody {
+    NetworkLinkControl(NetworkLinkControl),
+    AbstractFeatureGroup(AbstractFeatureGroup),
+    KmlSimpleExtensionGroup(KmlSimpleExtensionGroup),
+    KmlObjectExtensionGroup(KmlObjectExtensionGroup),
+}
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+pub struct NetworkLinkControlType {
+    #[serde(rename = "$value")]
+    body: Vec<NetworkLinkControlTypeBody>,
+}
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+pub enum NetworkLinkControlTypeBody {
+    MinRefreshPeriod(MinRefreshPeriod),
+    MaxSessionLength(MaxSessionLength),
+    Cookie(Cookie),
+    Message(Message),
+    LinkName(LinkName),
+    LinkDescription(LinkDescription),
+    LinkSnippet(LinkSnippet),
+    Expires(Expires),
+    Update(Update),
+    AbstractViewGroup(AbstractViewGroup),
+    NetworkLinkControlSimpleExtensionGroup(NetworkLinkControlSimpleExtensionGroup),
+    NetworkLinkControlObjectExtensionGroup(NetworkLinkControlObjectExtensionGroup),
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct DocumentType {}
@@ -362,22 +385,28 @@ pub struct DocumentType {}
 pub struct SchemaType {
     name: String,
     id: Id,
+    #[serde(rename = "$value")]
+    body: Vec<SchemaTypeBody>,
+}
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+pub enum SchemaTypeBody {
+    SimpleField(SimpleField),
+    SchemaExtension(SchemaExtension),
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct SimpleFieldType {
     r#type: String,
     name: String,
-    #[doc = "The symbol for the unit of measure for the kml:SimpleField values."]
-    uom: AnyUri,
+    #[serde(rename = "$value")]
+    body: Vec<SimpleFieldTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct SimpleArrayFieldType {
-    r#type: String,
-    name: String,
-    #[doc = "The symbol for the unit of measure for the kml:SimpleArrayData values."]
-    uom: AnyUri,
+pub enum SimpleFieldTypeBody {
+    DisplayName(DisplayName),
+    SimpleFieldExtension(SimpleFieldExtension),
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -417,16 +446,20 @@ pub struct LinearRingType {}
 pub struct PolygonType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BoundaryType {}
+pub struct BoundaryType {
+    #[serde(rename = "$value")]
+    body: Vec<BoundaryTypeBody>,
+}
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+pub enum BoundaryTypeBody {
+    LinearRing(LinearRing),
+    BoundarySimpleExtensionGroup(BoundarySimpleExtensionGroup),
+    BoundaryObjectExtensionGroup(BoundaryObjectExtensionGroup),
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct ModelType {}
-#[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
-pub struct TrackType {}
-#[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
-pub struct MultiTrackType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct LocationType {}
@@ -445,13 +478,6 @@ pub struct AliasType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct GroundOverlayType {}
-#[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
-pub struct AbstractExtentType {}
-#[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
-pub struct LatLonQuadType {}
-#[doc = "In KML 2.3, the allowed value range in decimal degrees used by kml:east and kml:west was extended by a factor of 2 (from \u{b1}180 in KML 2.2) to \u{b1}360. This was done in order to accommodate bounding boxes anywhere on the earth, including overlaps of the anti-meridian, and of any size up to full global coverage. With the extension of the longitude range, all degree values, except -360 = 0 = 360 (mod 360), have exactly two equivalent choices modulo 360, e.g. -359 = 1 (mod 360). The latitude range for kml:north and kml:south remain the same as in KML 2.2 and the following constraints C1 (i.e. the non-trivial latitude interval constraint) and C2 (i.e. the non-trivial longitude interval constraint) are unchanged: \n    C1  kml:south < kml:north (non-trivial latitude interval); \n    C2  kml:west < kml:east (non-trivial longitude interval). \nNew constraints in KML 2.3 are introduced with the longitude range extension to avoid self overlaps and to preserve uniqueness of longitude interval values: \n    C3  kml:east - kml:west \u{2264} 360 (non-self-overlap); \n    C4  If (|kml:west| or |kml:east|) > 180, then kml:east > 0 and kml:west < 180 (uniqueness). \nThe constraint C3 ensures that the longitude interval does not overlap itself. The constraint C4 ensures the choice of the kml:west and kml:east values are unique for every longitude interval. See also: kml:east, kml:west, kml:north, kml:south."]
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct AbstractLatLonBoxType {}
@@ -517,37 +543,46 @@ pub struct TimeStampType {}
 pub struct TimeSpanType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct UpdateType {}
+pub struct UpdateType {
+    #[serde(rename = "$value")]
+    body: Vec<UpdateTypeBody>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct CreateType {}
+pub enum UpdateTypeBody {
+    TargetHref(TargetHref),
+    UpdateExtensionGroup(UpdateExtensionGroup),
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct DeleteType {}
+pub struct CreateType {
+    #[serde(rename = "$value")]
+    body: Vec<CreateTypeBody>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct ChangeType {}
+pub enum CreateTypeBody {
+    AbstractContainerGroup(AbstractContainerGroup),
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct AbstractTourPrimitiveType {}
+pub struct DeleteType {
+    #[serde(rename = "$value")]
+    body: Vec<DeleteTypeBody>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct AnimatedUpdateType {}
+pub enum DeleteTypeBody {
+    AbstractFeatureGroup(AbstractFeatureGroup),
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct FlyToType {}
+pub struct ChangeType {
+    #[serde(rename = "$value")]
+    body: Vec<ChangeTypeBody>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct PlaylistType {}
-#[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
-pub struct SoundCueType {}
-#[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
-pub struct TourType {}
-#[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
-pub struct TourControlType {}
-#[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
-pub struct WaitType {}
+pub enum ChangeTypeBody {
+    AbstractObjectGroup(AbstractObjectGroup),
+}
