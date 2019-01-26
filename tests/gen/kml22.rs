@@ -7,7 +7,7 @@ mod xsd {
     #[derive(Serialize, Deserialize, Debug)]
     #[serde(rename_all = "camelCase")]
     #[serde(transparent)]
-    pub struct Boolean(String);
+    pub struct bool(String);
     #[derive(Serialize, Deserialize, Debug)]
     #[serde(rename_all = "camelCase")]
     #[serde(transparent)]
@@ -15,7 +15,7 @@ mod xsd {
     #[derive(Serialize, Deserialize, Debug)]
     #[serde(rename_all = "camelCase")]
     #[serde(transparent)]
-    pub struct Double(String);
+    pub struct f64(String);
     #[derive(Serialize, Deserialize, Debug)]
     #[serde(rename_all = "camelCase")]
     #[serde(transparent)]
@@ -43,19 +43,19 @@ mod xsd {
     #[derive(Serialize, Deserialize, Debug)]
     #[serde(rename_all = "camelCase")]
     #[serde(transparent)]
-    pub struct Id(String);
+    pub struct BigId(String);
     #[derive(Serialize, Deserialize, Debug)]
     #[serde(rename_all = "camelCase")]
     #[serde(transparent)]
-    pub struct Idref(String);
+    pub struct BigIdref(String);
     #[derive(Serialize, Deserialize, Debug)]
     #[serde(rename_all = "camelCase")]
     #[serde(transparent)]
-    pub struct Entity(String);
+    pub struct BigEntity(String);
     #[derive(Serialize, Deserialize, Debug)]
     #[serde(rename_all = "camelCase")]
     #[serde(transparent)]
-    pub struct Notation(String);
+    pub struct BigNotation(String);
     #[derive(Serialize, Deserialize, Debug)]
     #[serde(rename_all = "camelCase")]
     #[serde(transparent)]
@@ -71,31 +71,31 @@ mod xsd {
     #[derive(Serialize, Deserialize, Debug)]
     #[serde(rename_all = "camelCase")]
     #[serde(transparent)]
-    pub struct Idrefs(String);
+    pub struct BigIdrefs(String);
     #[derive(Serialize, Deserialize, Debug)]
     #[serde(rename_all = "camelCase")]
     #[serde(transparent)]
-    pub struct Entities(String);
+    pub struct BigEntities(String);
     #[derive(Serialize, Deserialize, Debug)]
     #[serde(rename_all = "camelCase")]
     #[serde(transparent)]
-    pub struct Nmtoken(String);
+    pub struct BigNmtoken(String);
     #[derive(Serialize, Deserialize, Debug)]
     #[serde(rename_all = "camelCase")]
     #[serde(transparent)]
-    pub struct Nmtokens(String);
+    pub struct BigNmtokens(String);
     #[derive(Serialize, Deserialize, Debug)]
     #[serde(rename_all = "camelCase")]
     #[serde(transparent)]
-    pub struct Name(String);
+    pub struct BigName(String);
     #[derive(Serialize, Deserialize, Debug)]
     #[serde(rename_all = "camelCase")]
     #[serde(transparent)]
-    pub struct QName(String);
+    pub struct BigQName(String);
     #[derive(Serialize, Deserialize, Debug)]
     #[serde(rename_all = "camelCase")]
     #[serde(transparent)]
-    pub struct NcName(String);
+    pub struct BigNcName(String);
     #[derive(Serialize, Deserialize, Debug)]
     #[serde(rename_all = "camelCase")]
     #[serde(transparent)]
@@ -123,7 +123,7 @@ mod xsd {
     #[derive(Serialize, Deserialize, Debug)]
     #[serde(rename_all = "camelCase")]
     #[serde(transparent)]
-    pub struct Int(String);
+    pub struct i64(String);
     #[derive(Serialize, Deserialize, Debug)]
     #[serde(rename_all = "camelCase")]
     #[serde(transparent)]
@@ -261,109 +261,737 @@ pub struct StyleStateEnumType(String);
 #[serde(transparent)]
 pub struct UnitsEnumType(String);
 #[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct Altitude(f64);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct AltitudeMode(AltitudeModeEnumType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct Begin(DateTimeType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BgColor(ColorType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BottomFov(Angle90Type);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct Color(ColorType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct ColorMode(ColorModeEnumType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct Cookie(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct Coordinates(CoordinatesType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct Description(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct DisplayName(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct DisplayMode(DisplayModeEnumType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct DrawOrder(i64);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct East(Angle180Type);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct End(DateTimeType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct Expires(DateTimeType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct Extrude(bool);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct Fill(bool);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct FlyToView(bool);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct GridOrigin(GridOriginEnumType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct Heading(Angle360Type);
+#[doc = "not anyURI due to $[x] substitution in\n      PhotoOverlay"]
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct Href(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct HttpQuery(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct HotSpot(Vec2Type);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct Key(StyleStateEnumType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct Latitude(Angle90Type);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct LeftFov(Angle180Type);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct LinkDescription(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct LinkName(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct LinkSnippet(BigSnippetType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct ListItemType(ListItemTypeEnumType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct Longitude(Angle180Type);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct MaxSnippetLines(i64);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct MaxSessionLength(f64);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct Message(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct MinAltitude(f64);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct MinFadeExtent(f64);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct MinLodPixels(f64);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct MinRefreshPeriod(f64);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct MaxAltitude(f64);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct MaxFadeExtent(f64);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct MaxLodPixels(f64);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct MaxHeight(i64);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct MaxWidth(i64);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct Name(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct Near(f64);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct North(Angle180Type);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct Open(bool);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct Outline(bool);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct OverlayXy(Vec2Type);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct PhoneNumber(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct Range(f64);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct RefreshMode(RefreshModeEnumType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct RefreshInterval(f64);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct RefreshVisibility(bool);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct RightFov(Angle180Type);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct Roll(Angle180Type);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct Rotation(Angle180Type);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct RotationXy(Vec2Type);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct Scale(f64);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct ScreenXy(Vec2Type);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct Shape(ShapeEnumType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct Size(Vec2Type);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct South(Angle180Type);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct SourceHref(AnyUri);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct Snippet(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct State(ItemIconStateType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct StyleUrl(AnyUri);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct TargetHref(AnyUri);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct Tessellate(bool);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct Text(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct TextColor(ColorType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct TileSize(i64);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct Tilt(Anglepos180Type);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct TopFov(Angle90Type);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct Value(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct ViewBoundScale(f64);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct ViewFormat(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct ViewRefreshMode(ViewRefreshModeEnumType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct ViewRefreshTime(f64);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct Visibility(bool);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct West(Angle180Type);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct When(DateTimeType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct Width(f64);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct X(f64);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct Y(f64);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct Z(f64);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigAbstractObjectGroup(BigAbstractObjectType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigObjectSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigAbstractFeatureGroup(BigAbstractFeatureType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigAbstractFeatureSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigSnippet(BigSnippetType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigAbstractViewGroup(BigAbstractViewType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigAbstractViewSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigLookAt(BigLookAtType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigLookAtSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigCamera(BigCameraType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigCameraSimpleExtensionGroup(String);
+#[doc = "Metadata deprecated in 2.2"]
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigMetadata(BigMetadataType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigExtendedData(BigExtendedDataType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigSchemaData(BigSchemaDataType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigSimpleData(BigSimpleDataType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigData(BigDataType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigAbstractContainerGroup(BigAbstractContainerType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigAbstractContainerSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigAbstractGeometryGroup(BigAbstractGeometryType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigAbstractGeometrySimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigAbstractOverlayGroup(BigAbstractOverlayType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigAbstractOverlaySimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigAbstractStyleSelectorGroup(BigAbstractStyleSelectorType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigAbstractStyleSelectorSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigAbstractTimePrimitiveGroup(BigAbstractTimePrimitiveType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigAbstractTimePrimitiveSimpleExtensionGroup(String);
+#[doc = "<kml> is the root element."]
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct Kml(BigKmlType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigKmlSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigNetworkLinkControl(BigNetworkLinkControlType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigNetworkLinkControlSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigDocument(BigDocumentType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigDocumentSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigSchema(BigSchemaType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigSimpleField(BigSimpleFieldType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigFolder(BigFolderType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigFolderSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigPlacemark(BigPlacemarkType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigPlacemarkSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigNetworkLink(BigNetworkLinkType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigNetworkLinkSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigRegion(BigRegionType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigRegionSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigLatLonAltBox(BigLatLonAltBoxType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigLatLonAltBoxSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigLod(BigLodType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigLodSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigIcon(BigLinkType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigLink(BigLinkType);
+#[doc = "Url deprecated in 2.2"]
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigUrl(BigLinkType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigLinkSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigMultiGeometry(BigMultiGeometryType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigMultiGeometrySimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigPoint(BigPointType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigPointSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigLineString(BigLineStringType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigLineStringSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigLinearRing(BigLinearRingType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigLinearRingSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigPolygon(BigPolygonType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigPolygonSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct OuterBoundaryIs(BigBoundaryType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct InnerBoundaryIs(BigBoundaryType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigBoundarySimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigModel(BigModelType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigModelSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigLocation(BigLocationType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigLocationSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigOrientation(BigOrientationType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigOrientationSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigScale(BigScaleType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigScaleSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigResourceMap(BigResourceMapType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigResourceMapSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigAlias(BigAliasType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigAliasSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigGroundOverlay(BigGroundOverlayType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigGroundOverlaySimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigAbstractLatLonBoxSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigLatLonBox(BigLatLonBoxType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigLatLonBoxSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigScreenOverlay(BigScreenOverlayType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigScreenOverlaySimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigPhotoOverlay(BigPhotoOverlayType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigPhotoOverlaySimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigViewVolume(BigViewVolumeType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigViewVolumeSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigImagePyramid(BigImagePyramidType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigImagePyramidSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigStyle(BigStyleType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigStyleSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigStyleMap(BigStyleMapType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigStyleMapSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigPair(BigPairType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigPairSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigAbstractSubStyleGroup(BigAbstractSubStyleType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigAbstractSubStyleSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigAbstractColorStyleGroup(BigAbstractColorStyleType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigAbstractColorStyleSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigIconStyle(BigIconStyleType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigIconStyleSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigBasicLinkSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigLabelStyle(BigLabelStyleType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigLabelStyleSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigLineStyle(BigLineStyleType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigLineStyleSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigPolyStyle(BigPolyStyleType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigPolyStyleSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigBalloonStyle(BigBalloonStyleType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigBalloonStyleSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigListStyle(BigListStyleType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigListStyleSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigItemIcon(BigItemIconType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigItemIconSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigTimeStamp(BigTimeStampType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigTimeStampSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigTimeSpan(BigTimeSpanType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigTimeSpanSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigUpdate(BigUpdateType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigCreate(BigCreateType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigDelete(BigDeleteType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct BigChange(BigChangeType);
+#[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct Vec2Type {
-    x: Double,
-    y: Double,
+    x: f64,
+    y: f64,
     xunits: UnitsEnumType,
     yunits: UnitsEnumType,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct AbstractObjectType {
+pub struct BigAbstractObjectType {
     #[serde(rename = "$value")]
-    body: Vec<AbstractObjectTypeBody>,
+    body: Vec<BigBigAbstractObjectTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub enum AbstractObjectTypeBody {
-    ObjectSimpleExtensionGroup(ObjectSimpleExtensionGroup),
+pub enum BigBigAbstractObjectTypeBody {
+    BigObjectSimpleExtensionGroup(BigObjectSimpleExtensionGroup),
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct AbstractFeatureType {}
+pub struct BigAbstractFeatureType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct SnippetType {}
+pub struct BigSnippetType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct AbstractViewType {}
+pub struct BigAbstractViewType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct LookAtType {}
+pub struct BigLookAtType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct CameraType {}
+pub struct BigCameraType {}
 #[doc = "MetadataType deprecated in 2.2"]
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct MetadataType {
+pub struct BigMetadataType {
     #[serde(rename = "$value")]
-    body: Vec<MetadataTypeBody>,
+    body: Vec<BigBigMetadataTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub enum MetadataTypeBody {}
+pub enum BigBigMetadataTypeBody {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct ExtendedDataType {
+pub struct BigExtendedDataType {
     #[serde(rename = "$value")]
-    body: Vec<ExtendedDataTypeBody>,
+    body: Vec<BigBigExtendedDataTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub enum ExtendedDataTypeBody {
-    Data(Data),
-    SchemaData(SchemaData),
+pub enum BigBigExtendedDataTypeBody {
+    BigData(BigData),
+    BigSchemaData(BigSchemaData),
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct SchemaDataType {}
+pub struct BigSchemaDataType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct SimpleDataType {}
+pub struct BigSimpleDataType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct DataType {}
+pub struct BigDataType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct AbstractContainerType {}
+pub struct BigAbstractContainerType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct AbstractGeometryType {}
+pub struct BigAbstractGeometryType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct AbstractOverlayType {}
+pub struct BigAbstractOverlayType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct AbstractStyleSelectorType {}
+pub struct BigAbstractStyleSelectorType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct AbstractTimePrimitiveType {}
+pub struct BigAbstractTimePrimitiveType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct KmlType {
+pub struct BigKmlType {
     hint: String,
     #[serde(rename = "$value")]
-    body: Vec<KmlTypeBody>,
+    body: Vec<BigBigKmlTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub enum KmlTypeBody {
-    NetworkLinkControl(NetworkLinkControl),
-    AbstractFeatureGroup(AbstractFeatureGroup),
-    KmlSimpleExtensionGroup(KmlSimpleExtensionGroup),
-    KmlObjectExtensionGroup(KmlObjectExtensionGroup),
+pub enum BigBigKmlTypeBody {
+    BigNetworkLinkControl(BigNetworkLinkControl),
+    BigAbstractFeatureGroup(BigAbstractFeatureGroup),
+    BigKmlSimpleExtensionGroup(BigKmlSimpleExtensionGroup),
+    BigKmlObjectExtensionGroup(BigKmlObjectExtensionGroup),
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct NetworkLinkControlType {
+pub struct BigNetworkLinkControlType {
     #[serde(rename = "$value")]
-    body: Vec<NetworkLinkControlTypeBody>,
+    body: Vec<BigBigNetworkLinkControlTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub enum NetworkLinkControlTypeBody {
+pub enum BigBigNetworkLinkControlTypeBody {
     MinRefreshPeriod(MinRefreshPeriod),
     MaxSessionLength(MaxSessionLength),
     Cookie(Cookie),
@@ -372,217 +1000,217 @@ pub enum NetworkLinkControlTypeBody {
     LinkDescription(LinkDescription),
     LinkSnippet(LinkSnippet),
     Expires(Expires),
-    Update(Update),
-    AbstractViewGroup(AbstractViewGroup),
-    NetworkLinkControlSimpleExtensionGroup(NetworkLinkControlSimpleExtensionGroup),
-    NetworkLinkControlObjectExtensionGroup(NetworkLinkControlObjectExtensionGroup),
+    BigUpdate(BigUpdate),
+    BigAbstractViewGroup(BigAbstractViewGroup),
+    BigNetworkLinkControlSimpleExtensionGroup(BigNetworkLinkControlSimpleExtensionGroup),
+    BigNetworkLinkControlObjectExtensionGroup(BigNetworkLinkControlObjectExtensionGroup),
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct DocumentType {}
+pub struct BigDocumentType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct SchemaType {
+pub struct BigSchemaType {
     name: String,
-    id: Id,
+    id: BigId,
     #[serde(rename = "$value")]
-    body: Vec<SchemaTypeBody>,
+    body: Vec<BigBigSchemaTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub enum SchemaTypeBody {
-    SimpleField(SimpleField),
-    SchemaExtension(SchemaExtension),
+pub enum BigBigSchemaTypeBody {
+    BigSimpleField(BigSimpleField),
+    BigSchemaExtension(BigSchemaExtension),
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct SimpleFieldType {
+pub struct BigSimpleFieldType {
     r#type: String,
     name: String,
     #[serde(rename = "$value")]
-    body: Vec<SimpleFieldTypeBody>,
+    body: Vec<BigBigSimpleFieldTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub enum SimpleFieldTypeBody {
+pub enum BigBigSimpleFieldTypeBody {
     DisplayName(DisplayName),
-    SimpleFieldExtension(SimpleFieldExtension),
+    BigSimpleFieldExtension(BigSimpleFieldExtension),
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct FolderType {}
+pub struct BigFolderType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct PlacemarkType {}
+pub struct BigPlacemarkType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct NetworkLinkType {}
+pub struct BigNetworkLinkType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct RegionType {}
+pub struct BigRegionType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct LatLonAltBoxType {}
+pub struct BigLatLonAltBoxType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct LodType {}
+pub struct BigLodType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct LinkType {}
+pub struct BigLinkType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct MultiGeometryType {}
+pub struct BigMultiGeometryType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct PointType {}
+pub struct BigPointType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct LineStringType {}
+pub struct BigLineStringType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct LinearRingType {}
+pub struct BigLinearRingType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct PolygonType {}
+pub struct BigPolygonType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BoundaryType {
+pub struct BigBoundaryType {
     #[serde(rename = "$value")]
-    body: Vec<BoundaryTypeBody>,
+    body: Vec<BigBigBoundaryTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub enum BoundaryTypeBody {
-    LinearRing(LinearRing),
-    BoundarySimpleExtensionGroup(BoundarySimpleExtensionGroup),
-    BoundaryObjectExtensionGroup(BoundaryObjectExtensionGroup),
+pub enum BigBigBoundaryTypeBody {
+    BigLinearRing(BigLinearRing),
+    BigBoundarySimpleExtensionGroup(BigBoundarySimpleExtensionGroup),
+    BigBoundaryObjectExtensionGroup(BigBoundaryObjectExtensionGroup),
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct ModelType {}
+pub struct BigModelType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct LocationType {}
+pub struct BigLocationType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct OrientationType {}
+pub struct BigOrientationType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct ScaleType {}
+pub struct BigScaleType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct ResourceMapType {}
+pub struct BigResourceMapType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct AliasType {}
+pub struct BigAliasType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct GroundOverlayType {}
+pub struct BigGroundOverlayType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct AbstractLatLonBoxType {}
+pub struct BigAbstractLatLonBoxType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct LatLonBoxType {}
+pub struct BigLatLonBoxType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct ScreenOverlayType {}
+pub struct BigScreenOverlayType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct PhotoOverlayType {}
+pub struct BigPhotoOverlayType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct ViewVolumeType {}
+pub struct BigViewVolumeType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct ImagePyramidType {}
+pub struct BigImagePyramidType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct StyleType {}
+pub struct BigStyleType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct StyleMapType {}
+pub struct BigStyleMapType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct PairType {}
+pub struct BigPairType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct AbstractSubStyleType {}
+pub struct BigAbstractSubStyleType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct AbstractColorStyleType {}
+pub struct BigAbstractColorStyleType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct IconStyleType {}
+pub struct BigIconStyleType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BasicLinkType {}
+pub struct BigBasicLinkType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct LabelStyleType {}
+pub struct BigLabelStyleType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct LineStyleType {}
+pub struct BigLineStyleType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct PolyStyleType {}
+pub struct BigPolyStyleType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BalloonStyleType {}
+pub struct BigBalloonStyleType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct ListStyleType {}
+pub struct BigListStyleType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct ItemIconType {}
+pub struct BigItemIconType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct TimeStampType {}
+pub struct BigTimeStampType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct TimeSpanType {}
+pub struct BigTimeSpanType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct UpdateType {
+pub struct BigUpdateType {
     #[serde(rename = "$value")]
-    body: Vec<UpdateTypeBody>,
+    body: Vec<BigBigUpdateTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub enum UpdateTypeBody {
+pub enum BigBigUpdateTypeBody {
     TargetHref(TargetHref),
-    UpdateExtensionGroup(UpdateExtensionGroup),
+    BigUpdateExtensionGroup(BigUpdateExtensionGroup),
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct CreateType {
+pub struct BigCreateType {
     #[serde(rename = "$value")]
-    body: Vec<CreateTypeBody>,
+    body: Vec<BigBigCreateTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub enum CreateTypeBody {
-    AbstractContainerGroup(AbstractContainerGroup),
+pub enum BigBigCreateTypeBody {
+    BigAbstractContainerGroup(BigAbstractContainerGroup),
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct DeleteType {
+pub struct BigDeleteType {
     #[serde(rename = "$value")]
-    body: Vec<DeleteTypeBody>,
+    body: Vec<BigBigDeleteTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub enum DeleteTypeBody {
-    AbstractFeatureGroup(AbstractFeatureGroup),
+pub enum BigBigDeleteTypeBody {
+    BigAbstractFeatureGroup(BigAbstractFeatureGroup),
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct ChangeType {
+pub struct BigChangeType {
     #[serde(rename = "$value")]
-    body: Vec<ChangeTypeBody>,
+    body: Vec<BigBigChangeTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub enum ChangeTypeBody {
-    AbstractObjectGroup(AbstractObjectGroup),
+pub enum BigBigChangeTypeBody {
+    BigAbstractObjectGroup(BigAbstractObjectGroup),
 }

@@ -85,7 +85,25 @@ impl Element {
 
 impl CodeGenerator for Element {
     fn codegen(&self, _ctx: &mut Context) -> TokenStream {
-        unimplemented!()
+        let name = resolve_type_str(&self.name.as_ref().unwrap());
+        let typ = if let Some(t) = self.r#type.as_ref() {
+            resolve_type(&t.0)
+        } else {
+            println!("skipped abstract: {}", self.name.as_ref().unwrap());
+            return TokenStream::new();
+        };
+
+        let mut doc_ts = TokenStream::new();
+        let doc = format_doc_block(self.get_doc());
+        doc_ts.append_all(quote!(
+            #doc
+            #[derive(Serialize, Deserialize, Debug)]
+            #[serde(transparent)]
+        ));
+        quote!(
+            #doc_ts
+            pub struct #name(#typ);
+        )
     }
 }
 
@@ -150,8 +168,7 @@ impl SimpleType {
 
 impl CodeGenerator for SimpleType {
     fn codegen(&self, _ctx: &mut Context) -> TokenStream {
-        let name = &self.name.as_ref().unwrap().0.to_camel_case();
-        let name_id = Ident::new(name, Span::call_site());
+        let name = resolve_type_str(&self.name.as_ref().unwrap().0);
         let mut doc_ts = TokenStream::new();
         let doc = format_doc_block(self.get_doc());
         doc_ts.append_all(quote!(
@@ -164,12 +181,12 @@ impl CodeGenerator for SimpleType {
         if name == "String" {
             quote!(
                 #doc_ts
-                pub struct #name_id(std::string::String);
+                pub struct #name(std::string::String);
             )
         } else {
             quote!(
                 #doc_ts
-                pub struct #name_id(String);
+                pub struct #name(String);
             )
         }
     }
@@ -230,12 +247,12 @@ impl ComplexType {
 impl CodeGenerator for ComplexType {
     fn codegen(&self, ctx: &mut Context) -> TokenStream {
         let name_str = if let Some(n) = ctx.name.as_ref() {
-            n.to_camel_case()
+            &n
         } else {
-            self.name.as_ref().unwrap().0.to_camel_case()
+            &self.name.as_ref().unwrap().0
         };
         debug!("Building complex type: {}", name_str);
-        let name = Ident::new(&name_str, Span::call_site());
+        let name = resolve_type_str(&name_str);
 
         let mut doc_ts = TokenStream::new();
         let doc = format_doc_block(self.get_doc());
@@ -536,10 +553,8 @@ pub struct Sequence {
 
 impl CodeGenerator for Sequence {
     fn codegen(&self, ctx: &mut Context) -> TokenStream {
-        let name = Ident::new(
-            &ctx.name.as_ref().unwrap().to_camel_case(),
-            Span::call_site(),
-        );
+        let name = resolve_type_str(&ctx.name.as_ref().unwrap());
+
         // TODO: move into element codegen?
         let variants: Vec<TokenStream> = self
             .body
@@ -556,6 +571,8 @@ impl CodeGenerator for Sequence {
                 } else if let Some(nm) = e.name.as_ref() {
                     let t = e.r#type.as_ref().unwrap().0.clone();
                     (nm.clone(), t)
+                } else if let Some(ty) = e.substitution_group.as_ref() {
+                    (e.name.as_ref().unwrap().clone(), ty.0.clone())
                 } else {
                     panic!("element should have either a name, type pair or a ref")
                 };
@@ -569,10 +586,9 @@ impl CodeGenerator for Sequence {
 
         let mut variant_stream = TokenStream::new();
         for v in variants {
-            variant_stream = quote!(
-                #variant_stream
+            variant_stream.append_all(quote!(
                 #v,
-            )
+            ));
         }
         let doc = quote!(
             #[derive(Serialize, Deserialize, Debug)]
@@ -593,18 +609,35 @@ impl CodeGenerator for Sequence {
 }
 
 fn resolve_typ_inner(s: &str) -> Vec<String> {
-    println!("resolving: {}", s);
     let mut split = s.split(':').map(|e| e.to_string()).collect::<Vec<String>>();
     if let Some(s) = split.first() {
-        if s == "kml" {
+        if split.len() > 1 && s == "kml" {
             split.remove(0);
+        }
+    }
+    if split.len() == 1 {
+        let last = split.last_mut().unwrap();
+        let swap = match &last[..] {
+            "anySimpleType" => Some("String"),
+            "string" => Some("String"),
+            "double" => Some("f64"),
+            "boolean" => Some("bool"),
+            "int" => Some("i64"),
+            _ => None,
+        };
+        if let Some(s) = swap {
+            *last = s.to_string();
+            return split;
         }
     }
 
     if let Some(x) = split.last_mut() {
-        *x = x.to_camel_case();
+        *x = if x.chars().next().unwrap().is_uppercase() {
+            format!("Big{}", x.to_camel_case())
+        } else {
+            x.to_camel_case()
+        };
     }
-    println!("resolved: {:#?}", &split);
     split
 }
 
@@ -948,9 +981,9 @@ impl CodeGenerator for Schema {
         for t in simple_types {
             defs.append_all(t.codegen(ctx));
         }
-        // for e in elements {
-        //     defs.append_all(e.codegen(ctx))
-        // }
+        for e in elements {
+            defs.append_all(e.codegen(ctx))
+        }
         for t in complex_types {
             if_chain! {
                 if let Some(n) = t.name.as_ref();
