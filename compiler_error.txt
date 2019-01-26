@@ -1,0 +1,147 @@
+
+❯ RUST_BACKTRACE=1 RUST_LOG=serde_xml=debug cargo test test_read_kml -- --nocapture
+zsh: correct 'test' to 'tests' [nyae]? n
+   Compiling xmlschemer v0.1.0 (/Users/evan/rust/xmlschemer)
+error: internal compiler error: src/librustc_typeck/check/_match.rs:795: unexpected pattern definition: VariantCtor(DefId(0/1:1144 ~ xmlschemer[458b]::schema[0]::SchemaBody[0]::DefaultOpenContent[0]), Fn)
+
+thread 'rustc' panicked at 'Box<Any>', src/librustc_errors/lib.rs:589:9
+error: internal compiler error: src/librustc_typeck/check/_match.rs:795: unexpected pattern definition: VariantCtor(DefId(0/1:1144 ~ xmlschemer[929d]::schema[0]::SchemaBody[0]::DefaultOpenContent[0]), Fn)
+
+thread 'rustc' panicked at 'Box<Any>', src/librustc_errors/lib.rs:589:9
+note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+stack backtrace:
+note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+stack backtrace:
+   0: std::sys::unix::backtrace::tracing::imp::unwind_backtrace
+   0: std::sys::unix::backtrace::tracing::imp::unwind_backtrace
+   1: std::sys_common::backtrace::_print
+   1: std::sys_common::backtrace::_print
+   2: std::panicking::default_hook::{{closure}}
+   3: std::panicking::default_hook
+   2: std::panicking::default_hook::{{closure}}
+   3: std::panicking::default_hook
+   4: rustc::util::common::panic_hook
+   5: std::panicking::rust_panic_with_hook
+   6: std::panicking::begin_panic
+   4: rustc::util::common::panic_hook
+   7: rustc_errors::Handler::bug
+   5: std::panicking::rust_panic_with_hook
+   6: std::panicking::begin_panic
+   8: rustc::util::bug::opt_span_bug_fmt::{{closure}}
+   7: rustc_errors::Handler::bug
+   9: rustc::ty::context::tls::with_opt::{{closure}}
+   8: rustc::util::bug::opt_span_bug_fmt::{{closure}}
+  10: rustc::ty::context::tls::with_context_opt
+   9: rustc::ty::context::tls::with_opt::{{closure}}
+  11: rustc::ty::context::tls::with_opt
+  10: rustc::ty::context::tls::with_context_opt
+  12: rustc::util::bug::opt_span_bug_fmt
+  11: rustc::ty::context::tls::with_opt
+  13: rustc::util::bug::bug_fmt
+  12: rustc::util::bug::opt_span_bug_fmt
+  14: rustc_typeck::check::_match::<impl rustc_typeck::check::FnCtxt<'a, 'gcx, 'tcx>>::check_pat_walk
+  13: rustc::util::bug::bug_fmt
+  15: <core::iter::Map<I, F> as core::iter::iterator::Iterator>::fold
+  14: rustc_typeck::check::_match::<impl rustc_typeck::check::FnCtxt<'a, 'gcx, 'tcx>>::check_pat_walk
+  16: <alloc::vec::Vec<T> as alloc::vec::SpecExtend<T, I>>::from_iter
+  15: <core::iter::Map<I, F> as core::iter::iterator::Iterator>::fold
+  17: rustc_typeck::check::_match::<impl rustc_typeck::check::FnCtxt<'a, 'gcx, 'tcx>>::check_match
+  16: <alloc::vec::Vec<T> as alloc::vec::SpecExtend<T, I>>::from_iter
+  18: rustc_typeck::check::FnCtxt::check_expr_kind
+  17: rustc_typeck::check::_match::<impl rustc_typeck::check::FnCtxt<'a, 'gcx, 'tcx>>::check_match
+  19: rustc_typeck::check::FnCtxt::check_expr_with_expectation_and_needs
+  18: rustc_typeck::check::FnCtxt::check_expr_kind
+  20: rustc_typeck::check::FnCtxt::check_decl_initializer
+  21: rustc_typeck::check::FnCtxt::check_decl_local
+  19: rustc_typeck::check::FnCtxt::check_expr_with_expectation_and_needs
+  22: rustc_typeck::check::FnCtxt::check_stmt
+  20: rustc_typeck::check::FnCtxt::check_decl_initializer
+  23: rustc_typeck::check::FnCtxt::check_block_with_expected
+  21: rustc_typeck::check::FnCtxt::check_decl_local
+  24: rustc_typeck::check::FnCtxt::check_expr_kind
+  22: rustc_typeck::check::FnCtxt::check_stmt
+  25: rustc_typeck::check::FnCtxt::check_expr_with_expectation_and_needs
+  23: rustc_typeck::check::FnCtxt::check_block_with_expected
+  26: rustc_typeck::check::FnCtxt::check_return_expr
+  24: rustc_typeck::check::FnCtxt::check_expr_kind
+  25: rustc_typeck::check::FnCtxt::check_expr_with_expectation_and_needs
+  27: rustc_typeck::check::check_fn
+  26: rustc_typeck::check::FnCtxt::check_return_expr
+  28: rustc::ty::context::GlobalCtxt::enter_local
+  27: rustc_typeck::check::check_fn
+  29: rustc_typeck::check::typeck_tables_of
+  28: rustc::ty::context::GlobalCtxt::enter_local
+  29: rustc_typeck::check::typeck_tables_of
+  30: rustc::ty::query::<impl rustc::ty::query::config::QueryAccessors<'tcx> for rustc::ty::query::queries::typeck_tables_of<'tcx>>::compute
+  31: rustc::dep_graph::graph::DepGraph::with_task_impl
+  30: rustc::ty::query::<impl rustc::ty::query::config::QueryAccessors<'tcx> for rustc::ty::query::queries::typeck_tables_of<'tcx>>::compute
+  31: rustc::dep_graph::graph::DepGraph::with_task_impl
+  32: rustc::ty::query::plumbing::<impl rustc::ty::context::TyCtxt<'a, 'gcx, 'tcx>>::try_get_with
+  32: rustc::ty::query::plumbing::<impl rustc::ty::context::TyCtxt<'a, 'gcx, 'tcx>>::try_get_with
+  33: rustc::ty::query::plumbing::<impl rustc::ty::context::TyCtxt<'a, 'gcx, 'tcx>>::ensure_query
+  34: rustc::session::Session::track_errors
+  35: rustc_typeck::check::typeck_item_bodies
+  33: rustc::ty::query::plumbing::<impl rustc::ty::context::TyCtxt<'a, 'gcx, 'tcx>>::ensure_query
+  36: rustc::ty::query::__query_compute::typeck_item_bodies
+  34: rustc::session::Session::track_errors
+  35: rustc_typeck::check::typeck_item_bodies
+  37: rustc::ty::query::<impl rustc::ty::query::config::QueryAccessors<'tcx> for rustc::ty::query::queries::typeck_item_bodies<'tcx>>::compute
+  36: rustc::ty::query::__query_compute::typeck_item_bodies
+  38: rustc::dep_graph::graph::DepGraph::with_task_impl
+  37: rustc::ty::query::<impl rustc::ty::query::config::QueryAccessors<'tcx> for rustc::ty::query::queries::typeck_item_bodies<'tcx>>::compute
+  39: rustc::ty::query::plumbing::<impl rustc::ty::context::TyCtxt<'a, 'gcx, 'tcx>>::try_get_with
+  40: rustc::util::common::time
+  38: rustc::dep_graph::graph::DepGraph::with_task_impl
+  41: rustc_typeck::check_crate
+  42: <std::thread::local::LocalKey<T>>::with
+  39: rustc::ty::query::plumbing::<impl rustc::ty::context::TyCtxt<'a, 'gcx, 'tcx>>::try_get_with
+  43: rustc::ty::context::TyCtxt::create_and_enter
+  40: rustc::util::common::time
+  44: rustc_driver::driver::compile_input
+  41: rustc_typeck::check_crate
+  45: <scoped_tls::ScopedKey<T>>::set
+  42: <std::thread::local::LocalKey<T>>::with
+  46: rustc_driver::run_compiler
+  43: rustc::ty::context::TyCtxt::create_and_enter
+  47: <scoped_tls::ScopedKey<T>>::set
+  44: rustc_driver::driver::compile_input
+query stack during panic:
+  45: <scoped_tls::ScopedKey<T>>::set
+  46: rustc_driver::run_compiler
+  47: <scoped_tls::ScopedKey<T>>::set
+query stack during panic:
+#0 [typeck_tables_of] processing `<schema::SchemaBody as schema::CodeGenerator>::codegen`
+#1 [typeck_item_bodies] type-checking all item bodies
+end of query stack
+#0 [typeck_tables_of] processing `<schema::SchemaBody as schema::CodeGenerator>::codegen`
+#1 [typeck_item_bodies] type-checking all item bodies
+end of query stack
+error: aborting due to previous error
+
+error: aborting due to previous error
+
+
+note: the compiler unexpectedly panicked. this is a bug.
+
+note: we would appreciate a bug report: https://github.com/rust-lang/rust/blob/master/CONTRIBUTING.md#bug-reports
+
+note: rustc 1.33.0-nightly (4c2be9c97 2019-01-22) running on x86_64-apple-darwin
+
+note: compiler flags: -C debuginfo=2 -C incremental
+
+note: some of the compiler flags provided by cargo are hidden
+
+
+note: the compiler unexpectedly panicked. this is a bug.
+
+note: we would appreciate a bug report: https://github.com/rust-lang/rust/blob/master/CONTRIBUTING.md#bug-reports
+
+note: rustc 1.33.0-nightly (4c2be9c97 2019-01-22) running on x86_64-apple-darwin
+
+note: compiler flags: -C debuginfo=2 -C incremental --crate-type lib
+
+note: some of the compiler flags provided by cargo are hidden
+
+error: Could not compile `xmlschemer`.
+warning: build failed, waiting for other jobs to finish...
+error: Could not compile `xmlschemer`.

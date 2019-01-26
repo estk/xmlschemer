@@ -1,5 +1,6 @@
 mod xsd {
     use serde_derive::{Deserialize, Serialize};
+    use std::collections::HashMap;
     #[derive(Serialize, Deserialize, Debug)]
     #[serde(rename_all = "camelCase")]
     #[serde(transparent)]
@@ -43,19 +44,19 @@ mod xsd {
     #[derive(Serialize, Deserialize, Debug)]
     #[serde(rename_all = "camelCase")]
     #[serde(transparent)]
-    pub struct BigId(String);
+    pub struct UpcaseId(String);
     #[derive(Serialize, Deserialize, Debug)]
     #[serde(rename_all = "camelCase")]
     #[serde(transparent)]
-    pub struct BigIdref(String);
+    pub struct UpcaseIdref(String);
     #[derive(Serialize, Deserialize, Debug)]
     #[serde(rename_all = "camelCase")]
     #[serde(transparent)]
-    pub struct BigEntity(String);
+    pub struct UpcaseEntity(String);
     #[derive(Serialize, Deserialize, Debug)]
     #[serde(rename_all = "camelCase")]
     #[serde(transparent)]
-    pub struct BigNotation(String);
+    pub struct UpcaseNotation(String);
     #[derive(Serialize, Deserialize, Debug)]
     #[serde(rename_all = "camelCase")]
     #[serde(transparent)]
@@ -71,31 +72,31 @@ mod xsd {
     #[derive(Serialize, Deserialize, Debug)]
     #[serde(rename_all = "camelCase")]
     #[serde(transparent)]
-    pub struct BigIdrefs(String);
+    pub struct UpcaseIdrefs(String);
     #[derive(Serialize, Deserialize, Debug)]
     #[serde(rename_all = "camelCase")]
     #[serde(transparent)]
-    pub struct BigEntities(String);
+    pub struct UpcaseEntities(String);
     #[derive(Serialize, Deserialize, Debug)]
     #[serde(rename_all = "camelCase")]
     #[serde(transparent)]
-    pub struct BigNmtoken(String);
+    pub struct UpcaseNmtoken(String);
     #[derive(Serialize, Deserialize, Debug)]
     #[serde(rename_all = "camelCase")]
     #[serde(transparent)]
-    pub struct BigNmtokens(String);
+    pub struct UpcaseNmtokens(String);
     #[derive(Serialize, Deserialize, Debug)]
     #[serde(rename_all = "camelCase")]
     #[serde(transparent)]
-    pub struct BigName(String);
+    pub struct UpcaseName(String);
     #[derive(Serialize, Deserialize, Debug)]
     #[serde(rename_all = "camelCase")]
     #[serde(transparent)]
-    pub struct BigQName(String);
+    pub struct UpcaseQName(String);
     #[derive(Serialize, Deserialize, Debug)]
     #[serde(rename_all = "camelCase")]
     #[serde(transparent)]
-    pub struct BigNcName(String);
+    pub struct UpcaseNcName(String);
     #[derive(Serialize, Deserialize, Debug)]
     #[serde(rename_all = "camelCase")]
     #[serde(transparent)]
@@ -178,6 +179,7 @@ mod xsd {
     pub struct GMonth(String);
 }
 use serde_derive::{Deserialize, Serialize};
+use std::collections::HashMap;
 #[serde(rename = "address")]
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -265,6 +267,12 @@ pub struct UnitsEnumType(String);
 pub struct Altitude(f64);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
+pub struct AltitudeModeGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
 pub struct AltitudeMode(AltitudeModeEnumType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
@@ -350,7 +358,7 @@ pub struct LinkDescription(String);
 pub struct LinkName(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct LinkSnippet(BigSnippetType);
+pub struct LinkSnippet(UpcaseSnippetType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
 pub struct ListItemType(ListItemTypeEnumType);
@@ -524,370 +532,724 @@ pub struct Y(f64);
 pub struct Z(f64);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigAbstractObjectGroup(BigAbstractObjectType);
+pub struct UpcaseAbstractObjectGroup(UpcaseAbstractObjectType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigObjectSimpleExtensionGroup(String);
+pub struct UpcaseObjectSimpleExtensionGroup(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigAbstractFeatureGroup(BigAbstractFeatureType);
+pub struct UpcaseAbstractFeatureGroup(UpcaseAbstractFeatureType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigAbstractFeatureSimpleExtensionGroup(String);
+pub struct UpcaseAbstractFeatureObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigSnippet(BigSnippetType);
+pub struct UpcaseAbstractFeatureSimpleExtensionGroup(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigAbstractViewGroup(BigAbstractViewType);
+pub struct UpcaseSnippet(UpcaseSnippetType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigAbstractViewSimpleExtensionGroup(String);
+pub struct UpcaseAbstractViewGroup(UpcaseAbstractViewType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigLookAt(BigLookAtType);
+pub struct UpcaseAbstractViewSimpleExtensionGroup(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigLookAtSimpleExtensionGroup(String);
+pub struct UpcaseAbstractViewObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigCamera(BigCameraType);
+pub struct UpcaseLookAt(UpcaseLookAtType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigCameraSimpleExtensionGroup(String);
+pub struct UpcaseLookAtSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseLookAtObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseCamera(UpcaseCameraType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseCameraSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseCameraObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[doc = "Metadata deprecated in 2.2"]
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigMetadata(BigMetadataType);
+pub struct UpcaseMetadata(UpcaseMetadataType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigExtendedData(BigExtendedDataType);
+pub struct UpcaseExtendedData(UpcaseExtendedDataType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigSchemaData(BigSchemaDataType);
+pub struct UpcaseSchemaData(UpcaseSchemaDataType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigSimpleData(BigSimpleDataType);
+pub struct UpcaseSchemaDataExtension {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigData(BigDataType);
+pub struct UpcaseSimpleData(UpcaseSimpleDataType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigAbstractContainerGroup(BigAbstractContainerType);
+pub struct UpcaseData(UpcaseDataType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigAbstractContainerSimpleExtensionGroup(String);
+pub struct UpcaseDataExtension {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigAbstractGeometryGroup(BigAbstractGeometryType);
+pub struct UpcaseAbstractContainerGroup(UpcaseAbstractContainerType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigAbstractGeometrySimpleExtensionGroup(String);
+pub struct UpcaseAbstractContainerSimpleExtensionGroup(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigAbstractOverlayGroup(BigAbstractOverlayType);
+pub struct UpcaseAbstractContainerObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigAbstractOverlaySimpleExtensionGroup(String);
+pub struct UpcaseAbstractGeometryGroup(UpcaseAbstractGeometryType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigAbstractStyleSelectorGroup(BigAbstractStyleSelectorType);
+pub struct UpcaseAbstractGeometrySimpleExtensionGroup(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigAbstractStyleSelectorSimpleExtensionGroup(String);
+pub struct UpcaseAbstractGeometryObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigAbstractTimePrimitiveGroup(BigAbstractTimePrimitiveType);
+pub struct UpcaseAbstractOverlayGroup(UpcaseAbstractOverlayType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigAbstractTimePrimitiveSimpleExtensionGroup(String);
+pub struct UpcaseAbstractOverlaySimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseAbstractOverlayObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseAbstractStyleSelectorGroup(UpcaseAbstractStyleSelectorType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseAbstractStyleSelectorSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseAbstractStyleSelectorObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseAbstractTimePrimitiveGroup(UpcaseAbstractTimePrimitiveType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseAbstractTimePrimitiveSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseAbstractTimePrimitiveObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[doc = "<kml> is the root element."]
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct Kml(BigKmlType);
+pub struct Kml(UpcaseKmlType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigKmlSimpleExtensionGroup(String);
+pub struct UpcaseKmlSimpleExtensionGroup(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigNetworkLinkControl(BigNetworkLinkControlType);
+pub struct UpcaseKmlObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigNetworkLinkControlSimpleExtensionGroup(String);
+pub struct UpcaseNetworkLinkControl(UpcaseNetworkLinkControlType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigDocument(BigDocumentType);
+pub struct UpcaseNetworkLinkControlSimpleExtensionGroup(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigDocumentSimpleExtensionGroup(String);
+pub struct UpcaseNetworkLinkControlObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigSchema(BigSchemaType);
+pub struct UpcaseDocument(UpcaseDocumentType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigSimpleField(BigSimpleFieldType);
+pub struct UpcaseDocumentSimpleExtensionGroup(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigFolder(BigFolderType);
+pub struct UpcaseDocumentObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigFolderSimpleExtensionGroup(String);
+pub struct UpcaseSchema(UpcaseSchemaType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigPlacemark(BigPlacemarkType);
+pub struct UpcaseSchemaExtension {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigPlacemarkSimpleExtensionGroup(String);
+pub struct UpcaseSimpleField(UpcaseSimpleFieldType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigNetworkLink(BigNetworkLinkType);
+pub struct UpcaseSimpleFieldExtension {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigNetworkLinkSimpleExtensionGroup(String);
+pub struct UpcaseFolder(UpcaseFolderType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigRegion(BigRegionType);
+pub struct UpcaseFolderSimpleExtensionGroup(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigRegionSimpleExtensionGroup(String);
+pub struct UpcaseFolderObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigLatLonAltBox(BigLatLonAltBoxType);
+pub struct UpcasePlacemark(UpcasePlacemarkType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigLatLonAltBoxSimpleExtensionGroup(String);
+pub struct UpcasePlacemarkSimpleExtensionGroup(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigLod(BigLodType);
+pub struct UpcasePlacemarkObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigLodSimpleExtensionGroup(String);
+pub struct UpcaseNetworkLink(UpcaseNetworkLinkType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigIcon(BigLinkType);
+pub struct UpcaseNetworkLinkSimpleExtensionGroup(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigLink(BigLinkType);
+pub struct UpcaseNetworkLinkObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseRegion(UpcaseRegionType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseRegionSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseRegionObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseLatLonAltBox(UpcaseLatLonAltBoxType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseLatLonAltBoxSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseLatLonAltBoxObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseLod(UpcaseLodType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseLodSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseLodObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseIcon(UpcaseLinkType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseLink(UpcaseLinkType);
 #[doc = "Url deprecated in 2.2"]
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigUrl(BigLinkType);
+pub struct UpcaseUrl(UpcaseLinkType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigLinkSimpleExtensionGroup(String);
+pub struct UpcaseLinkSimpleExtensionGroup(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigMultiGeometry(BigMultiGeometryType);
+pub struct UpcaseLinkObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigMultiGeometrySimpleExtensionGroup(String);
+pub struct UpcaseMultiGeometry(UpcaseMultiGeometryType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigPoint(BigPointType);
+pub struct UpcaseMultiGeometrySimpleExtensionGroup(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigPointSimpleExtensionGroup(String);
+pub struct UpcaseMultiGeometryObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigLineString(BigLineStringType);
+pub struct UpcasePoint(UpcasePointType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigLineStringSimpleExtensionGroup(String);
+pub struct UpcasePointSimpleExtensionGroup(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigLinearRing(BigLinearRingType);
+pub struct UpcasePointObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigLinearRingSimpleExtensionGroup(String);
+pub struct UpcaseLineString(UpcaseLineStringType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigPolygon(BigPolygonType);
+pub struct UpcaseLineStringSimpleExtensionGroup(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigPolygonSimpleExtensionGroup(String);
+pub struct UpcaseLineStringObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct OuterBoundaryIs(BigBoundaryType);
+pub struct UpcaseLinearRing(UpcaseLinearRingType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct InnerBoundaryIs(BigBoundaryType);
+pub struct UpcaseLinearRingSimpleExtensionGroup(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigBoundarySimpleExtensionGroup(String);
+pub struct UpcaseLinearRingObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigModel(BigModelType);
+pub struct UpcasePolygon(UpcasePolygonType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigModelSimpleExtensionGroup(String);
+pub struct UpcasePolygonSimpleExtensionGroup(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigLocation(BigLocationType);
+pub struct UpcasePolygonObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigLocationSimpleExtensionGroup(String);
+pub struct OuterBoundaryIs(UpcaseBoundaryType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigOrientation(BigOrientationType);
+pub struct InnerBoundaryIs(UpcaseBoundaryType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigOrientationSimpleExtensionGroup(String);
+pub struct UpcaseBoundarySimpleExtensionGroup(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigScale(BigScaleType);
+pub struct UpcaseBoundaryObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigScaleSimpleExtensionGroup(String);
+pub struct UpcaseModel(UpcaseModelType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigResourceMap(BigResourceMapType);
+pub struct UpcaseModelSimpleExtensionGroup(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigResourceMapSimpleExtensionGroup(String);
+pub struct UpcaseModelObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigAlias(BigAliasType);
+pub struct UpcaseLocation(UpcaseLocationType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigAliasSimpleExtensionGroup(String);
+pub struct UpcaseLocationSimpleExtensionGroup(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigGroundOverlay(BigGroundOverlayType);
+pub struct UpcaseLocationObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigGroundOverlaySimpleExtensionGroup(String);
+pub struct UpcaseOrientation(UpcaseOrientationType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigAbstractLatLonBoxSimpleExtensionGroup(String);
+pub struct UpcaseOrientationSimpleExtensionGroup(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigLatLonBox(BigLatLonBoxType);
+pub struct UpcaseOrientationObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigLatLonBoxSimpleExtensionGroup(String);
+pub struct UpcaseScale(UpcaseScaleType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigScreenOverlay(BigScreenOverlayType);
+pub struct UpcaseScaleSimpleExtensionGroup(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigScreenOverlaySimpleExtensionGroup(String);
+pub struct UpcaseScaleObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigPhotoOverlay(BigPhotoOverlayType);
+pub struct UpcaseResourceMap(UpcaseResourceMapType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigPhotoOverlaySimpleExtensionGroup(String);
+pub struct UpcaseResourceMapSimpleExtensionGroup(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigViewVolume(BigViewVolumeType);
+pub struct UpcaseResourceMapObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigViewVolumeSimpleExtensionGroup(String);
+pub struct UpcaseAlias(UpcaseAliasType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigImagePyramid(BigImagePyramidType);
+pub struct UpcaseAliasSimpleExtensionGroup(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigImagePyramidSimpleExtensionGroup(String);
+pub struct UpcaseAliasObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigStyle(BigStyleType);
+pub struct UpcaseGroundOverlay(UpcaseGroundOverlayType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigStyleSimpleExtensionGroup(String);
+pub struct UpcaseGroundOverlaySimpleExtensionGroup(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigStyleMap(BigStyleMapType);
+pub struct UpcaseGroundOverlayObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigStyleMapSimpleExtensionGroup(String);
+pub struct UpcaseAbstractLatLonBoxSimpleExtensionGroup(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigPair(BigPairType);
+pub struct UpcaseAbstractLatLonBoxObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigPairSimpleExtensionGroup(String);
+pub struct UpcaseLatLonBox(UpcaseLatLonBoxType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigAbstractSubStyleGroup(BigAbstractSubStyleType);
+pub struct UpcaseLatLonBoxSimpleExtensionGroup(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigAbstractSubStyleSimpleExtensionGroup(String);
+pub struct UpcaseLatLonBoxObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigAbstractColorStyleGroup(BigAbstractColorStyleType);
+pub struct UpcaseScreenOverlay(UpcaseScreenOverlayType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigAbstractColorStyleSimpleExtensionGroup(String);
+pub struct UpcaseScreenOverlaySimpleExtensionGroup(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigIconStyle(BigIconStyleType);
+pub struct UpcaseScreenOverlayObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigIconStyleSimpleExtensionGroup(String);
+pub struct UpcasePhotoOverlay(UpcasePhotoOverlayType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigBasicLinkSimpleExtensionGroup(String);
+pub struct UpcasePhotoOverlaySimpleExtensionGroup(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigLabelStyle(BigLabelStyleType);
+pub struct UpcasePhotoOverlayObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigLabelStyleSimpleExtensionGroup(String);
+pub struct UpcaseViewVolume(UpcaseViewVolumeType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigLineStyle(BigLineStyleType);
+pub struct UpcaseViewVolumeSimpleExtensionGroup(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigLineStyleSimpleExtensionGroup(String);
+pub struct UpcaseViewVolumeObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigPolyStyle(BigPolyStyleType);
+pub struct UpcaseImagePyramid(UpcaseImagePyramidType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigPolyStyleSimpleExtensionGroup(String);
+pub struct UpcaseImagePyramidSimpleExtensionGroup(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigBalloonStyle(BigBalloonStyleType);
+pub struct UpcaseImagePyramidObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigBalloonStyleSimpleExtensionGroup(String);
+pub struct UpcaseStyle(UpcaseStyleType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigListStyle(BigListStyleType);
+pub struct UpcaseStyleSimpleExtensionGroup(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigListStyleSimpleExtensionGroup(String);
+pub struct UpcaseStyleObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigItemIcon(BigItemIconType);
+pub struct UpcaseStyleMap(UpcaseStyleMapType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigItemIconSimpleExtensionGroup(String);
+pub struct UpcaseStyleMapSimpleExtensionGroup(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigTimeStamp(BigTimeStampType);
+pub struct UpcaseStyleMapObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigTimeStampSimpleExtensionGroup(String);
+pub struct UpcasePair(UpcasePairType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigTimeSpan(BigTimeSpanType);
+pub struct UpcasePairSimpleExtensionGroup(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigTimeSpanSimpleExtensionGroup(String);
+pub struct UpcasePairObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigUpdate(BigUpdateType);
+pub struct UpcaseAbstractSubStyleGroup(UpcaseAbstractSubStyleType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigCreate(BigCreateType);
+pub struct UpcaseAbstractSubStyleSimpleExtensionGroup(String);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigDelete(BigDeleteType);
+pub struct UpcaseAbstractSubStyleObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
-pub struct BigChange(BigChangeType);
+pub struct UpcaseAbstractColorStyleGroup(UpcaseAbstractColorStyleType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseAbstractColorStyleObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseAbstractColorStyleSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseIconStyle(UpcaseIconStyleType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseIconStyleSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseIconStyleObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseBasicLinkSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseBasicLinkObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseLabelStyle(UpcaseLabelStyleType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseLabelStyleSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseLabelStyleObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseLineStyle(UpcaseLineStyleType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseLineStyleSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseLineStyleObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcasePolyStyle(UpcasePolyStyleType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcasePolyStyleSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcasePolyStyleObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseBalloonStyle(UpcaseBalloonStyleType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseBalloonStyleSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseBalloonStyleObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseListStyle(UpcaseListStyleType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseListStyleSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseListStyleObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseItemIcon(UpcaseItemIconType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseItemIconSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseItemIconObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseTimeStamp(UpcaseTimeStampType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseTimeStampSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseTimeStampObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseTimeSpan(UpcaseTimeSpanType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseTimeSpanSimpleExtensionGroup(String);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseTimeSpanObjectExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseUpdate(UpcaseUpdateType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseUpdateOpExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseUpdateExtensionGroup {
+    #[serde(flatten)]
+    other: HashMap<String, String>,
+}
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseCreate(UpcaseCreateType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseDelete(UpcaseDeleteType);
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct UpcaseChange(UpcaseChangeType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct Vec2Type {
@@ -898,100 +1260,100 @@ pub struct Vec2Type {
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigAbstractObjectType {
+pub struct UpcaseAbstractObjectType {
     #[serde(rename = "$value")]
-    body: Vec<BigBigAbstractObjectTypeBody>,
+    body: Vec<UpcaseUpcaseAbstractObjectTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub enum BigBigAbstractObjectTypeBody {
-    BigObjectSimpleExtensionGroup(BigObjectSimpleExtensionGroup),
+pub enum UpcaseUpcaseAbstractObjectTypeBody {
+    UpcaseObjectSimpleExtensionGroup(UpcaseObjectSimpleExtensionGroup),
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigAbstractFeatureType {}
+pub struct UpcaseAbstractFeatureType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigSnippetType {}
+pub struct UpcaseSnippetType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigAbstractViewType {}
+pub struct UpcaseAbstractViewType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigLookAtType {}
+pub struct UpcaseLookAtType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigCameraType {}
+pub struct UpcaseCameraType {}
 #[doc = "MetadataType deprecated in 2.2"]
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigMetadataType {
+pub struct UpcaseMetadataType {
     #[serde(rename = "$value")]
-    body: Vec<BigBigMetadataTypeBody>,
+    body: Vec<UpcaseUpcaseMetadataTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub enum BigBigMetadataTypeBody {}
+pub enum UpcaseUpcaseMetadataTypeBody {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigExtendedDataType {
+pub struct UpcaseExtendedDataType {
     #[serde(rename = "$value")]
-    body: Vec<BigBigExtendedDataTypeBody>,
+    body: Vec<UpcaseUpcaseExtendedDataTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub enum BigBigExtendedDataTypeBody {
-    BigData(BigData),
-    BigSchemaData(BigSchemaData),
+pub enum UpcaseUpcaseExtendedDataTypeBody {
+    UpcaseData(UpcaseData),
+    UpcaseSchemaData(UpcaseSchemaData),
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigSchemaDataType {}
+pub struct UpcaseSchemaDataType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigSimpleDataType {}
+pub struct UpcaseSimpleDataType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigDataType {}
+pub struct UpcaseDataType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigAbstractContainerType {}
+pub struct UpcaseAbstractContainerType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigAbstractGeometryType {}
+pub struct UpcaseAbstractGeometryType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigAbstractOverlayType {}
+pub struct UpcaseAbstractOverlayType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigAbstractStyleSelectorType {}
+pub struct UpcaseAbstractStyleSelectorType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigAbstractTimePrimitiveType {}
+pub struct UpcaseAbstractTimePrimitiveType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigKmlType {
+pub struct UpcaseKmlType {
     hint: String,
     #[serde(rename = "$value")]
-    body: Vec<BigBigKmlTypeBody>,
+    body: Vec<UpcaseUpcaseKmlTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub enum BigBigKmlTypeBody {
-    BigNetworkLinkControl(BigNetworkLinkControl),
-    BigAbstractFeatureGroup(BigAbstractFeatureGroup),
-    BigKmlSimpleExtensionGroup(BigKmlSimpleExtensionGroup),
-    BigKmlObjectExtensionGroup(BigKmlObjectExtensionGroup),
+pub enum UpcaseUpcaseKmlTypeBody {
+    UpcaseNetworkLinkControl(UpcaseNetworkLinkControl),
+    UpcaseAbstractFeatureGroup(UpcaseAbstractFeatureGroup),
+    UpcaseKmlSimpleExtensionGroup(UpcaseKmlSimpleExtensionGroup),
+    UpcaseKmlObjectExtensionGroup(UpcaseKmlObjectExtensionGroup),
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigNetworkLinkControlType {
+pub struct UpcaseNetworkLinkControlType {
     #[serde(rename = "$value")]
-    body: Vec<BigBigNetworkLinkControlTypeBody>,
+    body: Vec<UpcaseUpcaseNetworkLinkControlTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub enum BigBigNetworkLinkControlTypeBody {
+pub enum UpcaseUpcaseNetworkLinkControlTypeBody {
     MinRefreshPeriod(MinRefreshPeriod),
     MaxSessionLength(MaxSessionLength),
     Cookie(Cookie),
@@ -1000,217 +1362,217 @@ pub enum BigBigNetworkLinkControlTypeBody {
     LinkDescription(LinkDescription),
     LinkSnippet(LinkSnippet),
     Expires(Expires),
-    BigUpdate(BigUpdate),
-    BigAbstractViewGroup(BigAbstractViewGroup),
-    BigNetworkLinkControlSimpleExtensionGroup(BigNetworkLinkControlSimpleExtensionGroup),
-    BigNetworkLinkControlObjectExtensionGroup(BigNetworkLinkControlObjectExtensionGroup),
+    UpcaseUpdate(UpcaseUpdate),
+    UpcaseAbstractViewGroup(UpcaseAbstractViewGroup),
+    UpcaseNetworkLinkControlSimpleExtensionGroup(UpcaseNetworkLinkControlSimpleExtensionGroup),
+    UpcaseNetworkLinkControlObjectExtensionGroup(UpcaseNetworkLinkControlObjectExtensionGroup),
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigDocumentType {}
+pub struct UpcaseDocumentType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigSchemaType {
+pub struct UpcaseSchemaType {
     name: String,
-    id: BigId,
+    id: UpcaseId,
     #[serde(rename = "$value")]
-    body: Vec<BigBigSchemaTypeBody>,
+    body: Vec<UpcaseUpcaseSchemaTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub enum BigBigSchemaTypeBody {
-    BigSimpleField(BigSimpleField),
-    BigSchemaExtension(BigSchemaExtension),
+pub enum UpcaseUpcaseSchemaTypeBody {
+    UpcaseSimpleField(UpcaseSimpleField),
+    UpcaseSchemaExtension(UpcaseSchemaExtension),
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigSimpleFieldType {
+pub struct UpcaseSimpleFieldType {
     r#type: String,
     name: String,
     #[serde(rename = "$value")]
-    body: Vec<BigBigSimpleFieldTypeBody>,
+    body: Vec<UpcaseUpcaseSimpleFieldTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub enum BigBigSimpleFieldTypeBody {
+pub enum UpcaseUpcaseSimpleFieldTypeBody {
     DisplayName(DisplayName),
-    BigSimpleFieldExtension(BigSimpleFieldExtension),
+    UpcaseSimpleFieldExtension(UpcaseSimpleFieldExtension),
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigFolderType {}
+pub struct UpcaseFolderType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigPlacemarkType {}
+pub struct UpcasePlacemarkType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigNetworkLinkType {}
+pub struct UpcaseNetworkLinkType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigRegionType {}
+pub struct UpcaseRegionType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigLatLonAltBoxType {}
+pub struct UpcaseLatLonAltBoxType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigLodType {}
+pub struct UpcaseLodType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigLinkType {}
+pub struct UpcaseLinkType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigMultiGeometryType {}
+pub struct UpcaseMultiGeometryType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigPointType {}
+pub struct UpcasePointType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigLineStringType {}
+pub struct UpcaseLineStringType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigLinearRingType {}
+pub struct UpcaseLinearRingType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigPolygonType {}
+pub struct UpcasePolygonType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigBoundaryType {
+pub struct UpcaseBoundaryType {
     #[serde(rename = "$value")]
-    body: Vec<BigBigBoundaryTypeBody>,
+    body: Vec<UpcaseUpcaseBoundaryTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub enum BigBigBoundaryTypeBody {
-    BigLinearRing(BigLinearRing),
-    BigBoundarySimpleExtensionGroup(BigBoundarySimpleExtensionGroup),
-    BigBoundaryObjectExtensionGroup(BigBoundaryObjectExtensionGroup),
+pub enum UpcaseUpcaseBoundaryTypeBody {
+    UpcaseLinearRing(UpcaseLinearRing),
+    UpcaseBoundarySimpleExtensionGroup(UpcaseBoundarySimpleExtensionGroup),
+    UpcaseBoundaryObjectExtensionGroup(UpcaseBoundaryObjectExtensionGroup),
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigModelType {}
+pub struct UpcaseModelType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigLocationType {}
+pub struct UpcaseLocationType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigOrientationType {}
+pub struct UpcaseOrientationType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigScaleType {}
+pub struct UpcaseScaleType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigResourceMapType {}
+pub struct UpcaseResourceMapType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigAliasType {}
+pub struct UpcaseAliasType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigGroundOverlayType {}
+pub struct UpcaseGroundOverlayType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigAbstractLatLonBoxType {}
+pub struct UpcaseAbstractLatLonBoxType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigLatLonBoxType {}
+pub struct UpcaseLatLonBoxType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigScreenOverlayType {}
+pub struct UpcaseScreenOverlayType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigPhotoOverlayType {}
+pub struct UpcasePhotoOverlayType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigViewVolumeType {}
+pub struct UpcaseViewVolumeType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigImagePyramidType {}
+pub struct UpcaseImagePyramidType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigStyleType {}
+pub struct UpcaseStyleType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigStyleMapType {}
+pub struct UpcaseStyleMapType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigPairType {}
+pub struct UpcasePairType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigAbstractSubStyleType {}
+pub struct UpcaseAbstractSubStyleType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigAbstractColorStyleType {}
+pub struct UpcaseAbstractColorStyleType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigIconStyleType {}
+pub struct UpcaseIconStyleType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigBasicLinkType {}
+pub struct UpcaseBasicLinkType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigLabelStyleType {}
+pub struct UpcaseLabelStyleType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigLineStyleType {}
+pub struct UpcaseLineStyleType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigPolyStyleType {}
+pub struct UpcasePolyStyleType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigBalloonStyleType {}
+pub struct UpcaseBalloonStyleType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigListStyleType {}
+pub struct UpcaseListStyleType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigItemIconType {}
+pub struct UpcaseItemIconType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigTimeStampType {}
+pub struct UpcaseTimeStampType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigTimeSpanType {}
+pub struct UpcaseTimeSpanType {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigUpdateType {
+pub struct UpcaseUpdateType {
     #[serde(rename = "$value")]
-    body: Vec<BigBigUpdateTypeBody>,
+    body: Vec<UpcaseUpcaseUpdateTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub enum BigBigUpdateTypeBody {
+pub enum UpcaseUpcaseUpdateTypeBody {
     TargetHref(TargetHref),
-    BigUpdateExtensionGroup(BigUpdateExtensionGroup),
+    UpcaseUpdateExtensionGroup(UpcaseUpdateExtensionGroup),
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigCreateType {
+pub struct UpcaseCreateType {
     #[serde(rename = "$value")]
-    body: Vec<BigBigCreateTypeBody>,
+    body: Vec<UpcaseUpcaseCreateTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub enum BigBigCreateTypeBody {
-    BigAbstractContainerGroup(BigAbstractContainerGroup),
+pub enum UpcaseUpcaseCreateTypeBody {
+    UpcaseAbstractContainerGroup(UpcaseAbstractContainerGroup),
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigDeleteType {
+pub struct UpcaseDeleteType {
     #[serde(rename = "$value")]
-    body: Vec<BigBigDeleteTypeBody>,
+    body: Vec<UpcaseUpcaseDeleteTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub enum BigBigDeleteTypeBody {
-    BigAbstractFeatureGroup(BigAbstractFeatureGroup),
+pub enum UpcaseUpcaseDeleteTypeBody {
+    UpcaseAbstractFeatureGroup(UpcaseAbstractFeatureGroup),
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct BigChangeType {
+pub struct UpcaseChangeType {
     #[serde(rename = "$value")]
-    body: Vec<BigBigChangeTypeBody>,
+    body: Vec<UpcaseUpcaseChangeTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub enum BigBigChangeTypeBody {
-    BigAbstractObjectGroup(BigAbstractObjectGroup),
+pub enum UpcaseUpcaseChangeTypeBody {
+    UpcaseAbstractObjectGroup(UpcaseAbstractObjectGroup),
 }

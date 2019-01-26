@@ -86,13 +86,6 @@ impl Element {
 impl CodeGenerator for Element {
     fn codegen(&self, _ctx: &mut Context) -> TokenStream {
         let name = resolve_type_str(&self.name.as_ref().unwrap());
-        let typ = if let Some(t) = self.r#type.as_ref() {
-            resolve_type(&t.0)
-        } else {
-            println!("skipped abstract: {}", self.name.as_ref().unwrap());
-            return TokenStream::new();
-        };
-
         let mut doc_ts = TokenStream::new();
         let doc = format_doc_block(self.get_doc());
         doc_ts.append_all(quote!(
@@ -100,10 +93,22 @@ impl CodeGenerator for Element {
             #[derive(Serialize, Deserialize, Debug)]
             #[serde(transparent)]
         ));
-        quote!(
-            #doc_ts
-            pub struct #name(#typ);
-        )
+
+        if let Some(t) = self.r#type.as_ref() {
+            let typ = resolve_type(&t.0);
+            quote!(
+                #doc_ts
+                pub struct #name(#typ);
+            )
+        } else {
+            quote!(
+                #doc_ts
+                pub struct #name {
+                    #[serde(flatten)]
+                    other: HashMap<String, String>,
+                }
+            )
+        }
     }
 }
 
@@ -633,7 +638,7 @@ fn resolve_typ_inner(s: &str) -> Vec<String> {
 
     if let Some(x) = split.last_mut() {
         *x = if x.chars().next().unwrap().is_uppercase() {
-            format!("Big{}", x.to_camel_case())
+            format!("Upcase{}", x.to_camel_case())
         } else {
             x.to_camel_case()
         };
@@ -998,6 +1003,7 @@ impl CodeGenerator for Schema {
         }
         quote!(
             use serde_derive::{Deserialize, Serialize};
+            use std::collections::HashMap;
 
             #root_doc
             #root_ts
@@ -1008,7 +1014,6 @@ impl CodeGenerator for Schema {
 
 fn format_doc_block(doc: Option<String>) -> TokenStream {
     if let Some(bod) = doc {
-        println!("making doc block: {}", &bod);
         let ts = syn::LitStr::new(&bod, Span::call_site());
         quote!(
             #[doc = #ts]
