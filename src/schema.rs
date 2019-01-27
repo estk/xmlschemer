@@ -4,6 +4,7 @@ use log::debug;
 use proc_macro2::{Span, TokenStream};
 use quote::{quote, TokenStreamExt};
 use serde_derive::{Deserialize, Serialize};
+use std::collections::hash_map::HashMap;
 use std::str::FromStr;
 use syn::{self, Ident};
 
@@ -66,6 +67,7 @@ pub struct Element {
     #[serde(default = Some(MaxOccurs::Bounded(1)))]
     max_occurs: Option<MaxOccurs>,
     r#ref: Option<String>,
+    xmlns: String,
     #[serde(rename = "$value")]
     body: Option<Vec<ElementBody>>,
 }
@@ -901,6 +903,9 @@ pub struct Schema {
     #[serde(rename = "lang")]
     xml_lang: Option<String>,
 
+    // #[serde(flatten)]
+    // other: HashMap<String, String>,
+
     #[serde(rename = "$value")]
     body: Option<Vec<SchemaBody>>,
 }
@@ -912,12 +917,16 @@ pub trait CodeGenerator {
 pub struct Context {
     name: Option<String>,
     defs: TokenStream,
+    nss: HashMap<String, String>,
 }
 impl Context {
     pub fn with_name(&self, name: &str) -> Self {
         let mut me = self.clone();
         me.name.replace(name.to_string());
         me
+    }
+    pub fn add_ns(&mut self, ns: &str, v: &str) {
+        self.nss.insert(ns.to_string(), v.to_string());
     }
 }
 
@@ -926,12 +935,20 @@ impl Default for Context {
         Context {
             name: None,
             defs: TokenStream::new(),
+            nss: HashMap::new(),
         }
     }
 }
 
 impl CodeGenerator for Schema {
     fn codegen(&self, ctx: &mut Context) -> TokenStream {
+        // for (k, v) in self.other.iter() {
+        //     if k.starts_with("xmlns:") {
+        //         let ns = &k[6..];
+        //         ctx.add_ns(ns, v);
+        //     }
+        // }
+
         let mut root = None;
         let mut elements = vec![];
         let mut simple_types = vec![];
