@@ -67,7 +67,7 @@ pub struct Element {
     #[serde(default = Some(MaxOccurs::Bounded(1)))]
     max_occurs: Option<MaxOccurs>,
     r#ref: Option<String>,
-    xmlns: String,
+    // xmlns: String,
     #[serde(rename = "$value")]
     body: Option<Vec<ElementBody>>,
 }
@@ -854,8 +854,7 @@ pub enum SchemaBody {
 }
 impl CodeGenerator for SchemaBody {
     fn codegen(&self, ctx: &mut Context) -> TokenStream {
-        let mut ts = TokenStream::new();
-        let body = match self {
+        match self {
             Self::Include => TokenStream::new(),
             Self::Import(_) => TokenStream::new(),
             Self::Redefine => TokenStream::new(),
@@ -869,9 +868,7 @@ impl CodeGenerator for SchemaBody {
             Self::Element(i) => i.codegen(ctx),
             Self::Attribute => TokenStream::new(),
             Self::Notation(_) => TokenStream::new(),
-        };
-        ts.append_all(body);
-        ts
+        }
     }
 }
 
@@ -905,7 +902,6 @@ pub struct Schema {
 
     // #[serde(flatten)]
     // other: HashMap<String, String>,
-
     #[serde(rename = "$value")]
     body: Option<Vec<SchemaBody>>,
 }
