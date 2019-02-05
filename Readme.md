@@ -17,3 +17,4 @@ Still to do:
     - [] Unsure if its a requirement but parse namespaces?
 - [] Generate code for simpleType restrictions with a validation lib
 - [] Serialization
+- [] Allow selection of struct-vec polymorphism vs vec-enum

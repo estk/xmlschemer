@@ -383,10 +383,10 @@ pub enum ComplexContentBody {
 
 impl ComplexContent {}
 impl CodeGenerator for ComplexContent {
-    fn codegen(&self, ctx: &mut Context) -> TokenStream {
-        let name = ctx.name.clone().unwrap();
+    fn codegen(&self, mut ctx: &mut Context) -> TokenStream {
+        let name = ctx.name.as_ref().unwrap();
+        let name_id = Ident::new(name, Span::call_site());
         let mut doc = TokenStream::new();
-        let mut body_ts = TokenStream::new();
         for x in &self.body {
             match x {
                 ComplexContentBody::Annotation(a) => {
@@ -394,11 +394,20 @@ impl CodeGenerator for ComplexContent {
                 }
                 ComplexContentBody::Extension(ref r) => {
                     let base = &r.base.0;
+                    let base_ty = resolve_type(base);
                     let mut seq = None;
+                    let mut attrs = TokenStream::new();
                     for x in &r.body {
                         match x {
                             ExtensionBody::Sequence(s) => {
                                 seq.replace(s);
+                            }
+                            ExtensionBody::Attribute(a) => {
+                                let mut cc = ctx.clone();
+                                let attr = a.codegen(&mut cc);
+                                attrs.append_all(quote!(
+                                    #attr,
+                                ));
                             }
                             _ => panic!("unhandled extension body element {:?}", x),
                         }
@@ -406,10 +415,13 @@ impl CodeGenerator for ComplexContent {
                     let mut body_ctx = ctx.with_name(&format!("{}Extension", name));
                     let body = seq.unwrap().codegen(&mut body_ctx);
                     let defs = body_ctx.defs;
-                    body_ts.append_all(quote!(
-                        pub struct #name {
-                            base: #base,
-                            body: #body
+                    debug!("made seq body: {}", body);
+                    debug!("made seq defs: {}", defs);
+                    ctx.defs.append_all(quote!(
+                        pub struct #name_id {
+                            base: #base_ty,
+                            body: #body,
+                            #attrs
                         }
                         #defs
                     ));
@@ -417,7 +429,7 @@ impl CodeGenerator for ComplexContent {
                 ComplexContentBody::Restriction(_) => panic!("unhandled extension body element"),
             }
         }
-        body_ts
+        quote!(#name_id)
     }
 }
 

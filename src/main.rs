@@ -18,8 +18,6 @@ use std::path::PathBuf;
 use xmlschemer::schema::CodeGenerator;
 use xmlschemer::schema::{Context, Schema};
 
-// const PRIMITIVE_SCHEMA: &str = include_str!("./schemas/primitives.xsd");
-
 fn main() -> Result<(), Box<dyn Error>> {
     pretty_env_logger::init();
     let matches = app_from_crate!()
@@ -50,17 +48,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     let reader = BufReader::new(in_file);
     let schema: Schema = from_reader(reader)?;
     let source = schema.codegen(&mut Context::default());
-
-    // let primitives: Schema = from_str(PRIMITIVE_SCHEMA)?;
-    // let primitives_source = primitives.codegen(&mut Context::default());
-
-    // let source = quote!(
-    //     mod xsd {
-    //         #primitives_source
-    //     }
-
-    //     #schema_source
-    // );
     let source_string = source.to_string();
 
     let mut out_writer = BufWriter::new(out_file);
