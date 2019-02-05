@@ -1,182 +1,4 @@
-mod xsd {
-    use serde_derive::{Deserialize, Serialize};
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct String(std::string::String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct Boolean(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct Float(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct Double(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct Decimal(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct DateTime(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct Duration(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct HexBinary(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct Base64Binary(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct AnyUri(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct Id(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct Idref(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct Entity(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct Notation(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct NormalizedString(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct Token(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct Language(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct Idrefs(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct Entities(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct Nmtoken(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct Nmtokens(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct Name(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct QName(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct NcName(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct Integer(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct NonNegativeInteger(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct PositiveInteger(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct NonPositiveInteger(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct NegativeInteger(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct Byte(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct Int(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct Long(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct Short(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct UnsignedByte(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct UnsignedInt(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct UnsignedLong(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct UnsignedShort(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct Date(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct Time(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct GYearMonth(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct GYear(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct GMonthDay(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct GDay(String);
-    #[derive(Serialize, Deserialize, Debug)]
-    #[serde(rename_all = "camelCase")]
-    #[serde(transparent)]
-    pub struct GMonth(String);
-}
+use chrono::{DateTime, FixedOffset};
 use serde_derive::{Deserialize, Serialize};
 #[doc = "GPX is the root element in the XML file."]
 #[serde(rename = "gpx")]
@@ -185,15 +7,15 @@ use serde_derive::{Deserialize, Serialize};
 #[serde(rename_all = "camelCase")]
 pub struct GpxType {
     #[doc = "You must include the version number in your GPX document."]
-    version: xsd::String,
+    version: String,
     #[doc = "You must include the name or URL of the software that created your GPX document.  This allows others to\r\n\t\tinform the creator of a GPX instance document that fails to validate."]
-    creator: xsd::String,
+    creator: String,
     #[serde(rename = "$value")]
-    body: Vec<GpxTypeBody>,
+    body: Vec<UpcaseGpxTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub enum GpxTypeBody {
+pub enum UpcaseGpxTypeBody {
     Metadata(MetadataType),
     Wpt(WptType),
     Rte(RteType),
@@ -230,18 +52,18 @@ pub struct DgpsStationType(String);
 #[serde(rename_all = "camelCase")]
 pub struct MetadataType {
     #[serde(rename = "$value")]
-    body: Vec<MetadataTypeBody>,
+    body: Vec<UpcaseMetadataTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub enum MetadataTypeBody {
-    Name(xsd::String),
-    Desc(xsd::String),
+pub enum UpcaseMetadataTypeBody {
+    Name(String),
+    Desc(String),
     Author(PersonType),
     Copyright(CopyrightType),
     Link(LinkType),
-    Time(xsd::DateTime),
-    Keywords(xsd::String),
+    Time(DateTime<FixedOffset>),
+    Keywords(String),
     Bounds(BoundsType),
     Extensions(ExtensionsType),
 }
@@ -254,28 +76,28 @@ pub struct WptType {
     #[doc = "The longitude of the point.  This is always in decimal degrees, and always in WGS84 datum."]
     lon: LongitudeType,
     #[serde(rename = "$value")]
-    body: Vec<WptTypeBody>,
+    body: Vec<UpcaseWptTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub enum WptTypeBody {
-    Ele(xsd::Decimal),
-    Time(xsd::DateTime),
+pub enum UpcaseWptTypeBody {
+    Ele(String),
+    Time(DateTime<FixedOffset>),
     Magvar(DegreesType),
-    Geoidheight(xsd::Decimal),
-    Name(xsd::String),
-    Cmt(xsd::String),
-    Desc(xsd::String),
-    Src(xsd::String),
+    Geoidheight(String),
+    Name(String),
+    Cmt(String),
+    Desc(String),
+    Src(String),
     Link(LinkType),
-    Sym(xsd::String),
-    Type(xsd::String),
+    Sym(String),
+    Type(String),
     Fix(FixType),
-    Sat(xsd::NonNegativeInteger),
-    Hdop(xsd::Decimal),
-    Vdop(xsd::Decimal),
-    Pdop(xsd::Decimal),
-    Ageofdgpsdata(xsd::Decimal),
+    Sat(String),
+    Hdop(String),
+    Vdop(String),
+    Pdop(String),
+    Ageofdgpsdata(String),
     Dgpsid(DgpsStationType),
     Extensions(ExtensionsType),
 }
@@ -284,18 +106,18 @@ pub enum WptTypeBody {
 #[serde(rename_all = "camelCase")]
 pub struct RteType {
     #[serde(rename = "$value")]
-    body: Vec<RteTypeBody>,
+    body: Vec<UpcaseRteTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub enum RteTypeBody {
-    Name(xsd::String),
-    Cmt(xsd::String),
-    Desc(xsd::String),
-    Src(xsd::String),
+pub enum UpcaseRteTypeBody {
+    Name(String),
+    Cmt(String),
+    Desc(String),
+    Src(String),
     Link(LinkType),
-    Number(xsd::NonNegativeInteger),
-    Type(xsd::String),
+    Number(String),
+    Type(String),
     Extensions(ExtensionsType),
     Rtept(WptType),
 }
@@ -304,18 +126,18 @@ pub enum RteTypeBody {
 #[serde(rename_all = "camelCase")]
 pub struct TrkType {
     #[serde(rename = "$value")]
-    body: Vec<TrkTypeBody>,
+    body: Vec<UpcaseTrkTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub enum TrkTypeBody {
-    Name(xsd::String),
-    Cmt(xsd::String),
-    Desc(xsd::String),
-    Src(xsd::String),
+pub enum UpcaseTrkTypeBody {
+    Name(String),
+    Cmt(String),
+    Desc(String),
+    Src(String),
     Link(LinkType),
-    Number(xsd::NonNegativeInteger),
-    Type(xsd::String),
+    Number(String),
+    Type(String),
     Extensions(ExtensionsType),
     Trkseg(TrksegType),
 }
@@ -324,21 +146,21 @@ pub enum TrkTypeBody {
 #[serde(rename_all = "camelCase")]
 pub struct ExtensionsType {
     #[serde(rename = "$value")]
-    body: Vec<ExtensionsTypeBody>,
+    body: Vec<UpcaseExtensionsTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub enum ExtensionsTypeBody {}
+pub enum UpcaseExtensionsTypeBody {}
 #[doc = "A Track Segment holds a list of Track Points which are logically connected in order. To represent a single GPS track where GPS reception was lost, or the GPS receiver was turned off, start a new Track Segment for each continuous span of track data."]
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct TrksegType {
     #[serde(rename = "$value")]
-    body: Vec<TrksegTypeBody>,
+    body: Vec<UpcaseTrksegTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub enum TrksegTypeBody {
+pub enum UpcaseTrksegTypeBody {
     Trkpt(WptType),
     Extensions(ExtensionsType),
 }
@@ -347,51 +169,51 @@ pub enum TrksegTypeBody {
 #[serde(rename_all = "camelCase")]
 pub struct CopyrightType {
     #[doc = "Copyright holder (TopoSoft, Inc.)"]
-    author: xsd::String,
+    author: String,
     #[serde(rename = "$value")]
-    body: Vec<CopyrightTypeBody>,
+    body: Vec<UpcaseCopyrightTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub enum CopyrightTypeBody {
-    Year(xsd::GYear),
-    License(xsd::AnyUri),
+pub enum UpcaseCopyrightTypeBody {
+    Year(i32),
+    License(String),
 }
 #[doc = "A link to an external resource (Web page, digital photo, video clip, etc) with additional information."]
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct LinkType {
     #[doc = "URL of hyperlink."]
-    href: xsd::AnyUri,
+    href: String,
     #[serde(rename = "$value")]
-    body: Vec<LinkTypeBody>,
+    body: Vec<UpcaseLinkTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub enum LinkTypeBody {
-    Text(xsd::String),
-    Type(xsd::String),
+pub enum UpcaseLinkTypeBody {
+    Text(String),
+    Type(String),
 }
 #[doc = "An email address.  Broken into two parts (id and domain) to help prevent email harvesting."]
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct EmailType {
     #[doc = "id half of email address (billgates2004)"]
-    id: xsd::String,
+    id: String,
     #[doc = "domain half of email address (hotmail.com)"]
-    domain: xsd::String,
+    domain: String,
 }
 #[doc = "A person or organization."]
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct PersonType {
     #[serde(rename = "$value")]
-    body: Vec<PersonTypeBody>,
+    body: Vec<UpcasePersonTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub enum PersonTypeBody {
-    Name(xsd::String),
+pub enum UpcasePersonTypeBody {
+    Name(String),
     Email(EmailType),
     Link(LinkType),
 }
@@ -404,24 +226,24 @@ pub struct PtType {
     #[doc = "The latitude of the point.  Decimal degrees, WGS84 datum."]
     lon: LongitudeType,
     #[serde(rename = "$value")]
-    body: Vec<PtTypeBody>,
+    body: Vec<UpcasePtTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub enum PtTypeBody {
-    Ele(xsd::Decimal),
-    Time(xsd::DateTime),
+pub enum UpcasePtTypeBody {
+    Ele(String),
+    Time(DateTime<FixedOffset>),
 }
 #[doc = "An ordered sequence of points.  (for polygons or polylines, e.g.)"]
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct PtsegType {
     #[serde(rename = "$value")]
-    body: Vec<PtsegTypeBody>,
+    body: Vec<UpcasePtsegTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub enum PtsegTypeBody {
+pub enum UpcasePtsegTypeBody {
     Pt(PtType),
 }
 #[doc = "Two lat/lon pairs defining the extent of an element."]

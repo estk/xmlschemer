@@ -1,11 +1,10 @@
 use heck::*;
 use if_chain::if_chain;
-use log::debug;
+use log::{debug, trace};
 use proc_macro2::{Span, TokenStream};
 use quote::{quote, TokenStreamExt};
 use serde_derive::{Deserialize, Serialize};
 use std::collections::hash_map::HashMap;
-use std::str::FromStr;
 use syn::{self, Ident};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -261,21 +260,25 @@ impl CodeGenerator for ComplexType {
         debug!("Building complex type: {}", name_str);
         let name = resolve_type_str(&name_str);
 
-        let mut doc_ts = TokenStream::new();
-        let doc = format_doc_block(self.get_doc());
-        doc_ts.append_all(quote!(
-            #doc
+        let mut doc = format_doc_block(self.get_doc());
+        doc.append_all(quote!(
             #[derive(Serialize, Deserialize, Debug)]
             #[serde(rename_all = "camelCase")]
         ));
 
-        let mut sequence = vec![];
         let mut attrs = vec![];
+        let mut sequence = None;
+        let mut complex_content = None;
 
         for x in self.body.as_ref().unwrap() {
             match x {
-                ComplexBody::Sequence(s) => sequence.push(s),
                 ComplexBody::Attribute(a) => attrs.push(a),
+                ComplexBody::Sequence(s) => {
+                    sequence.replace(s);
+                }
+                ComplexBody::ComplexContent(c) => {
+                    complex_content.replace(c);
+                }
                 _ => (),
             }
         }
@@ -283,8 +286,6 @@ impl CodeGenerator for ComplexType {
         let fields = {
             let mut ts = TokenStream::new();
             for a in attrs {
-                debug!("ts is: {}", ts.to_string());
-                debug!("attr is: {:#?}", a);
                 let field = a.codegen(ctx);
                 ts.append_all(quote!(
                     #field,
@@ -293,26 +294,39 @@ impl CodeGenerator for ComplexType {
             ts
         };
 
-        if sequence.is_empty() {
-            quote!(
-                #doc_ts
-                pub struct #name {
-                    #fields
-                }
-            )
-        } else {
+        if let Some(seq) = sequence {
             let mut body_ctx = ctx.with_name(&format!("{}Body", name));
-            let body = sequence.first().unwrap().codegen(&mut body_ctx);
+            let body = seq.codegen(&mut body_ctx);
             let defs = body_ctx.defs;
 
             quote!(
-                #doc_ts
+                #doc
                 pub struct #name {
                     #fields
                     #[serde(rename="$value")]
                     body: #body,
                 }
                 #defs
+            )
+        } else if let Some(cc) = complex_content {
+            let mut body_ctx = ctx.with_name(&format!("{}Body", name));
+            let body = cc.codegen(&mut body_ctx);
+            let defs = body_ctx.defs;
+            quote!(
+                #doc
+                pub struct #name {
+                    #fields
+                    #[serde(rename="$value")]
+                    body: #body,
+                }
+                #defs
+            )
+        } else {
+            quote!(
+                #doc
+                pub struct #name {
+                    #fields
+                }
             )
         }
     }
@@ -339,7 +353,7 @@ pub enum ComplexBody {
 pub struct SimpleContent {
     id: Option<ID>,
     #[serde(rename = "$value")]
-    body: Option<SimpleContentBody>,
+    body: Option<Vec<SimpleContentBody>>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -355,23 +369,65 @@ pub enum SimpleContentBody {
 #[serde(deny_unknown_fields)]
 pub struct ComplexContent {
     #[serde(rename = "$value")]
-    restriction: Option<Vec<ComplexContentBody>>,
+    body: Vec<ComplexContentBody>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub enum ComplexContentBody {
+    Annotation(Annotation),
     Restriction(Restriction),
     Extension(Extension),
 }
+
+impl ComplexContent {}
+impl CodeGenerator for ComplexContent {
+    fn codegen(&self, ctx: &mut Context) -> TokenStream {
+        let name = ctx.name.clone().unwrap();
+        let mut doc = TokenStream::new();
+        let mut body_ts = TokenStream::new();
+        for x in &self.body {
+            match x {
+                ComplexContentBody::Annotation(a) => {
+                    doc.append_all(a.get_doc());
+                }
+                ComplexContentBody::Extension(ref r) => {
+                    let base = &r.base.0;
+                    let mut seq = None;
+                    for x in &r.body {
+                        match x {
+                            ExtensionBody::Sequence(s) => {
+                                seq.replace(s);
+                            }
+                            _ => panic!("unhandled extension body element {:?}", x),
+                        }
+                    }
+                    let mut body_ctx = ctx.with_name(&format!("{}Extension", name));
+                    let body = seq.unwrap().codegen(&mut body_ctx);
+                    let defs = body_ctx.defs;
+                    body_ts.append_all(quote!(
+                        pub struct #name {
+                            base: #base,
+                            body: #body
+                        }
+                        #defs
+                    ));
+                }
+                ComplexContentBody::Restriction(_) => panic!("unhandled extension body element"),
+            }
+        }
+        body_ts
+    }
+}
+
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct Extension {
     base: QName,
     #[serde(rename = "$value")]
-    body: Option<Vec<ExtensionBody>>,
+    body: Vec<ExtensionBody>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -615,51 +671,6 @@ impl CodeGenerator for Sequence {
     }
 }
 
-fn resolve_typ_inner(s: &str) -> Vec<String> {
-    let mut split = s.split(':').map(|e| e.to_string()).collect::<Vec<String>>();
-    if let Some(s) = split.first() {
-        if split.len() > 1 && s == "kml" {
-            split.remove(0);
-        }
-    }
-    if split.len() == 1 {
-        let last = split.last_mut().unwrap();
-        let swap = match &last[..] {
-            "anySimpleType" => Some("String"),
-            "string" => Some("String"),
-            "double" => Some("f64"),
-            "boolean" => Some("bool"),
-            "int" => Some("i64"),
-            _ => None,
-        };
-        if let Some(s) = swap {
-            *last = s.to_string();
-            return split;
-        }
-    }
-
-    if let Some(x) = split.last_mut() {
-        *x = if x.chars().next().unwrap().is_uppercase() {
-            format!("Upcase{}", x.to_camel_case())
-        } else {
-            x.to_camel_case()
-        };
-    }
-    split
-}
-
-fn resolve_type_str(s: &str) -> syn::Ident {
-    let tn = resolve_typ_inner(s).last().unwrap().clone();
-
-    syn::parse_str(&tn).unwrap()
-}
-
-fn resolve_type(s: &str) -> syn::TypePath {
-    let tp = resolve_typ_inner(s).join("::");
-
-    syn::parse_str(&tp).unwrap()
-}
-
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
@@ -848,7 +859,8 @@ pub enum SchemaBody {
     ComplexType(ComplexType),
     Group(Group),
     AttributeGroup(AttributeGroup),
-    Element(Element),
+    // boxed to reduce enum size
+    Element(Box<Element>),
     Attribute,
     Notation(Notation),
 }
@@ -938,13 +950,6 @@ impl Default for Context {
 
 impl CodeGenerator for Schema {
     fn codegen(&self, ctx: &mut Context) -> TokenStream {
-        // for (k, v) in self.other.iter() {
-        //     if k.starts_with("xmlns:") {
-        //         let ns = &k[6..];
-        //         ctx.add_ns(ns, v);
-        //     }
-        // }
-
         let mut root = None;
         let mut elements = vec![];
         let mut simple_types = vec![];
@@ -970,7 +975,7 @@ impl CodeGenerator for Schema {
 
         let root_name_str = root
             .map(|r| r.name.clone().unwrap())
-            .unwrap_or("unnamed".to_string());
+            .unwrap_or(String::from("unnamed"));
 
         let (root_tn, root_doc) = if let Some(r) = root {
             let mut doc_ts = TokenStream::new();
@@ -1017,6 +1022,7 @@ impl CodeGenerator for Schema {
         quote!(
             use serde_derive::{Deserialize, Serialize};
             use std::collections::HashMap;
+            use chrono::{Duration, DateTime, FixedOffset};
 
             #root_doc
             #root_ts
@@ -1034,4 +1040,65 @@ fn format_doc_block(doc: Option<String>) -> TokenStream {
     } else {
         TokenStream::new()
     }
+}
+
+fn resolve_typ_inner(s: &str) -> Vec<String> {
+    trace!("resolving {}", s);
+    let mut split = s.split(':').map(|e| e.to_string()).collect::<Vec<String>>();
+    if let Some(s) = split.first() {
+        if split.len() > 1 && s == "kml" {
+            split.remove(0);
+        }
+    }
+    if let Some(f) = split.first().as_ref() {
+        if &f[..] == "xsd" {
+            let last = split.last_mut().unwrap();
+            let swap = match &last[..] {
+                "anySimpleType" => Some("String"),
+                "dateTime" => Some("DateTime<FixedOffset>"),
+                "gYear" => Some("i32"),
+                "gMonth" => Some("u32"),
+                "gDay" => Some("u32"),
+                "duration" => Some("Duration"),
+                "string" => Some("String"),
+                "decimal" => Some("String"),
+                "double" => Some("f64"),
+                "float" => Some("f32"),
+                "boolean" => Some("bool"),
+                "int" => Some("i32"),
+                "long" => Some("i64"),
+                "unsignedInt" => Some("u32"),
+                "unsignedLong" => Some("u64"),
+                "nonNegativeInteger" => Some("String"),
+                "anyURI" => Some("String"),
+                _ => None,
+            };
+            if let Some(s) = swap {
+                *last = s.to_string();
+                split.remove(0);
+                return split;
+            }
+        }
+    }
+
+    if let Some(x) = split.last_mut() {
+        *x = if x.chars().next().unwrap().is_uppercase() {
+            format!("Upcase{}", x.to_camel_case())
+        } else {
+            x.to_camel_case()
+        };
+    }
+    split
+}
+
+fn resolve_type_str(s: &str) -> syn::Ident {
+    let tn = resolve_typ_inner(s).last().unwrap().clone();
+
+    syn::parse_str(&tn).unwrap()
+}
+
+fn resolve_type(s: &str) -> syn::TypePath {
+    let tp = resolve_typ_inner(s).join("::");
+
+    syn::parse_str(&tp).unwrap()
 }

@@ -1,10 +1,10 @@
-#![feature(custom_attribute)]
-use serde_xml_rs::{from_reader, to_string};
-use std::error::Error;
-use std::fs::File;
-use std::io::BufReader;
+// #![feature(custom_attribute)]
+// use serde_xml_rs::{from_reader, to_string};
+// use std::error::Error;
+// use std::fs::File;
+// use std::io::BufReader;
 
-include!("./gen/kml22.rs");
+// include!("./gen/kml22.rs");
 
 // #[test]
 // fn test_read_kml_sample() {

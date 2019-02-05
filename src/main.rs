@@ -7,9 +7,8 @@ extern crate clap;
 
 use clap::{app_from_crate, Arg};
 use log::debug;
-use quote::quote;
 use rustfmt_nightly::{Config, Input, Session};
-use serde_xml_rs::{from_reader, from_str};
+use serde_xml_rs::from_reader;
 use std::error::Error;
 use std::fs::File;
 use std::io::sink;
@@ -19,7 +18,7 @@ use std::path::PathBuf;
 use xmlschemer::schema::CodeGenerator;
 use xmlschemer::schema::{Context, Schema};
 
-const PRIMITIVE_SCHEMA: &str = include_str!("./schemas/primitives.xsd");
+// const PRIMITIVE_SCHEMA: &str = include_str!("./schemas/primitives.xsd");
 
 fn main() -> Result<(), Box<dyn Error>> {
     pretty_env_logger::init();
@@ -50,18 +49,18 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let reader = BufReader::new(in_file);
     let schema: Schema = from_reader(reader)?;
-    let schema_source = schema.codegen(&mut Context::default());
+    let source = schema.codegen(&mut Context::default());
 
-    let primitives: Schema = from_str(PRIMITIVE_SCHEMA)?;
-    let primitives_source = primitives.codegen(&mut Context::default());
+    // let primitives: Schema = from_str(PRIMITIVE_SCHEMA)?;
+    // let primitives_source = primitives.codegen(&mut Context::default());
 
-    let source = quote!(
-        mod xsd {
-            #primitives_source
-        }
+    // let source = quote!(
+    //     mod xsd {
+    //         #primitives_source
+    //     }
 
-        #schema_source
-    );
+    //     #schema_source
+    // );
     let source_string = source.to_string();
 
     let mut out_writer = BufWriter::new(out_file);
