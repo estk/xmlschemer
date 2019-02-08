@@ -386,7 +386,9 @@ impl CodeGenerator for ComplexContent {
     fn codegen(&self, mut ctx: &mut Context) -> TokenStream {
         let name = ctx.name.as_ref().unwrap();
         let name_id = Ident::new(name, Span::call_site());
-        let mut doc = TokenStream::new();
+        let mut doc = quote!(
+            #[derive(Serialize, Deserialize, Debug)]
+        );
         for x in &self.body {
             match x {
                 ComplexContentBody::Annotation(a) => {
@@ -418,6 +420,7 @@ impl CodeGenerator for ComplexContent {
                     debug!("made seq body: {}", body);
                     debug!("made seq defs: {}", defs);
                     ctx.defs.append_all(quote!(
+                        #doc
                         pub struct #name_id {
                             base: #base_ty,
                             body: #body,
@@ -429,7 +432,9 @@ impl CodeGenerator for ComplexContent {
                 ComplexContentBody::Restriction(_) => panic!("unhandled extension body element"),
             }
         }
-        quote!(#name_id)
+        quote!(
+            #name_id
+        )
     }
 }
 

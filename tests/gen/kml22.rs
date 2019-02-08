@@ -1096,6 +1096,7 @@ pub struct UpcaseAbstractFeatureType {
     #[serde(rename = "$value")]
     body: UpcaseAbstractFeatureTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseAbstractFeatureTypeBody {
     base: UpcaseAbstractObjectType,
     body: Vec<UpcaseUpcaseAbstractFeatureTypeBodyExtension>,
@@ -1129,6 +1130,7 @@ pub struct UpcaseAbstractViewType {
     #[serde(rename = "$value")]
     body: UpcaseAbstractViewTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseAbstractViewTypeBody {
     base: UpcaseAbstractObjectType,
     body: Vec<UpcaseUpcaseAbstractViewTypeBodyExtension>,
@@ -1145,6 +1147,7 @@ pub struct UpcaseLookAtType {
     #[serde(rename = "$value")]
     body: UpcaseLookAtTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseLookAtTypeBody {
     base: UpcaseAbstractViewType,
     body: Vec<UpcaseUpcaseLookAtTypeBodyExtension>,
@@ -1168,6 +1171,7 @@ pub struct UpcaseCameraType {
     #[serde(rename = "$value")]
     body: UpcaseCameraTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseCameraTypeBody {
     base: UpcaseAbstractViewType,
     body: Vec<UpcaseUpcaseCameraTypeBodyExtension>,
@@ -1213,6 +1217,7 @@ pub struct UpcaseSchemaDataType {
     #[serde(rename = "$value")]
     body: UpcaseSchemaDataTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseSchemaDataTypeBody {
     base: UpcaseAbstractObjectType,
     body: Vec<UpcaseUpcaseSchemaDataTypeBodyExtension>,
@@ -1233,6 +1238,7 @@ pub struct UpcaseDataType {
     #[serde(rename = "$value")]
     body: UpcaseDataTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseDataTypeBody {
     base: UpcaseAbstractObjectType,
     body: Vec<UpcaseUpcaseDataTypeBodyExtension>,
@@ -1251,6 +1257,7 @@ pub struct UpcaseAbstractContainerType {
     #[serde(rename = "$value")]
     body: UpcaseAbstractContainerTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseAbstractContainerTypeBody {
     base: UpcaseAbstractFeatureType,
     body: Vec<UpcaseUpcaseAbstractContainerTypeBodyExtension>,
@@ -1267,6 +1274,7 @@ pub struct UpcaseAbstractGeometryType {
     #[serde(rename = "$value")]
     body: UpcaseAbstractGeometryTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseAbstractGeometryTypeBody {
     base: UpcaseAbstractObjectType,
     body: Vec<UpcaseUpcaseAbstractGeometryTypeBodyExtension>,
@@ -1283,6 +1291,7 @@ pub struct UpcaseAbstractOverlayType {
     #[serde(rename = "$value")]
     body: UpcaseAbstractOverlayTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseAbstractOverlayTypeBody {
     base: UpcaseAbstractFeatureType,
     body: Vec<UpcaseUpcaseAbstractOverlayTypeBodyExtension>,
@@ -1302,6 +1311,7 @@ pub struct UpcaseAbstractStyleSelectorType {
     #[serde(rename = "$value")]
     body: UpcaseAbstractStyleSelectorTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseAbstractStyleSelectorTypeBody {
     base: UpcaseAbstractObjectType,
     body: Vec<UpcaseUpcaseAbstractStyleSelectorTypeBodyExtension>,
@@ -1322,6 +1332,7 @@ pub struct UpcaseAbstractTimePrimitiveType {
     #[serde(rename = "$value")]
     body: UpcaseAbstractTimePrimitiveTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseAbstractTimePrimitiveTypeBody {
     base: UpcaseAbstractObjectType,
     body: Vec<UpcaseUpcaseAbstractTimePrimitiveTypeBodyExtension>,
@@ -1379,6 +1390,7 @@ pub struct UpcaseDocumentType {
     #[serde(rename = "$value")]
     body: UpcaseDocumentTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseDocumentTypeBody {
     base: UpcaseAbstractContainerType,
     body: Vec<UpcaseUpcaseDocumentTypeBodyExtension>,
@@ -1425,6 +1437,7 @@ pub struct UpcaseFolderType {
     #[serde(rename = "$value")]
     body: UpcaseFolderTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseFolderTypeBody {
     base: UpcaseAbstractContainerType,
     body: Vec<UpcaseUpcaseFolderTypeBodyExtension>,
@@ -1442,6 +1455,7 @@ pub struct UpcasePlacemarkType {
     #[serde(rename = "$value")]
     body: UpcasePlacemarkTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcasePlacemarkTypeBody {
     base: UpcaseAbstractFeatureType,
     body: Vec<UpcaseUpcasePlacemarkTypeBodyExtension>,
@@ -1459,6 +1473,7 @@ pub struct UpcaseNetworkLinkType {
     #[serde(rename = "$value")]
     body: UpcaseNetworkLinkTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseNetworkLinkTypeBody {
     base: UpcaseAbstractFeatureType,
     body: Vec<UpcaseUpcaseNetworkLinkTypeBodyExtension>,
@@ -1477,6 +1492,7 @@ pub struct UpcaseRegionType {
     #[serde(rename = "$value")]
     body: UpcaseRegionTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseRegionTypeBody {
     base: UpcaseAbstractObjectType,
     body: Vec<UpcaseUpcaseRegionTypeBodyExtension>,
@@ -1495,6 +1511,7 @@ pub struct UpcaseLatLonAltBoxType {
     #[serde(rename = "$value")]
     body: UpcaseLatLonAltBoxTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseLatLonAltBoxTypeBody {
     base: UpcaseAbstractLatLonBoxType,
     body: Vec<UpcaseUpcaseLatLonAltBoxTypeBodyExtension>,
@@ -1514,6 +1531,7 @@ pub struct UpcaseLodType {
     #[serde(rename = "$value")]
     body: UpcaseLodTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseLodTypeBody {
     base: UpcaseAbstractObjectType,
     body: Vec<UpcaseUpcaseLodTypeBodyExtension>,
@@ -1534,6 +1552,7 @@ pub struct UpcaseLinkType {
     #[serde(rename = "$value")]
     body: UpcaseLinkTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseLinkTypeBody {
     base: UpcaseBasicLinkType,
     body: Vec<UpcaseUpcaseLinkTypeBodyExtension>,
@@ -1557,6 +1576,7 @@ pub struct UpcaseMultiGeometryType {
     #[serde(rename = "$value")]
     body: UpcaseMultiGeometryTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseMultiGeometryTypeBody {
     base: UpcaseAbstractGeometryType,
     body: Vec<UpcaseUpcaseMultiGeometryTypeBodyExtension>,
@@ -1574,6 +1594,7 @@ pub struct UpcasePointType {
     #[serde(rename = "$value")]
     body: UpcasePointTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcasePointTypeBody {
     base: UpcaseAbstractGeometryType,
     body: Vec<UpcaseUpcasePointTypeBodyExtension>,
@@ -1593,6 +1614,7 @@ pub struct UpcaseLineStringType {
     #[serde(rename = "$value")]
     body: UpcaseLineStringTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseLineStringTypeBody {
     base: UpcaseAbstractGeometryType,
     body: Vec<UpcaseUpcaseLineStringTypeBodyExtension>,
@@ -1613,6 +1635,7 @@ pub struct UpcaseLinearRingType {
     #[serde(rename = "$value")]
     body: UpcaseLinearRingTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseLinearRingTypeBody {
     base: UpcaseAbstractGeometryType,
     body: Vec<UpcaseUpcaseLinearRingTypeBodyExtension>,
@@ -1633,6 +1656,7 @@ pub struct UpcasePolygonType {
     #[serde(rename = "$value")]
     body: UpcasePolygonTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcasePolygonTypeBody {
     base: UpcaseAbstractGeometryType,
     body: Vec<UpcaseUpcasePolygonTypeBodyExtension>,
@@ -1667,6 +1691,7 @@ pub struct UpcaseModelType {
     #[serde(rename = "$value")]
     body: UpcaseModelTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseModelTypeBody {
     base: UpcaseAbstractGeometryType,
     body: Vec<UpcaseUpcaseModelTypeBodyExtension>,
@@ -1689,6 +1714,7 @@ pub struct UpcaseLocationType {
     #[serde(rename = "$value")]
     body: UpcaseLocationTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseLocationTypeBody {
     base: UpcaseAbstractObjectType,
     body: Vec<UpcaseUpcaseLocationTypeBodyExtension>,
@@ -1708,6 +1734,7 @@ pub struct UpcaseOrientationType {
     #[serde(rename = "$value")]
     body: UpcaseOrientationTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseOrientationTypeBody {
     base: UpcaseAbstractObjectType,
     body: Vec<UpcaseUpcaseOrientationTypeBodyExtension>,
@@ -1727,6 +1754,7 @@ pub struct UpcaseScaleType {
     #[serde(rename = "$value")]
     body: UpcaseScaleTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseScaleTypeBody {
     base: UpcaseAbstractObjectType,
     body: Vec<UpcaseUpcaseScaleTypeBodyExtension>,
@@ -1746,6 +1774,7 @@ pub struct UpcaseResourceMapType {
     #[serde(rename = "$value")]
     body: UpcaseResourceMapTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseResourceMapTypeBody {
     base: UpcaseAbstractObjectType,
     body: Vec<UpcaseUpcaseResourceMapTypeBodyExtension>,
@@ -1763,6 +1792,7 @@ pub struct UpcaseAliasType {
     #[serde(rename = "$value")]
     body: UpcaseAliasTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseAliasTypeBody {
     base: UpcaseAbstractObjectType,
     body: Vec<UpcaseUpcaseAliasTypeBodyExtension>,
@@ -1781,6 +1811,7 @@ pub struct UpcaseGroundOverlayType {
     #[serde(rename = "$value")]
     body: UpcaseGroundOverlayTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseGroundOverlayTypeBody {
     base: UpcaseAbstractOverlayType,
     body: Vec<UpcaseUpcaseGroundOverlayTypeBodyExtension>,
@@ -1800,6 +1831,7 @@ pub struct UpcaseAbstractLatLonBoxType {
     #[serde(rename = "$value")]
     body: UpcaseAbstractLatLonBoxTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseAbstractLatLonBoxTypeBody {
     base: UpcaseAbstractObjectType,
     body: Vec<UpcaseUpcaseAbstractLatLonBoxTypeBodyExtension>,
@@ -1820,6 +1852,7 @@ pub struct UpcaseLatLonBoxType {
     #[serde(rename = "$value")]
     body: UpcaseLatLonBoxTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseLatLonBoxTypeBody {
     base: UpcaseAbstractLatLonBoxType,
     body: Vec<UpcaseUpcaseLatLonBoxTypeBodyExtension>,
@@ -1837,6 +1870,7 @@ pub struct UpcaseScreenOverlayType {
     #[serde(rename = "$value")]
     body: UpcaseScreenOverlayTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseScreenOverlayTypeBody {
     base: UpcaseAbstractOverlayType,
     body: Vec<UpcaseUpcaseScreenOverlayTypeBodyExtension>,
@@ -1858,6 +1892,7 @@ pub struct UpcasePhotoOverlayType {
     #[serde(rename = "$value")]
     body: UpcasePhotoOverlayTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcasePhotoOverlayTypeBody {
     base: UpcaseAbstractOverlayType,
     body: Vec<UpcaseUpcasePhotoOverlayTypeBodyExtension>,
@@ -1879,6 +1914,7 @@ pub struct UpcaseViewVolumeType {
     #[serde(rename = "$value")]
     body: UpcaseViewVolumeTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseViewVolumeTypeBody {
     base: UpcaseAbstractObjectType,
     body: Vec<UpcaseUpcaseViewVolumeTypeBodyExtension>,
@@ -1900,6 +1936,7 @@ pub struct UpcaseImagePyramidType {
     #[serde(rename = "$value")]
     body: UpcaseImagePyramidTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseImagePyramidTypeBody {
     base: UpcaseAbstractObjectType,
     body: Vec<UpcaseUpcaseImagePyramidTypeBodyExtension>,
@@ -1920,6 +1957,7 @@ pub struct UpcaseStyleType {
     #[serde(rename = "$value")]
     body: UpcaseStyleTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseStyleTypeBody {
     base: UpcaseAbstractStyleSelectorType,
     body: Vec<UpcaseUpcaseStyleTypeBodyExtension>,
@@ -1942,6 +1980,7 @@ pub struct UpcaseStyleMapType {
     #[serde(rename = "$value")]
     body: UpcaseStyleMapTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseStyleMapTypeBody {
     base: UpcaseAbstractStyleSelectorType,
     body: Vec<UpcaseUpcaseStyleMapTypeBodyExtension>,
@@ -1959,6 +1998,7 @@ pub struct UpcasePairType {
     #[serde(rename = "$value")]
     body: UpcasePairTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcasePairTypeBody {
     base: UpcaseAbstractObjectType,
     body: Vec<UpcaseUpcasePairTypeBodyExtension>,
@@ -1978,6 +2018,7 @@ pub struct UpcaseAbstractSubStyleType {
     #[serde(rename = "$value")]
     body: UpcaseAbstractSubStyleTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseAbstractSubStyleTypeBody {
     base: UpcaseAbstractObjectType,
     body: Vec<UpcaseUpcaseAbstractSubStyleTypeBodyExtension>,
@@ -1994,6 +2035,7 @@ pub struct UpcaseAbstractColorStyleType {
     #[serde(rename = "$value")]
     body: UpcaseAbstractColorStyleTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseAbstractColorStyleTypeBody {
     base: UpcaseAbstractSubStyleType,
     body: Vec<UpcaseUpcaseAbstractColorStyleTypeBodyExtension>,
@@ -2012,6 +2054,7 @@ pub struct UpcaseIconStyleType {
     #[serde(rename = "$value")]
     body: UpcaseIconStyleTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseIconStyleTypeBody {
     base: UpcaseAbstractColorStyleType,
     body: Vec<UpcaseUpcaseIconStyleTypeBodyExtension>,
@@ -2032,6 +2075,7 @@ pub struct UpcaseBasicLinkType {
     #[serde(rename = "$value")]
     body: UpcaseBasicLinkTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseBasicLinkTypeBody {
     base: UpcaseAbstractObjectType,
     body: Vec<UpcaseUpcaseBasicLinkTypeBodyExtension>,
@@ -2049,6 +2093,7 @@ pub struct UpcaseLabelStyleType {
     #[serde(rename = "$value")]
     body: UpcaseLabelStyleTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseLabelStyleTypeBody {
     base: UpcaseAbstractColorStyleType,
     body: Vec<UpcaseUpcaseLabelStyleTypeBodyExtension>,
@@ -2066,6 +2111,7 @@ pub struct UpcaseLineStyleType {
     #[serde(rename = "$value")]
     body: UpcaseLineStyleTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseLineStyleTypeBody {
     base: UpcaseAbstractColorStyleType,
     body: Vec<UpcaseUpcaseLineStyleTypeBodyExtension>,
@@ -2083,6 +2129,7 @@ pub struct UpcasePolyStyleType {
     #[serde(rename = "$value")]
     body: UpcasePolyStyleTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcasePolyStyleTypeBody {
     base: UpcaseAbstractColorStyleType,
     body: Vec<UpcaseUpcasePolyStyleTypeBodyExtension>,
@@ -2101,6 +2148,7 @@ pub struct UpcaseBalloonStyleType {
     #[serde(rename = "$value")]
     body: UpcaseBalloonStyleTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseBalloonStyleTypeBody {
     base: UpcaseAbstractSubStyleType,
     body: Vec<UpcaseUpcaseBalloonStyleTypeBodyExtension>,
@@ -2120,6 +2168,7 @@ pub struct UpcaseListStyleType {
     #[serde(rename = "$value")]
     body: UpcaseListStyleTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseListStyleTypeBody {
     base: UpcaseAbstractSubStyleType,
     body: Vec<UpcaseUpcaseListStyleTypeBodyExtension>,
@@ -2140,6 +2189,7 @@ pub struct UpcaseItemIconType {
     #[serde(rename = "$value")]
     body: UpcaseItemIconTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseItemIconTypeBody {
     base: UpcaseAbstractObjectType,
     body: Vec<UpcaseUpcaseItemIconTypeBodyExtension>,
@@ -2158,6 +2208,7 @@ pub struct UpcaseTimeStampType {
     #[serde(rename = "$value")]
     body: UpcaseTimeStampTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseTimeStampTypeBody {
     base: UpcaseAbstractTimePrimitiveType,
     body: Vec<UpcaseUpcaseTimeStampTypeBodyExtension>,
@@ -2175,6 +2226,7 @@ pub struct UpcaseTimeSpanType {
     #[serde(rename = "$value")]
     body: UpcaseTimeSpanTypeBody,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseTimeSpanTypeBody {
     base: UpcaseAbstractTimePrimitiveType,
     body: Vec<UpcaseUpcaseTimeSpanTypeBodyExtension>,
