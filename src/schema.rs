@@ -383,7 +383,7 @@ pub enum ComplexContentBody {
 
 impl ComplexContent {}
 impl CodeGenerator for ComplexContent {
-	fn codegen(&self, mut ctx: &mut Context) -> TokenStream {
+	fn codegen(&self, ctx: &mut Context) -> TokenStream {
 		let name = ctx.name.as_ref().unwrap();
 		let name_id = Ident::new(name, Span::call_site());
 		let mut doc = quote!(
