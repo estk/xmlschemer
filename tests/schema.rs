@@ -27,7 +27,7 @@ fn test_read_kml() {
 fn test_gen_kml() {
 	pretty_env_logger::init();
 	let kml = read_fixture("kml23.xsd").unwrap();
-	let ts = kml.codegen(&mut Context::default());
+	let ts = kml.codegen(&mut Context::default()).1;
 	eprintln!("{}", ts.to_string());
 }
 #[test]

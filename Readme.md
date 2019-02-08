@@ -12,6 +12,7 @@ cargo run -- -i [Input File] -o [Output rust file]
 We can deserialize gpx!
 
 Still to do:
+- [] Split codegen return value into (defs: TokenStream, type: TokenStream)
 - [] Deserialize kml
     - [x] Generate code for <xs:extension>
     - [] Unsure if its a requirement but parse namespaces?

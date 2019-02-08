@@ -11,12 +11,9 @@ use rustfmt_nightly::{Config, Input, Session};
 use serde_xml_rs::from_reader;
 use std::error::Error;
 use std::fs::File;
-use std::io::sink;
-use std::io::Write;
-use std::io::{BufReader, BufWriter};
+use std::io::{sink, BufReader, BufWriter, Write};
 use std::path::PathBuf;
-use xmlschemer::schema::CodeGenerator;
-use xmlschemer::schema::{Context, Schema};
+use xmlschemer::schema::{CodeGenerator, Context, Schema};
 
 fn main() -> Result<(), Box<dyn Error>> {
 	pretty_env_logger::init();
@@ -47,8 +44,8 @@ fn main() -> Result<(), Box<dyn Error>> {
 
 	let reader = BufReader::new(in_file);
 	let schema: Schema = from_reader(reader)?;
-	let source = schema.codegen(&mut Context::default());
-	let source_string = source.to_string();
+	let res = schema.codegen(&mut Context::default());
+	let source_string = res.1.to_string();
 
 	let mut out_writer = BufWriter::new(out_file);
 	out_writer.write_all(&source_string.as_bytes())?;

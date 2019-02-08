@@ -1,86 +1,65 @@
 use chrono::{DateTime, Duration, FixedOffset};
 use serde_derive::{Deserialize, Serialize};
 use std::collections::HashMap;
-#[serde(rename = "address")]
 #[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
 #[serde(transparent)]
 pub struct Anglepos90Type(String);
 #[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
 #[serde(transparent)]
 pub struct Angle90Type(String);
 #[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
 #[serde(transparent)]
 pub struct Anglepos180Type(String);
 #[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
 #[serde(transparent)]
 pub struct Angle180Type(String);
 #[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
 #[serde(transparent)]
 pub struct Angle360Type(String);
 #[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
 #[serde(transparent)]
 pub struct AltitudeModeEnumType(String);
 #[doc = "aabbggrr\n        \n        ffffffff: opaque white\n        ff000000: opaque black"]
 #[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
 #[serde(transparent)]
 pub struct ColorType(String);
 #[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
 #[serde(transparent)]
 pub struct CoordinatesType(String);
 #[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
 #[serde(transparent)]
 pub struct ColorModeEnumType(String);
 #[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
 #[serde(transparent)]
 pub struct DateTimeType(String);
 #[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
 #[serde(transparent)]
 pub struct DisplayModeEnumType(String);
 #[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
 #[serde(transparent)]
 pub struct GridOriginEnumType(String);
 #[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
 #[serde(transparent)]
 pub struct ItemIconStateType(String);
 #[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
 #[serde(transparent)]
 pub struct ItemIconStateEnumType(String);
 #[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
 #[serde(transparent)]
 pub struct ListItemTypeEnumType(String);
 #[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
 #[serde(transparent)]
 pub struct RefreshModeEnumType(String);
 #[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
 #[serde(transparent)]
 pub struct ViewRefreshModeEnumType(String);
 #[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
 #[serde(transparent)]
 pub struct ShapeEnumType(String);
 #[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
 #[serde(transparent)]
 pub struct StyleStateEnumType(String);
 #[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
 #[serde(transparent)]
 pub struct UnitsEnumType(String);
 #[derive(Serialize, Deserialize, Debug)]
@@ -1083,7 +1062,7 @@ pub struct Vec2Type {
 #[serde(rename_all = "camelCase")]
 pub struct UpcaseAbstractObjectType {
     #[serde(rename = "$value")]
-    body: Vec<UpcaseUpcaseAbstractObjectTypeBody>,
+    body: UpcaseUpcaseAbstractObjectTypeBody,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1099,7 +1078,7 @@ pub struct UpcaseAbstractFeatureType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseAbstractFeatureTypeBody {
     base: UpcaseAbstractObjectType,
-    body: Vec<UpcaseUpcaseAbstractFeatureTypeBodyExtension>,
+    body: UpcaseUpcaseAbstractFeatureTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1133,7 +1112,7 @@ pub struct UpcaseAbstractViewType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseAbstractViewTypeBody {
     base: UpcaseAbstractObjectType,
-    body: Vec<UpcaseUpcaseAbstractViewTypeBodyExtension>,
+    body: UpcaseUpcaseAbstractViewTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1150,7 +1129,7 @@ pub struct UpcaseLookAtType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseLookAtTypeBody {
     base: UpcaseAbstractViewType,
-    body: Vec<UpcaseUpcaseLookAtTypeBodyExtension>,
+    body: UpcaseUpcaseLookAtTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1174,7 +1153,7 @@ pub struct UpcaseCameraType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseCameraTypeBody {
     base: UpcaseAbstractViewType,
-    body: Vec<UpcaseUpcaseCameraTypeBodyExtension>,
+    body: UpcaseUpcaseCameraTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1194,7 +1173,7 @@ pub enum UpcaseUpcaseCameraTypeBodyExtension {
 #[serde(rename_all = "camelCase")]
 pub struct UpcaseMetadataType {
     #[serde(rename = "$value")]
-    body: Vec<UpcaseUpcaseMetadataTypeBody>,
+    body: UpcaseUpcaseMetadataTypeBody,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1203,7 +1182,7 @@ pub enum UpcaseUpcaseMetadataTypeBody {}
 #[serde(rename_all = "camelCase")]
 pub struct UpcaseExtendedDataType {
     #[serde(rename = "$value")]
-    body: Vec<UpcaseUpcaseExtendedDataTypeBody>,
+    body: UpcaseUpcaseExtendedDataTypeBody,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1220,7 +1199,7 @@ pub struct UpcaseSchemaDataType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseSchemaDataTypeBody {
     base: UpcaseAbstractObjectType,
-    body: Vec<UpcaseUpcaseSchemaDataTypeBodyExtension>,
+    body: UpcaseUpcaseSchemaDataTypeBodyExtension,
     schemaUrl: AnyUri,
 }
 #[derive(Serialize, Deserialize, Debug)]
@@ -1241,7 +1220,7 @@ pub struct UpcaseDataType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseDataTypeBody {
     base: UpcaseAbstractObjectType,
-    body: Vec<UpcaseUpcaseDataTypeBodyExtension>,
+    body: UpcaseUpcaseDataTypeBodyExtension,
     name: String,
 }
 #[derive(Serialize, Deserialize, Debug)]
@@ -1260,7 +1239,7 @@ pub struct UpcaseAbstractContainerType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseAbstractContainerTypeBody {
     base: UpcaseAbstractFeatureType,
-    body: Vec<UpcaseUpcaseAbstractContainerTypeBodyExtension>,
+    body: UpcaseUpcaseAbstractContainerTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1277,7 +1256,7 @@ pub struct UpcaseAbstractGeometryType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseAbstractGeometryTypeBody {
     base: UpcaseAbstractObjectType,
-    body: Vec<UpcaseUpcaseAbstractGeometryTypeBodyExtension>,
+    body: UpcaseUpcaseAbstractGeometryTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1294,7 +1273,7 @@ pub struct UpcaseAbstractOverlayType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseAbstractOverlayTypeBody {
     base: UpcaseAbstractFeatureType,
-    body: Vec<UpcaseUpcaseAbstractOverlayTypeBodyExtension>,
+    body: UpcaseUpcaseAbstractOverlayTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1314,7 +1293,7 @@ pub struct UpcaseAbstractStyleSelectorType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseAbstractStyleSelectorTypeBody {
     base: UpcaseAbstractObjectType,
-    body: Vec<UpcaseUpcaseAbstractStyleSelectorTypeBodyExtension>,
+    body: UpcaseUpcaseAbstractStyleSelectorTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1335,7 +1314,7 @@ pub struct UpcaseAbstractTimePrimitiveType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseAbstractTimePrimitiveTypeBody {
     base: UpcaseAbstractObjectType,
-    body: Vec<UpcaseUpcaseAbstractTimePrimitiveTypeBodyExtension>,
+    body: UpcaseUpcaseAbstractTimePrimitiveTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1352,7 +1331,7 @@ pub enum UpcaseUpcaseAbstractTimePrimitiveTypeBodyExtension {
 pub struct UpcaseKmlType {
     hint: String,
     #[serde(rename = "$value")]
-    body: Vec<UpcaseUpcaseKmlTypeBody>,
+    body: UpcaseUpcaseKmlTypeBody,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1366,7 +1345,7 @@ pub enum UpcaseUpcaseKmlTypeBody {
 #[serde(rename_all = "camelCase")]
 pub struct UpcaseNetworkLinkControlType {
     #[serde(rename = "$value")]
-    body: Vec<UpcaseUpcaseNetworkLinkControlTypeBody>,
+    body: UpcaseUpcaseNetworkLinkControlTypeBody,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1393,7 +1372,7 @@ pub struct UpcaseDocumentType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseDocumentTypeBody {
     base: UpcaseAbstractContainerType,
-    body: Vec<UpcaseUpcaseDocumentTypeBodyExtension>,
+    body: UpcaseUpcaseDocumentTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1409,7 +1388,7 @@ pub struct UpcaseSchemaType {
     name: String,
     id: UpcaseId,
     #[serde(rename = "$value")]
-    body: Vec<UpcaseUpcaseSchemaTypeBody>,
+    body: UpcaseUpcaseSchemaTypeBody,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1423,7 +1402,7 @@ pub struct UpcaseSimpleFieldType {
     r#type: String,
     name: String,
     #[serde(rename = "$value")]
-    body: Vec<UpcaseUpcaseSimpleFieldTypeBody>,
+    body: UpcaseUpcaseSimpleFieldTypeBody,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1440,7 +1419,7 @@ pub struct UpcaseFolderType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseFolderTypeBody {
     base: UpcaseAbstractContainerType,
-    body: Vec<UpcaseUpcaseFolderTypeBodyExtension>,
+    body: UpcaseUpcaseFolderTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1458,7 +1437,7 @@ pub struct UpcasePlacemarkType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcasePlacemarkTypeBody {
     base: UpcaseAbstractFeatureType,
-    body: Vec<UpcaseUpcasePlacemarkTypeBodyExtension>,
+    body: UpcaseUpcasePlacemarkTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1476,7 +1455,7 @@ pub struct UpcaseNetworkLinkType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseNetworkLinkTypeBody {
     base: UpcaseAbstractFeatureType,
-    body: Vec<UpcaseUpcaseNetworkLinkTypeBodyExtension>,
+    body: UpcaseUpcaseNetworkLinkTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1495,7 +1474,7 @@ pub struct UpcaseRegionType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseRegionTypeBody {
     base: UpcaseAbstractObjectType,
-    body: Vec<UpcaseUpcaseRegionTypeBodyExtension>,
+    body: UpcaseUpcaseRegionTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1514,7 +1493,7 @@ pub struct UpcaseLatLonAltBoxType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseLatLonAltBoxTypeBody {
     base: UpcaseAbstractLatLonBoxType,
-    body: Vec<UpcaseUpcaseLatLonAltBoxTypeBodyExtension>,
+    body: UpcaseUpcaseLatLonAltBoxTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1534,7 +1513,7 @@ pub struct UpcaseLodType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseLodTypeBody {
     base: UpcaseAbstractObjectType,
-    body: Vec<UpcaseUpcaseLodTypeBodyExtension>,
+    body: UpcaseUpcaseLodTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1555,7 +1534,7 @@ pub struct UpcaseLinkType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseLinkTypeBody {
     base: UpcaseBasicLinkType,
-    body: Vec<UpcaseUpcaseLinkTypeBodyExtension>,
+    body: UpcaseUpcaseLinkTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1579,7 +1558,7 @@ pub struct UpcaseMultiGeometryType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseMultiGeometryTypeBody {
     base: UpcaseAbstractGeometryType,
-    body: Vec<UpcaseUpcaseMultiGeometryTypeBodyExtension>,
+    body: UpcaseUpcaseMultiGeometryTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1597,7 +1576,7 @@ pub struct UpcasePointType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcasePointTypeBody {
     base: UpcaseAbstractGeometryType,
-    body: Vec<UpcaseUpcasePointTypeBodyExtension>,
+    body: UpcaseUpcasePointTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1617,7 +1596,7 @@ pub struct UpcaseLineStringType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseLineStringTypeBody {
     base: UpcaseAbstractGeometryType,
-    body: Vec<UpcaseUpcaseLineStringTypeBodyExtension>,
+    body: UpcaseUpcaseLineStringTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1638,7 +1617,7 @@ pub struct UpcaseLinearRingType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseLinearRingTypeBody {
     base: UpcaseAbstractGeometryType,
-    body: Vec<UpcaseUpcaseLinearRingTypeBodyExtension>,
+    body: UpcaseUpcaseLinearRingTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1659,7 +1638,7 @@ pub struct UpcasePolygonType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcasePolygonTypeBody {
     base: UpcaseAbstractGeometryType,
-    body: Vec<UpcaseUpcasePolygonTypeBodyExtension>,
+    body: UpcaseUpcasePolygonTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1676,7 +1655,7 @@ pub enum UpcaseUpcasePolygonTypeBodyExtension {
 #[serde(rename_all = "camelCase")]
 pub struct UpcaseBoundaryType {
     #[serde(rename = "$value")]
-    body: Vec<UpcaseUpcaseBoundaryTypeBody>,
+    body: UpcaseUpcaseBoundaryTypeBody,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1694,7 +1673,7 @@ pub struct UpcaseModelType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseModelTypeBody {
     base: UpcaseAbstractGeometryType,
-    body: Vec<UpcaseUpcaseModelTypeBodyExtension>,
+    body: UpcaseUpcaseModelTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1717,7 +1696,7 @@ pub struct UpcaseLocationType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseLocationTypeBody {
     base: UpcaseAbstractObjectType,
-    body: Vec<UpcaseUpcaseLocationTypeBodyExtension>,
+    body: UpcaseUpcaseLocationTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1737,7 +1716,7 @@ pub struct UpcaseOrientationType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseOrientationTypeBody {
     base: UpcaseAbstractObjectType,
-    body: Vec<UpcaseUpcaseOrientationTypeBodyExtension>,
+    body: UpcaseUpcaseOrientationTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1757,7 +1736,7 @@ pub struct UpcaseScaleType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseScaleTypeBody {
     base: UpcaseAbstractObjectType,
-    body: Vec<UpcaseUpcaseScaleTypeBodyExtension>,
+    body: UpcaseUpcaseScaleTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1777,7 +1756,7 @@ pub struct UpcaseResourceMapType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseResourceMapTypeBody {
     base: UpcaseAbstractObjectType,
-    body: Vec<UpcaseUpcaseResourceMapTypeBodyExtension>,
+    body: UpcaseUpcaseResourceMapTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1795,7 +1774,7 @@ pub struct UpcaseAliasType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseAliasTypeBody {
     base: UpcaseAbstractObjectType,
-    body: Vec<UpcaseUpcaseAliasTypeBodyExtension>,
+    body: UpcaseUpcaseAliasTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1814,7 +1793,7 @@ pub struct UpcaseGroundOverlayType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseGroundOverlayTypeBody {
     base: UpcaseAbstractOverlayType,
-    body: Vec<UpcaseUpcaseGroundOverlayTypeBodyExtension>,
+    body: UpcaseUpcaseGroundOverlayTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1834,7 +1813,7 @@ pub struct UpcaseAbstractLatLonBoxType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseAbstractLatLonBoxTypeBody {
     base: UpcaseAbstractObjectType,
-    body: Vec<UpcaseUpcaseAbstractLatLonBoxTypeBodyExtension>,
+    body: UpcaseUpcaseAbstractLatLonBoxTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1855,7 +1834,7 @@ pub struct UpcaseLatLonBoxType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseLatLonBoxTypeBody {
     base: UpcaseAbstractLatLonBoxType,
-    body: Vec<UpcaseUpcaseLatLonBoxTypeBodyExtension>,
+    body: UpcaseUpcaseLatLonBoxTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1873,7 +1852,7 @@ pub struct UpcaseScreenOverlayType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseScreenOverlayTypeBody {
     base: UpcaseAbstractOverlayType,
-    body: Vec<UpcaseUpcaseScreenOverlayTypeBodyExtension>,
+    body: UpcaseUpcaseScreenOverlayTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1895,7 +1874,7 @@ pub struct UpcasePhotoOverlayType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcasePhotoOverlayTypeBody {
     base: UpcaseAbstractOverlayType,
-    body: Vec<UpcaseUpcasePhotoOverlayTypeBodyExtension>,
+    body: UpcaseUpcasePhotoOverlayTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1917,7 +1896,7 @@ pub struct UpcaseViewVolumeType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseViewVolumeTypeBody {
     base: UpcaseAbstractObjectType,
-    body: Vec<UpcaseUpcaseViewVolumeTypeBodyExtension>,
+    body: UpcaseUpcaseViewVolumeTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1939,7 +1918,7 @@ pub struct UpcaseImagePyramidType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseImagePyramidTypeBody {
     base: UpcaseAbstractObjectType,
-    body: Vec<UpcaseUpcaseImagePyramidTypeBodyExtension>,
+    body: UpcaseUpcaseImagePyramidTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1960,7 +1939,7 @@ pub struct UpcaseStyleType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseStyleTypeBody {
     base: UpcaseAbstractStyleSelectorType,
-    body: Vec<UpcaseUpcaseStyleTypeBodyExtension>,
+    body: UpcaseUpcaseStyleTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1983,7 +1962,7 @@ pub struct UpcaseStyleMapType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseStyleMapTypeBody {
     base: UpcaseAbstractStyleSelectorType,
-    body: Vec<UpcaseUpcaseStyleMapTypeBodyExtension>,
+    body: UpcaseUpcaseStyleMapTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -2001,7 +1980,7 @@ pub struct UpcasePairType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcasePairTypeBody {
     base: UpcaseAbstractObjectType,
-    body: Vec<UpcaseUpcasePairTypeBodyExtension>,
+    body: UpcaseUpcasePairTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -2021,7 +2000,7 @@ pub struct UpcaseAbstractSubStyleType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseAbstractSubStyleTypeBody {
     base: UpcaseAbstractObjectType,
-    body: Vec<UpcaseUpcaseAbstractSubStyleTypeBodyExtension>,
+    body: UpcaseUpcaseAbstractSubStyleTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -2038,7 +2017,7 @@ pub struct UpcaseAbstractColorStyleType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseAbstractColorStyleTypeBody {
     base: UpcaseAbstractSubStyleType,
-    body: Vec<UpcaseUpcaseAbstractColorStyleTypeBodyExtension>,
+    body: UpcaseUpcaseAbstractColorStyleTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -2057,7 +2036,7 @@ pub struct UpcaseIconStyleType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseIconStyleTypeBody {
     base: UpcaseAbstractColorStyleType,
-    body: Vec<UpcaseUpcaseIconStyleTypeBodyExtension>,
+    body: UpcaseUpcaseIconStyleTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -2078,7 +2057,7 @@ pub struct UpcaseBasicLinkType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseBasicLinkTypeBody {
     base: UpcaseAbstractObjectType,
-    body: Vec<UpcaseUpcaseBasicLinkTypeBodyExtension>,
+    body: UpcaseUpcaseBasicLinkTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -2096,7 +2075,7 @@ pub struct UpcaseLabelStyleType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseLabelStyleTypeBody {
     base: UpcaseAbstractColorStyleType,
-    body: Vec<UpcaseUpcaseLabelStyleTypeBodyExtension>,
+    body: UpcaseUpcaseLabelStyleTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -2114,7 +2093,7 @@ pub struct UpcaseLineStyleType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseLineStyleTypeBody {
     base: UpcaseAbstractColorStyleType,
-    body: Vec<UpcaseUpcaseLineStyleTypeBodyExtension>,
+    body: UpcaseUpcaseLineStyleTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -2132,7 +2111,7 @@ pub struct UpcasePolyStyleType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcasePolyStyleTypeBody {
     base: UpcaseAbstractColorStyleType,
-    body: Vec<UpcaseUpcasePolyStyleTypeBodyExtension>,
+    body: UpcaseUpcasePolyStyleTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -2151,7 +2130,7 @@ pub struct UpcaseBalloonStyleType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseBalloonStyleTypeBody {
     base: UpcaseAbstractSubStyleType,
-    body: Vec<UpcaseUpcaseBalloonStyleTypeBodyExtension>,
+    body: UpcaseUpcaseBalloonStyleTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -2171,7 +2150,7 @@ pub struct UpcaseListStyleType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseListStyleTypeBody {
     base: UpcaseAbstractSubStyleType,
-    body: Vec<UpcaseUpcaseListStyleTypeBodyExtension>,
+    body: UpcaseUpcaseListStyleTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -2192,7 +2171,7 @@ pub struct UpcaseItemIconType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseItemIconTypeBody {
     base: UpcaseAbstractObjectType,
-    body: Vec<UpcaseUpcaseItemIconTypeBodyExtension>,
+    body: UpcaseUpcaseItemIconTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -2211,7 +2190,7 @@ pub struct UpcaseTimeStampType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseTimeStampTypeBody {
     base: UpcaseAbstractTimePrimitiveType,
-    body: Vec<UpcaseUpcaseTimeStampTypeBodyExtension>,
+    body: UpcaseUpcaseTimeStampTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -2229,7 +2208,7 @@ pub struct UpcaseTimeSpanType {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpcaseTimeSpanTypeBody {
     base: UpcaseAbstractTimePrimitiveType,
-    body: Vec<UpcaseUpcaseTimeSpanTypeBodyExtension>,
+    body: UpcaseUpcaseTimeSpanTypeBodyExtension,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -2243,7 +2222,7 @@ pub enum UpcaseUpcaseTimeSpanTypeBodyExtension {
 #[serde(rename_all = "camelCase")]
 pub struct UpcaseUpdateType {
     #[serde(rename = "$value")]
-    body: Vec<UpcaseUpcaseUpdateTypeBody>,
+    body: UpcaseUpcaseUpdateTypeBody,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -2255,7 +2234,7 @@ pub enum UpcaseUpcaseUpdateTypeBody {
 #[serde(rename_all = "camelCase")]
 pub struct UpcaseCreateType {
     #[serde(rename = "$value")]
-    body: Vec<UpcaseUpcaseCreateTypeBody>,
+    body: UpcaseUpcaseCreateTypeBody,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -2266,7 +2245,7 @@ pub enum UpcaseUpcaseCreateTypeBody {
 #[serde(rename_all = "camelCase")]
 pub struct UpcaseDeleteType {
     #[serde(rename = "$value")]
-    body: Vec<UpcaseUpcaseDeleteTypeBody>,
+    body: UpcaseUpcaseDeleteTypeBody,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -2277,7 +2256,7 @@ pub enum UpcaseUpcaseDeleteTypeBody {
 #[serde(rename_all = "camelCase")]
 pub struct UpcaseChangeType {
     #[serde(rename = "$value")]
-    body: Vec<UpcaseUpcaseChangeTypeBody>,
+    body: UpcaseUpcaseChangeTypeBody,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]

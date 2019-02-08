@@ -1,10 +1,11 @@
-use heck::*;
+use heck::CamelCase;
 use if_chain::if_chain;
 use log::{debug, trace};
 use proc_macro2::{Span, TokenStream};
 use quote::{quote, TokenStreamExt};
 use serde_derive::{Deserialize, Serialize};
 use std::collections::hash_map::HashMap;
+use std::fmt::{self, Display};
 use syn::{self, Ident};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -66,7 +67,7 @@ pub struct Element {
 	#[serde(default = Some(MaxOccurs::Bounded(1)))]
 	max_occurs: Option<MaxOccurs>,
 	r#ref: Option<String>,
-	// xmlns: String,
+
 	#[serde(rename = "$value")]
 	body: Option<Vec<ElementBody>>,
 }
@@ -85,31 +86,33 @@ impl Element {
 }
 
 impl CodeGenerator for Element {
-	fn codegen(&self, _ctx: &mut Context) -> TokenStream {
+	fn codegen(&self, _ctx: &mut Context) -> GenResult {
 		let name = resolve_type_str(&self.name.as_ref().unwrap());
-		let mut doc_ts = TokenStream::new();
-		let doc = format_doc_block(self.get_doc());
-		doc_ts.append_all(quote!(
-			#doc
+		let docs = format_doc_block(self.get_doc());
+		let doc = quote!(
+			#docs
 			#[derive(Serialize, Deserialize, Debug)]
 			#[serde(transparent)]
-		));
+		);
 
-		if let Some(t) = self.r#type.as_ref() {
+		// element is of a remote type
+		let def = if let Some(t) = self.r#type.as_ref() {
 			let typ = resolve_type(&t.0);
 			quote!(
-				#doc_ts
+				#doc
 				pub struct #name(#typ);
 			)
+		// element's type is self defined
 		} else {
 			quote!(
-				#doc_ts
+				#doc
 				pub struct #name {
 					#[serde(flatten)]
 					other: HashMap<String, String>,
 				}
 			)
-		}
+		};
+		GenResult::new(name, def)
 	}
 }
 
@@ -173,28 +176,27 @@ impl SimpleType {
 }
 
 impl CodeGenerator for SimpleType {
-	fn codegen(&self, _ctx: &mut Context) -> TokenStream {
+	fn codegen(&self, _ctx: &mut Context) -> GenResult {
 		let name = resolve_type_str(&self.name.as_ref().unwrap().0);
-		let mut doc_ts = TokenStream::new();
-		let doc = format_doc_block(self.get_doc());
-		doc_ts.append_all(quote!(
-			#doc
+		let docs = format_doc_block(self.get_doc());
+		let doc = quote!(
+			#docs
 			#[derive(Serialize, Deserialize, Debug)]
-			#[serde(rename_all = "camelCase")]
 			#[serde(transparent)]
-		));
+		);
 
-		if name == "String" {
+		let def = if name == "String" {
 			quote!(
-				#doc_ts
+				#doc
 				pub struct #name(std::string::String);
 			)
 		} else {
 			quote!(
-				#doc_ts
+				#doc
 				pub struct #name(String);
 			)
-		}
+		};
+		GenResult::new(name, def)
 	}
 }
 #[derive(Serialize, Deserialize, Debug)]
@@ -251,20 +253,14 @@ impl ComplexType {
 	}
 }
 impl CodeGenerator for ComplexType {
-	fn codegen(&self, ctx: &mut Context) -> TokenStream {
+	fn codegen(&self, ctx: &mut Context) -> GenResult {
 		let name_str = if let Some(n) = ctx.name.as_ref() {
-			&n
+			&n[..]
 		} else {
-			&self.name.as_ref().unwrap().0
+			&self.name.as_ref().unwrap().0[..]
 		};
 		debug!("Building complex type: {}", name_str);
 		let name = resolve_type_str(&name_str);
-
-		let mut doc = format_doc_block(self.get_doc());
-		doc.append_all(quote!(
-			#[derive(Serialize, Deserialize, Debug)]
-			#[serde(rename_all = "camelCase")]
-		));
 
 		let mut attrs = vec![];
 		let mut sequence = None;
@@ -283,53 +279,58 @@ impl CodeGenerator for ComplexType {
 			}
 		}
 
-		let fields = {
+		let mut fields = {
 			let mut ts = TokenStream::new();
 			for a in attrs {
-				let field = a.codegen(ctx);
+				let GenResult(_, field) = a.codegen(ctx);
 				ts.append_all(quote!(
 					#field,
 				))
 			}
 			ts
 		};
+		let body_name = &format!("{}Body", name);
 
-		if let Some(seq) = sequence {
-			let mut body_ctx = ctx.with_name(&format!("{}Body", name));
-			let body = seq.codegen(&mut body_ctx);
-			let defs = body_ctx.defs;
+		let def = if let Some(seq) = sequence {
+			let mut body_ctx = ctx.with_name(body_name);
+			let GenResult(body_type, body) = seq.codegen(&mut body_ctx);
 
-			quote!(
-				#doc
-				pub struct #name {
-					#fields
-					#[serde(rename="$value")]
-					body: #body,
-				}
-				#defs
-			)
+			fields.append_all(quote!(
+				#[serde(rename="$value")]
+				body: #body_type,
+			));
+			make_struct(&name, self.get_doc(), fields, body)
 		} else if let Some(cc) = complex_content {
-			let mut body_ctx = ctx.with_name(&format!("{}Body", name));
-			let body = cc.codegen(&mut body_ctx);
-			let defs = body_ctx.defs;
-			quote!(
-				#doc
-				pub struct #name {
-					#fields
-					#[serde(rename="$value")]
-					body: #body,
-				}
-				#defs
-			)
+			let mut body_ctx = ctx.with_name(body_name);
+			let GenResult(body_type, body) = cc.codegen(&mut body_ctx);
+
+			fields.append_all(quote!(
+				#[serde(rename="$value")]
+				body: #body_type,
+			));
+			make_struct(&name, self.get_doc(), fields, body)
 		} else {
-			quote!(
-				#doc
-				pub struct #name {
-					#fields
-				}
-			)
-		}
+			make_struct(&name, self.get_doc(), fields, TokenStream::new())
+		};
+		GenResult::new(name, def)
 	}
+}
+fn make_struct(
+	name: &proc_macro2::Ident,
+	docs: Option<String>,
+	fields: TokenStream,
+	defs: TokenStream,
+) -> TokenStream {
+	let doc = format_doc_block(docs);
+	quote!(
+		#doc
+		#[derive(Serialize, Deserialize, Debug)]
+		#[serde(rename_all = "camelCase")]
+		pub struct #name {
+			#fields
+		}
+		#defs
+	)
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -383,12 +384,13 @@ pub enum ComplexContentBody {
 
 impl ComplexContent {}
 impl CodeGenerator for ComplexContent {
-	fn codegen(&self, ctx: &mut Context) -> TokenStream {
-		let name = ctx.name.as_ref().unwrap();
-		let name_id = Ident::new(name, Span::call_site());
+	fn codegen(&self, ctx: &mut Context) -> GenResult {
+		let name_str = ctx.name.as_ref().unwrap();
+		let name = Ident::new(name_str, Span::call_site());
 		let mut doc = quote!(
 			#[derive(Serialize, Deserialize, Debug)]
 		);
+		let mut defs = TokenStream::new();
 		for x in &self.body {
 			match x {
 				ComplexContentBody::Annotation(a) => {
@@ -406,7 +408,7 @@ impl CodeGenerator for ComplexContent {
 							}
 							ExtensionBody::Attribute(a) => {
 								let mut cc = ctx.clone();
-								let attr = a.codegen(&mut cc);
+								let GenResult(_, attr) = a.codegen(&mut cc);
 								attrs.append_all(quote!(
 									#attr,
 								));
@@ -414,27 +416,26 @@ impl CodeGenerator for ComplexContent {
 							_ => panic!("unhandled extension body element {:?}", x),
 						}
 					}
-					let mut body_ctx = ctx.with_name(&format!("{}Extension", name));
-					let body = seq.unwrap().codegen(&mut body_ctx);
-					let defs = body_ctx.defs;
+					let body_name = &format!("{}Extension", name);
+					let mut body_ctx = ctx.with_name(body_name);
+					let GenResult(body_type, body) = seq.unwrap().codegen(&mut body_ctx);
+
 					debug!("made seq body: {}", body);
 					debug!("made seq defs: {}", defs);
-					ctx.defs.append_all(quote!(
+					defs.append_all(quote!(
 						#doc
-						pub struct #name_id {
+						pub struct #name {
 							base: #base_ty,
-							body: #body,
+							body: #body_type,
 							#attrs
 						}
-						#defs
+						#body
 					));
 				}
 				ComplexContentBody::Restriction(_) => panic!("unhandled extension body element"),
 			}
 		}
-		quote!(
-			#name_id
-		)
+		GenResult::new(name, defs)
 	}
 }
 
@@ -582,7 +583,7 @@ impl Attribute {
 	}
 }
 impl CodeGenerator for Attribute {
-	fn codegen(&self, _ctx: &mut Context) -> TokenStream {
+	fn codegen(&self, _ctx: &mut Context) -> GenResult {
 		let name = self.name.as_ref().unwrap().clone();
 		let name_id = if name == "type" {
 			syn::parse_str("r#type").unwrap()
@@ -591,10 +592,11 @@ impl CodeGenerator for Attribute {
 		};
 		let ty = resolve_type(&self.r#type.as_ref().unwrap().0);
 		let doc_ts = format_doc_block(self.get_doc());
-		quote!(
+		let def = quote!(
 			#doc_ts
 			#name_id: #ty
-		)
+		);
+		GenResult::new(name_id, def)
 	}
 }
 #[derive(Serialize, Deserialize, Debug)]
@@ -632,7 +634,7 @@ pub struct Sequence {
 }
 
 impl CodeGenerator for Sequence {
-	fn codegen(&self, ctx: &mut Context) -> TokenStream {
+	fn codegen(&self, ctx: &mut Context) -> GenResult {
 		let name = resolve_type_str(&ctx.name.as_ref().unwrap());
 
 		// TODO: move into element codegen?
@@ -681,10 +683,7 @@ impl CodeGenerator for Sequence {
 				#variant_stream
 			}
 		);
-		ctx.defs.append_all(companion_type);
-		quote!(
-			Vec<#name>
-		)
+		GenResult::new(name, companion_type)
 	}
 }
 
@@ -882,21 +881,21 @@ pub enum SchemaBody {
 	Notation(Notation),
 }
 impl CodeGenerator for SchemaBody {
-	fn codegen(&self, ctx: &mut Context) -> TokenStream {
+	fn codegen(&self, ctx: &mut Context) -> GenResult {
 		match self {
-			Self::Include => TokenStream::new(),
-			Self::Import(_) => TokenStream::new(),
-			Self::Redefine => TokenStream::new(),
-			Self::Override => TokenStream::new(),
-			Self::Annotation(_) => TokenStream::new(),
-			Self::DefaultOpenContent(_) => TokenStream::new(),
+			Self::Include => GenResult::default(),
+			Self::Import(_) => GenResult::default(),
+			Self::Redefine => GenResult::default(),
+			Self::Override => GenResult::default(),
+			Self::Annotation(_) => GenResult::default(),
+			Self::DefaultOpenContent(_) => GenResult::default(),
 			Self::SimpleType(i) => i.codegen(ctx),
 			Self::ComplexType(i) => i.codegen(ctx),
-			Self::Group(_) => TokenStream::new(),
-			Self::AttributeGroup(_) => TokenStream::new(),
+			Self::Group(_) => GenResult::default(),
+			Self::AttributeGroup(_) => GenResult::default(),
 			Self::Element(i) => i.codegen(ctx),
-			Self::Attribute => TokenStream::new(),
-			Self::Notation(_) => TokenStream::new(),
+			Self::Attribute => GenResult::default(),
+			Self::Notation(_) => GenResult::default(),
 		}
 	}
 }
@@ -934,10 +933,6 @@ pub struct Schema {
 	#[serde(rename = "$value")]
 	body: Option<Vec<SchemaBody>>,
 }
-pub trait CodeGenerator {
-	fn codegen(&self, ctx: &mut Context) -> TokenStream;
-}
-
 #[derive(Clone)]
 pub struct Context {
 	name: Option<String>,
@@ -966,7 +961,7 @@ impl Default for Context {
 }
 
 impl CodeGenerator for Schema {
-	fn codegen(&self, ctx: &mut Context) -> TokenStream {
+	fn codegen(&self, ctx: &mut Context) -> GenResult {
 		let mut root = None;
 		let mut elements = vec![];
 		let mut simple_types = vec![];
@@ -1009,7 +1004,7 @@ impl CodeGenerator for Schema {
 				for x in r.body.as_ref().unwrap() {
 					if let ElementBody::ComplexType(t) = x {
 						debug!("building with root name: {}", root_name_str);
-						defs.append_all(t.codegen(&mut ctx.with_name(&root_name_str)));
+						defs.append_all(t.codegen(&mut ctx.with_name(&root_name_str)).1);
 					}
 				}
 				(root_name_str.to_string(), doc_ts)
@@ -1019,33 +1014,66 @@ impl CodeGenerator for Schema {
 		};
 
 		for t in simple_types {
-			defs.append_all(t.codegen(ctx));
+			defs.append_all(t.codegen(ctx).1);
 		}
 		for e in elements {
-			defs.append_all(e.codegen(ctx))
+			defs.append_all(e.codegen(ctx).1)
 		}
 		for t in complex_types {
 			if_chain! {
 				if let Some(n) = t.name.as_ref();
 				if n.0 == root_tn;
 				then {
-					root_ts.append_all(t.codegen(ctx));
+					root_ts.append_all(root_doc.clone());
+					root_ts.append_all(t.codegen(ctx).1);
 				} else {
 					debug!("genning for {:?}", t);
-					defs.append_all(t.codegen(ctx));
+					defs.append_all(t.codegen(ctx).1);
 				}
 			};
 		}
-		quote!(
-			use serde_derive::{Deserialize, Serialize};
-			use std::collections::HashMap;
-			use chrono::{Duration, DateTime, FixedOffset};
+		GenResult::new(
+			Ident::new("schema", Span::call_site()),
+			quote!(
+				use serde_derive::{Deserialize, Serialize};
+				use std::collections::HashMap;
+				use chrono::{Duration, DateTime, FixedOffset};
 
-			#root_doc
-			#root_ts
-			#defs
+				#root_ts
+				#defs
+			),
 		)
 	}
+}
+
+#[derive(Debug)]
+pub struct GenResult(pub proc_macro2::Ident, pub TokenStream);
+impl GenResult {
+	pub fn new(name: proc_macro2::Ident, def: TokenStream) -> Self {
+		GenResult(name, def)
+	}
+	// pub fn append_all(&mut self, defs: TokenStream) {
+	// 	self.1.append_all(defs);
+	// }
+	pub fn append_all(&mut self, defs: GenResult) {
+		self.1.append_all(defs.1);
+	}
+}
+impl Default for GenResult {
+	fn default() -> Self {
+		let name = Ident::new("", Span::call_site());
+		let def = TokenStream::new();
+		GenResult::new(name, def)
+	}
+}
+impl Display for GenResult {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		write!(f, "name: {}, definition: {}", self.0, self.1)
+	}
+}
+
+pub trait CodeGenerator {
+	fn codegen(&self, ctx: &mut Context) -> GenResult;
 }
 
 fn format_doc_block(doc: Option<String>) -> TokenStream {
