@@ -8,14 +8,14 @@ include!("./gen/kml22.rs");
 
 #[test]
 fn test_read_kml_sample() {
-    let gpx = read_fixture("sample.kml").unwrap();
-    eprintln!("{:#?}", gpx);
+	let gpx = read_fixture("sample.kml").unwrap();
+	eprintln!("{:#?}", gpx);
 }
 
 fn read_fixture(filename: &str) -> Result<Kml, Box<dyn Error>> {
-    let path = format!("./tests/fixtures/{}", filename);
-    let reader = BufReader::new(File::open(path)?);
-    let gpx: Kml = from_reader(reader)?;
+	let path = format!("./tests/fixtures/{}", filename);
+	let reader = BufReader::new(File::open(path)?);
+	let gpx: Kml = from_reader(reader)?;
 
-    Ok(gpx)
+	Ok(gpx)
 }
