@@ -12,10 +12,10 @@ cargo run -- -i [Input File] -o [Output rust file]
 We can deserialize gpx!
 
 Still to do:
-- [] Split codegen return value into (defs: TokenStream, type: TokenStream)
+- [x] Split codegen return value into (defs: Ident, type: TokenStream)
 - [] Deserialize kml
     - [x] Generate code for <xs:extension>
     - [] Unsure if its a requirement but parse namespaces?
-- [] Generate code for simpleType restrictions with a validation lib
 - [] Serialization
+- [] Generate code for simpleType restrictions with a validation lib
 - [] Allow selection of struct-vec polymorphism vs vec-enum

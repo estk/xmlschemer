@@ -21,7 +21,8 @@ fn test_read_gpx() {
 #[test]
 fn test_read_kml() {
 	pretty_env_logger::init();
-	read_fixture("kml23.xsd").unwrap();
+	let s = read_fixture("kml22.xsd").unwrap();
+	dbg!(s);
 }
 #[test]
 fn test_gen_kml() {

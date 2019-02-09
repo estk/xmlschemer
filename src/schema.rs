@@ -643,16 +643,20 @@ impl CodeGenerator for Sequence {
 			.as_ref()
 			.unwrap()
 			.iter()
+			// Lets only consider elements
 			.filter_map(|e| match e {
 				SequenceBody::Element(e) => Some(e),
 				_ => None,
 			})
 			.map(|e| {
+				// ref attr, so type is pasted from unnamed type in a particle
 				let (name, ty): (String, String) = if let Some(rf) = e.r#ref.as_ref() {
 					(rf.clone(), rf.clone())
+				// has name so type is defined
 				} else if let Some(nm) = e.name.as_ref() {
 					let t = e.r#type.as_ref().unwrap().0.clone();
 					(nm.clone(), t)
+				// substitution group
 				} else if let Some(ty) = e.substitution_group.as_ref() {
 					(e.name.as_ref().unwrap().clone(), ty.0.clone())
 				} else {
@@ -904,6 +908,9 @@ impl CodeGenerator for SchemaBody {
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct Schema {
+	// Collect all the namespaces
+	#[serde(rename = "$xmlns")]
+	pub xmlns: HashMap<String, String>,
 	// default unqualified
 	attribute_form_default: Option<AttributeForm>,
 	// default empty
@@ -919,7 +926,8 @@ pub struct Schema {
 	// default empty
 	final_default: Option<Vec<Final>>,
 	id: Option<ID>,
-	target_namespace: Option<URI>,
+	// The namespace for the declarations herein
+	pub target_namespace: Option<URI>,
 	// TODO
 	version: Option<String>,
 	// TODO
@@ -928,8 +936,6 @@ pub struct Schema {
 	#[serde(rename = "lang")]
 	xml_lang: Option<String>,
 
-	// #[serde(flatten)]
-	// other: HashMap<String, String>,
 	#[serde(rename = "$value")]
 	body: Option<Vec<SchemaBody>>,
 }

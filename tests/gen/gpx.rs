@@ -1,5 +1,6 @@
-use chrono::{DateTime, FixedOffset};
+use chrono::{DateTime, Duration, FixedOffset};
 use serde_derive::{Deserialize, Serialize};
+use std::collections::HashMap;
 #[doc = "GPX is the root element in the XML file."]
 #[serde(rename = "gpx")]
 #[doc = "GPX documents contain a metadata header, followed by waypoints, routes, and tracks.  You can add your own elements\r\n\t\tto the extensions section of the GPX document."]
@@ -11,7 +12,7 @@ pub struct GpxType {
     #[doc = "You must include the name or URL of the software that created your GPX document.  This allows others to\r\n\t\tinform the creator of a GPX instance document that fails to validate."]
     creator: String,
     #[serde(rename = "$value")]
-    body: Vec<UpcaseGpxTypeBody>,
+    body: UpcaseGpxTypeBody,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -24,27 +25,22 @@ pub enum UpcaseGpxTypeBody {
 }
 #[doc = "The latitude of the point.  Decimal degrees, WGS84 datum."]
 #[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
 #[serde(transparent)]
 pub struct LatitudeType(String);
 #[doc = "The longitude of the point.  Decimal degrees, WGS84 datum."]
 #[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
 #[serde(transparent)]
 pub struct LongitudeType(String);
 #[doc = "Used for bearing, heading, course.  Units are decimal degrees, true (not magnetic)."]
 #[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
 #[serde(transparent)]
 pub struct DegreesType(String);
 #[doc = "Type of GPS fix.  none means GPS had no fix.  To signify \"the fix info is unknown, leave out fixType entirely. pps = military signal used"]
 #[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
 #[serde(transparent)]
 pub struct FixType(String);
 #[doc = "Represents a differential GPS station."]
 #[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
 #[serde(transparent)]
 pub struct DgpsStationType(String);
 #[doc = "Information about the GPX file, author, and copyright restrictions goes in the metadata section.  Providing rich,\r\n\t\tmeaningful information about your GPX files allows others to search for and use your GPS data."]
@@ -52,7 +48,7 @@ pub struct DgpsStationType(String);
 #[serde(rename_all = "camelCase")]
 pub struct MetadataType {
     #[serde(rename = "$value")]
-    body: Vec<UpcaseMetadataTypeBody>,
+    body: UpcaseMetadataTypeBody,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -76,7 +72,7 @@ pub struct WptType {
     #[doc = "The longitude of the point.  This is always in decimal degrees, and always in WGS84 datum."]
     lon: LongitudeType,
     #[serde(rename = "$value")]
-    body: Vec<UpcaseWptTypeBody>,
+    body: UpcaseWptTypeBody,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -106,7 +102,7 @@ pub enum UpcaseWptTypeBody {
 #[serde(rename_all = "camelCase")]
 pub struct RteType {
     #[serde(rename = "$value")]
-    body: Vec<UpcaseRteTypeBody>,
+    body: UpcaseRteTypeBody,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -126,7 +122,7 @@ pub enum UpcaseRteTypeBody {
 #[serde(rename_all = "camelCase")]
 pub struct TrkType {
     #[serde(rename = "$value")]
-    body: Vec<UpcaseTrkTypeBody>,
+    body: UpcaseTrkTypeBody,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -146,7 +142,7 @@ pub enum UpcaseTrkTypeBody {
 #[serde(rename_all = "camelCase")]
 pub struct ExtensionsType {
     #[serde(rename = "$value")]
-    body: Vec<UpcaseExtensionsTypeBody>,
+    body: UpcaseExtensionsTypeBody,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -156,7 +152,7 @@ pub enum UpcaseExtensionsTypeBody {}
 #[serde(rename_all = "camelCase")]
 pub struct TrksegType {
     #[serde(rename = "$value")]
-    body: Vec<UpcaseTrksegTypeBody>,
+    body: UpcaseTrksegTypeBody,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -171,7 +167,7 @@ pub struct CopyrightType {
     #[doc = "Copyright holder (TopoSoft, Inc.)"]
     author: String,
     #[serde(rename = "$value")]
-    body: Vec<UpcaseCopyrightTypeBody>,
+    body: UpcaseCopyrightTypeBody,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -186,7 +182,7 @@ pub struct LinkType {
     #[doc = "URL of hyperlink."]
     href: String,
     #[serde(rename = "$value")]
-    body: Vec<UpcaseLinkTypeBody>,
+    body: UpcaseLinkTypeBody,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -208,7 +204,7 @@ pub struct EmailType {
 #[serde(rename_all = "camelCase")]
 pub struct PersonType {
     #[serde(rename = "$value")]
-    body: Vec<UpcasePersonTypeBody>,
+    body: UpcasePersonTypeBody,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -226,7 +222,7 @@ pub struct PtType {
     #[doc = "The latitude of the point.  Decimal degrees, WGS84 datum."]
     lon: LongitudeType,
     #[serde(rename = "$value")]
-    body: Vec<UpcasePtTypeBody>,
+    body: UpcasePtTypeBody,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -239,7 +235,7 @@ pub enum UpcasePtTypeBody {
 #[serde(rename_all = "camelCase")]
 pub struct PtsegType {
     #[serde(rename = "$value")]
-    body: Vec<UpcasePtsegTypeBody>,
+    body: UpcasePtsegTypeBody,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]

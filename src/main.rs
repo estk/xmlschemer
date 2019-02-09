@@ -44,6 +44,8 @@ fn main() -> Result<(), Box<dyn Error>> {
 
 	let reader = BufReader::new(in_file);
 	let schema: Schema = from_reader(reader)?;
+	dbg!(&schema.xmlns);
+	dbg!(&schema.target_namespace);
 	let res = schema.codegen(&mut Context::default());
 	let source_string = res.1.to_string();
 
