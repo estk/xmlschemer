@@ -13,7 +13,7 @@ use std::error::Error;
 use std::fs::File;
 use std::io::{sink, BufReader, BufWriter, Write};
 use std::path::PathBuf;
-use xmlschemer::schema::{CodeGenerator, Context, Schema};
+use xmlschemer::schema::Schema;
 
 fn main() -> Result<(), Box<dyn Error>> {
 	pretty_env_logger::init();
@@ -46,11 +46,10 @@ fn main() -> Result<(), Box<dyn Error>> {
 	let schema: Schema = from_reader(reader)?;
 	dbg!(&schema.xmlns);
 	dbg!(&schema.target_namespace);
-	let res = schema.codegen(&mut Context::default());
-	let source_string = res.1.to_string();
+	let res = schema.codegen();
 
 	let mut out_writer = BufWriter::new(out_file);
-	out_writer.write_all(&source_string.as_bytes())?;
+	out_writer.write_all(&res.to_string().as_bytes())?;
 	out_writer.flush()?;
 	drop(out_writer);
 

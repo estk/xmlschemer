@@ -86,8 +86,8 @@ impl Element {
 }
 
 impl CodeGenerator for Element {
-	fn codegen(&self, _ctx: &mut Context) -> GenResult {
-		let name = resolve_type_str(&self.name.as_ref().unwrap());
+	fn codegen(&self, ctx: &Context) -> GenResult {
+		let name = ctx.resolve_ident(&self.name.as_ref().unwrap());
 		let docs = format_doc_block(self.get_doc());
 		let doc = quote!(
 			#docs
@@ -97,7 +97,7 @@ impl CodeGenerator for Element {
 
 		// element is of a remote type
 		let def = if let Some(t) = self.r#type.as_ref() {
-			let typ = resolve_type(&t.0);
+			let typ = ctx.resolve_type(&t.0);
 			quote!(
 				#doc
 				pub struct #name(#typ);
@@ -176,8 +176,8 @@ impl SimpleType {
 }
 
 impl CodeGenerator for SimpleType {
-	fn codegen(&self, _ctx: &mut Context) -> GenResult {
-		let name = resolve_type_str(&self.name.as_ref().unwrap().0);
+	fn codegen(&self, ctx: &Context) -> GenResult {
+		let name = ctx.resolve_ident(&self.name.as_ref().unwrap().0);
 		let docs = format_doc_block(self.get_doc());
 		let doc = quote!(
 			#docs
@@ -253,14 +253,14 @@ impl ComplexType {
 	}
 }
 impl CodeGenerator for ComplexType {
-	fn codegen(&self, ctx: &mut Context) -> GenResult {
+	fn codegen(&self, ctx: &Context) -> GenResult {
 		let name_str = if let Some(n) = ctx.name.as_ref() {
 			&n[..]
 		} else {
 			&self.name.as_ref().unwrap().0[..]
 		};
 		debug!("Building complex type: {}", name_str);
-		let name = resolve_type_str(&name_str);
+		let name = ctx.resolve_ident(&name_str);
 
 		let mut attrs = vec![];
 		let mut sequence = None;
@@ -290,10 +290,10 @@ impl CodeGenerator for ComplexType {
 			ts
 		};
 		let body_name = &format!("{}Body", name);
+		let body_ctx = ctx.with_name(body_name);
 
 		let def = if let Some(seq) = sequence {
-			let mut body_ctx = ctx.with_name(body_name);
-			let GenResult(body_type, body) = seq.codegen(&mut body_ctx);
+			let GenResult(body_type, body) = seq.codegen(&body_ctx);
 
 			fields.append_all(quote!(
 				#[serde(rename="$value")]
@@ -301,8 +301,7 @@ impl CodeGenerator for ComplexType {
 			));
 			make_struct(&name, self.get_doc(), fields, body)
 		} else if let Some(cc) = complex_content {
-			let mut body_ctx = ctx.with_name(body_name);
-			let GenResult(body_type, body) = cc.codegen(&mut body_ctx);
+			let GenResult(body_type, body) = cc.codegen(&body_ctx);
 
 			fields.append_all(quote!(
 				#[serde(rename="$value")]
@@ -384,7 +383,7 @@ pub enum ComplexContentBody {
 
 impl ComplexContent {}
 impl CodeGenerator for ComplexContent {
-	fn codegen(&self, ctx: &mut Context) -> GenResult {
+	fn codegen(&self, ctx: &Context) -> GenResult {
 		let name_str = ctx.name.as_ref().unwrap();
 		let name = Ident::new(name_str, Span::call_site());
 		let mut doc = quote!(
@@ -398,7 +397,7 @@ impl CodeGenerator for ComplexContent {
 				}
 				ComplexContentBody::Extension(ref r) => {
 					let base = &r.base.0;
-					let base_ty = resolve_type(base);
+					let base_ty = ctx.resolve_type(base);
 					let mut seq = None;
 					let mut attrs = TokenStream::new();
 					for x in &r.body {
@@ -407,8 +406,8 @@ impl CodeGenerator for ComplexContent {
 								seq.replace(s);
 							}
 							ExtensionBody::Attribute(a) => {
-								let mut cc = ctx.clone();
-								let GenResult(_, attr) = a.codegen(&mut cc);
+								let cc = ctx.clone();
+								let GenResult(_, attr) = a.codegen(&cc);
 								attrs.append_all(quote!(
 									#attr,
 								));
@@ -417,8 +416,8 @@ impl CodeGenerator for ComplexContent {
 						}
 					}
 					let body_name = &format!("{}Extension", name);
-					let mut body_ctx = ctx.with_name(body_name);
-					let GenResult(body_type, body) = seq.unwrap().codegen(&mut body_ctx);
+					let body_ctx = ctx.with_name(body_name);
+					let GenResult(body_type, body) = seq.unwrap().codegen(&body_ctx);
 
 					debug!("made seq body: {}", body);
 					debug!("made seq defs: {}", defs);
@@ -583,14 +582,14 @@ impl Attribute {
 	}
 }
 impl CodeGenerator for Attribute {
-	fn codegen(&self, _ctx: &mut Context) -> GenResult {
+	fn codegen(&self, ctx: &Context) -> GenResult {
 		let name = self.name.as_ref().unwrap().clone();
 		let name_id = if name == "type" {
 			syn::parse_str("r#type").unwrap()
 		} else {
 			Ident::new(&name, Span::call_site())
 		};
-		let ty = resolve_type(&self.r#type.as_ref().unwrap().0);
+		let ty = ctx.resolve_type(&self.r#type.as_ref().unwrap().0);
 		let doc_ts = format_doc_block(self.get_doc());
 		let def = quote!(
 			#doc_ts
@@ -634,8 +633,8 @@ pub struct Sequence {
 }
 
 impl CodeGenerator for Sequence {
-	fn codegen(&self, ctx: &mut Context) -> GenResult {
-		let name = resolve_type_str(&ctx.name.as_ref().unwrap());
+	fn codegen(&self, ctx: &Context) -> GenResult {
+		let name = ctx.resolve_ident(&ctx.name.as_ref().unwrap());
 
 		// TODO: move into element codegen?
 		let variants: Vec<TokenStream> = self
@@ -662,8 +661,8 @@ impl CodeGenerator for Sequence {
 				} else {
 					panic!("element should have either a name, type pair or a ref")
 				};
-				let name = resolve_type_str(&name);
-				let ty_name = resolve_type(&ty);
+				let name = ctx.resolve_ident(&name);
+				let ty_name = ctx.resolve_type(&ty);
 				quote!(
 					#name(#ty_name)
 				)
@@ -885,7 +884,7 @@ pub enum SchemaBody {
 	Notation(Notation),
 }
 impl CodeGenerator for SchemaBody {
-	fn codegen(&self, ctx: &mut Context) -> GenResult {
+	fn codegen(&self, ctx: &Context) -> GenResult {
 		match self {
 			Self::Include => GenResult::default(),
 			Self::Import(_) => GenResult::default(),
@@ -939,35 +938,39 @@ pub struct Schema {
 	#[serde(rename = "$value")]
 	body: Option<Vec<SchemaBody>>,
 }
-#[derive(Clone)]
-pub struct Context {
-	name: Option<String>,
-	defs: TokenStream,
-	nss: HashMap<String, String>,
-}
-impl Context {
-	pub fn with_name(&self, name: &str) -> Self {
-		let mut me = self.clone();
-		me.name.replace(name.to_string());
-		me
-	}
-	pub fn add_ns(&mut self, ns: &str, v: &str) {
-		self.nss.insert(ns.to_string(), v.to_string());
-	}
-}
 
-impl Default for Context {
-	fn default() -> Self {
-		Context {
-			name: None,
-			defs: TokenStream::new(),
-			nss: HashMap::new(),
-		}
+impl Schema {
+	pub fn codegen(&self) -> TokenStream {
+		let ctx = self.gen_ctx();
+		CodeGenerator::codegen(self, &ctx).1
+	}
+	fn gen_ctx(&self) -> Context {
+		let target = &self.target_namespace.as_ref().unwrap().0;
+		// Get the name of the current namespace
+		let ns_str = self.xmlns.iter().find(|&(_, ns)| ns == target).unwrap().0;
+		let ns = if ns_str.len() == 0 {
+			None
+		} else {
+			Some(ns_str.to_string())
+		};
+		let schema_str = self
+			.xmlns
+			.iter()
+			.find(|&(_, ns)| ns == "http://www.w3.org/2001/XMLSchema")
+			.unwrap()
+			.0;
+		let schema_ns = if schema_str.len() == 0 {
+			None
+		} else {
+			Some(schema_str.to_string())
+		};
+
+		Context::new(ns, schema_ns, self.xmlns.clone())
 	}
 }
 
 impl CodeGenerator for Schema {
-	fn codegen(&self, ctx: &mut Context) -> GenResult {
+	fn codegen(&self, ctx: &Context) -> GenResult {
 		let mut root = None;
 		let mut elements = vec![];
 		let mut simple_types = vec![];
@@ -1010,7 +1013,7 @@ impl CodeGenerator for Schema {
 				for x in r.body.as_ref().unwrap() {
 					if let ElementBody::ComplexType(t) = x {
 						debug!("building with root name: {}", root_name_str);
-						defs.append_all(t.codegen(&mut ctx.with_name(&root_name_str)).1);
+						defs.append_all(t.codegen(&ctx.with_name(&root_name_str)).1);
 					}
 				}
 				(root_name_str.to_string(), doc_ts)
@@ -1058,9 +1061,6 @@ impl GenResult {
 	pub fn new(name: proc_macro2::Ident, def: TokenStream) -> Self {
 		GenResult(name, def)
 	}
-	// pub fn append_all(&mut self, defs: TokenStream) {
-	// 	self.1.append_all(defs);
-	// }
 	pub fn append_all(&mut self, defs: GenResult) {
 		self.1.append_all(defs.1);
 	}
@@ -1079,31 +1079,75 @@ impl Display for GenResult {
 }
 
 pub trait CodeGenerator {
-	fn codegen(&self, ctx: &mut Context) -> GenResult;
+	fn codegen(&self, ctx: &Context) -> GenResult;
 }
 
-fn format_doc_block(doc: Option<String>) -> TokenStream {
-	if let Some(bod) = doc {
-		let ts = syn::LitStr::new(&bod, Span::call_site());
-		quote!(
-			#[doc = #ts]
-		)
-	} else {
-		TokenStream::new()
-	}
+#[derive(Clone)]
+pub struct Context {
+	name: Option<String>,
+	ns: Option<String>,
+	schema_ns: Option<String>,
+	nss: HashMap<String, String>,
 }
-
-fn resolve_typ_inner(s: &str) -> Vec<String> {
-	trace!("resolving {}", s);
-	let mut split = s.split(':').map(|e| e.to_string()).collect::<Vec<String>>();
-	if let Some(s) = split.first() {
-		if split.len() > 1 && s == "kml" {
-			split.remove(0);
+impl Context {
+	pub fn new(
+		ns: Option<String>,
+		schema_ns: Option<String>,
+		nss: HashMap<String, String>,
+	) -> Self {
+		Context {
+			name: None,
+			ns,
+			schema_ns,
+			nss,
 		}
 	}
-	if let Some(f) = split.first().as_ref() {
-		if &f[..] == "xsd" {
+	pub fn with_name(&self, name: &str) -> Self {
+		let mut me = self.clone();
+		me.name.replace(name.to_string());
+		me
+	}
+	pub fn add_ns(&mut self, ns: &str, v: &str) {
+		self.nss.insert(ns.to_string(), v.to_string());
+	}
+	pub fn resolve_ident(&self, s: &str) -> syn::Ident {
+		let tn = self.resolve_type_path(s).last().unwrap().clone();
+
+		syn::parse_str(&tn).unwrap()
+	}
+
+	pub fn resolve_type(&self, s: &str) -> syn::TypePath {
+		let tp = self.resolve_type_path(s).join("::");
+
+		syn::parse_str(&tp).unwrap()
+	}
+	fn resolve_type_path(&self, s: &str) -> Vec<String> {
+		trace!("resolving {}", s);
+		let mut split = s.split(':').map(|e| e.to_string()).collect::<Vec<String>>();
+		assert_ne!(split.len(), 0);
+		let this_ns = if split.len() == 1 {
+			None
+		} else {
+			Some(split.first().as_ref().unwrap().to_string())
+		};
+		if self.in_schema(&this_ns) {
+			// If success return
+			translate_xsd(&mut split);
+			return split;
+		} else if self.in_local(&this_ns) {
+			// If its just a rando type, in our namespace, camel case it
+			if let Some(x) = split.last_mut() {
+				*x = if x.chars().next().unwrap().is_uppercase() {
+					format!("Upcase{}", x.to_camel_case())
+				} else {
+					x.to_camel_case()
+				};
+			}
+		}
+
+		fn translate_xsd(split: &mut Vec<String>) {
 			let last = split.last_mut().unwrap();
+
 			let swap = match &last[..] {
 				"anySimpleType" => Some("String"),
 				"dateTime" => Some("DateTime<FixedOffset>"),
@@ -1127,29 +1171,54 @@ fn resolve_typ_inner(s: &str) -> Vec<String> {
 			if let Some(s) = swap {
 				*last = s.to_string();
 				split.remove(0);
-				return split;
+			}
+		}
+
+		split
+	}
+
+	fn in_schema(&self, ns: &Option<String>) -> bool {
+		if_chain! {
+			if let Some(sns) = &self.schema_ns;
+			if let Some(this_ns) = ns;
+			then {
+				sns == this_ns
+			} else {
+				self.schema_ns.is_none() && ns.is_none()
 			}
 		}
 	}
-
-	if let Some(x) = split.last_mut() {
-		*x = if x.chars().next().unwrap().is_uppercase() {
-			format!("Upcase{}", x.to_camel_case())
-		} else {
-			x.to_camel_case()
-		};
+	fn in_local(&self, ns: &Option<String>) -> bool {
+		if_chain! {
+			if let Some(lns) = &self.ns;
+			if let Some(this_ns) = ns;
+			then {
+				lns == this_ns
+			} else {
+				self.schema_ns.is_none() && ns.is_none()
+			}
+		}
 	}
-	split
 }
 
-fn resolve_type_str(s: &str) -> syn::Ident {
-	let tn = resolve_typ_inner(s).last().unwrap().clone();
-
-	syn::parse_str(&tn).unwrap()
+impl Default for Context {
+	fn default() -> Self {
+		Context {
+			name: None,
+			ns: None,
+			schema_ns: None,
+			nss: HashMap::new(),
+		}
+	}
 }
 
-fn resolve_type(s: &str) -> syn::TypePath {
-	let tp = resolve_typ_inner(s).join("::");
-
-	syn::parse_str(&tp).unwrap()
+fn format_doc_block(doc: Option<String>) -> TokenStream {
+	if let Some(bod) = doc {
+		let ts = syn::LitStr::new(&bod, Span::call_site());
+		quote!(
+			#[doc = #ts]
+		)
+	} else {
+		TokenStream::new()
+	}
 }

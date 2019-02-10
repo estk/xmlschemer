@@ -11,7 +11,7 @@ fn test_read_xml() {
 #[test]
 fn test_gen_xml() {
 	let xmls = read_fixture("XMLSchema.xsd").unwrap();
-	let ts = xmls.codegen(&mut Context::default());
+	let ts = xmls.codegen();
 	println!("{}", ts.to_string());
 }
 #[test]
@@ -28,27 +28,27 @@ fn test_read_kml() {
 fn test_gen_kml() {
 	pretty_env_logger::init();
 	let kml = read_fixture("kml23.xsd").unwrap();
-	let ts = kml.codegen(&mut Context::default()).1;
+	let ts = kml.codegen();
 	eprintln!("{}", ts.to_string());
 }
 #[test]
 fn test_gen_gpx() {
 	let gpx = read_fixture("gpx.xsd").unwrap();
-	let ts = gpx.codegen(&mut Context::default());
+	let ts = gpx.codegen();
 	eprintln!("{}", ts.to_string());
 }
 
 #[test]
 fn test_gen_basic() {
 	let gpx = read_fixture("XMLSchema-datatypes.xsd").unwrap();
-	let ts = gpx.codegen(&mut Context::default());
+	let ts = gpx.codegen();
 	eprintln!("{}", ts.to_string());
 }
 
 #[test]
 fn test_gen_xsd1() {
 	let gpx = read_fixture("XMLSchema1.xsd").unwrap();
-	let ts = gpx.codegen(&mut Context::default());
+	let ts = gpx.codegen();
 	eprintln!("{}", ts.to_string());
 }
 
