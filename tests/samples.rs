@@ -7,6 +7,15 @@ use std::io::BufReader;
 mod kml {
 	use super::read_sample;
 	include!("./gen/kml22.rs");
+	mod xal {
+		// include!("./gen/xal.rs");
+		use serde_derive::{Deserialize, Serialize};
+		#[derive(Serialize, Deserialize, Debug)]
+		pub struct UpcaseAddressDetails {}
+	}
+	mod atom {
+		include!("./gen/atom.rs");
+	}
 	const KML_SAMPLE: &str = "sample.kml";
 
 	#[test]

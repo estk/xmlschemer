@@ -31,8 +31,8 @@ pub struct Entry(EntryType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
 pub struct Content {
-    #[serde(flatten)]
-    other: HashMap<String, String>,
+	#[serde(flatten)]
+	other: HashMap<String, String>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
@@ -40,8 +40,8 @@ pub struct Author(AtomPersonConstruct);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
 pub struct Category {
-    #[serde(flatten)]
-    other: HashMap<String, String>,
+	#[serde(flatten)]
+	other: HashMap<String, String>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
@@ -49,33 +49,33 @@ pub struct Contributor(AtomPersonConstruct);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
 pub struct Generator {
-    #[serde(flatten)]
-    other: HashMap<String, String>,
+	#[serde(flatten)]
+	other: HashMap<String, String>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
 pub struct Icon {
-    #[serde(flatten)]
-    other: HashMap<String, String>,
+	#[serde(flatten)]
+	other: HashMap<String, String>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
 pub struct Id {
-    #[serde(flatten)]
-    other: HashMap<String, String>,
+	#[serde(flatten)]
+	other: HashMap<String, String>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
 pub struct Logo {
-    #[serde(flatten)]
-    other: HashMap<String, String>,
+	#[serde(flatten)]
+	other: HashMap<String, String>,
 }
 #[doc = "The \"atom:link\" element defines a reference from an\n                                entry or feed to a Web resource. This specification\n                                assigns no\n                                meaning to the content (if any) of this\n                                element."]
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
 pub struct Link {
-    #[serde(flatten)]
-    other: HashMap<String, String>,
+	#[serde(flatten)]
+	other: HashMap<String, String>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
@@ -87,8 +87,8 @@ pub struct Rights(AtomTextConstruct);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
 pub struct Source {
-    #[serde(flatten)]
-    other: HashMap<String, String>,
+	#[serde(flatten)]
+	other: HashMap<String, String>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
@@ -107,20 +107,20 @@ pub struct Updated(AtomDateConstruct);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct AtomTextConstruct {
-    r#type: String,
+	r#type: String,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct AtomPersonConstruct {
-    #[serde(rename = "$value")]
-    body: Vec<UpcaseAtomPersonConstructBody>,
+	#[serde(rename = "$value")]
+	body: Vec<UpcaseAtomPersonConstructBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub enum UpcaseAtomPersonConstructBody {
-    Name(Name),
-    Uri(Uri),
-    Email(Email),
+	Name(Name),
+	Uri(Uri),
+	Email(Email),
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -128,19 +128,19 @@ pub struct AtomDateConstruct {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct FeedType {
-    #[serde(rename = "$value")]
-    body: Vec<UpcaseFeedTypeBody>,
+	#[serde(rename = "$value")]
+	body: Vec<UpcaseFeedTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub enum UpcaseFeedTypeBody {
-    Entry(Entry),
+	Entry(Entry),
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct EntryType {
-    #[serde(rename = "$value")]
-    body: Vec<UpcaseEntryTypeBody>,
+	#[serde(rename = "$value")]
+	body: Vec<UpcaseEntryTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -148,8 +148,8 @@ pub enum UpcaseEntryTypeBody {}
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct UndefinedContent {
-    #[serde(rename = "$value")]
-    body: Vec<UpcaseUndefinedContentBody>,
+	#[serde(rename = "$value")]
+	body: Vec<UpcaseUndefinedContentBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]

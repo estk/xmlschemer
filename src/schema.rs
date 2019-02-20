@@ -411,9 +411,9 @@ impl CodeGenerator for ComplexContent {
 								seq.replace(s);
 							}
 							ExtensionBody::Attribute(a) => {
-								println!("extensionbody {:?}", a);
 								let cc = ctx.clone();
-								let GenResult(_, attr) = a.codegen(&cc);
+								// TODO: need to use defs once anon defs are output
+								let (attr, _defs) = a.gen_field(&cc);
 								attrs.append_all(quote!(
 									#attr,
 								));
@@ -1215,8 +1215,13 @@ impl Context {
 				split.remove(0);
 			}
 		} else {
-			// TODO: make this a panic
-			eprintln!("Remote schema resolution unimplemented: {}", s);
+			if let Some(x) = split.last_mut() {
+				*x = if x.chars().next().unwrap().is_uppercase() {
+					format!("Upcase{}", x.to_camel_case())
+				} else {
+					x.to_camel_case()
+				};
+			}
 		}
 
 		return split;

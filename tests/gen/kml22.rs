@@ -1061,7 +1061,7 @@ pub struct Vec2Type {
 #[serde(rename_all = "camelCase")]
 pub struct UpcaseAbstractObjectType {
     #[serde(rename = "$value")]
-    body: UpcaseUpcaseAbstractObjectTypeBody,
+    body: Vec<UpcaseUpcaseAbstractObjectTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1085,10 +1085,10 @@ pub enum UpcaseUpcaseAbstractFeatureTypeBodyExtension {
     Name(Name),
     Visibility(Visibility),
     Open(Open),
-    Author(atom::author),
-    Link(atom::link),
+    Author(atom::Author),
+    Link(atom::Link),
     Address(Address),
-    UpcaseAddressDetails(xal::AddressDetails),
+    UpcaseAddressDetails(xal::UpcaseAddressDetails),
     PhoneNumber(PhoneNumber),
     Description(Description),
     UpcaseAbstractViewGroup(UpcaseAbstractViewGroup),
@@ -1172,7 +1172,7 @@ pub enum UpcaseUpcaseCameraTypeBodyExtension {
 #[serde(rename_all = "camelCase")]
 pub struct UpcaseMetadataType {
     #[serde(rename = "$value")]
-    body: UpcaseUpcaseMetadataTypeBody,
+    body: Vec<UpcaseUpcaseMetadataTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1181,7 +1181,7 @@ pub enum UpcaseUpcaseMetadataTypeBody {}
 #[serde(rename_all = "camelCase")]
 pub struct UpcaseExtendedDataType {
     #[serde(rename = "$value")]
-    body: UpcaseUpcaseExtendedDataTypeBody,
+    body: Vec<UpcaseUpcaseExtendedDataTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1330,7 +1330,7 @@ pub enum UpcaseUpcaseAbstractTimePrimitiveTypeBodyExtension {
 pub struct UpcaseKmlType {
     hint: String,
     #[serde(rename = "$value")]
-    body: UpcaseUpcaseKmlTypeBody,
+    body: Vec<UpcaseUpcaseKmlTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1344,7 +1344,7 @@ pub enum UpcaseUpcaseKmlTypeBody {
 #[serde(rename_all = "camelCase")]
 pub struct UpcaseNetworkLinkControlType {
     #[serde(rename = "$value")]
-    body: UpcaseUpcaseNetworkLinkControlTypeBody,
+    body: Vec<UpcaseUpcaseNetworkLinkControlTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1387,7 +1387,7 @@ pub struct UpcaseSchemaType {
     name: String,
     id: String,
     #[serde(rename = "$value")]
-    body: UpcaseUpcaseSchemaTypeBody,
+    body: Vec<UpcaseUpcaseSchemaTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1401,7 +1401,7 @@ pub struct UpcaseSimpleFieldType {
     r#type: String,
     name: String,
     #[serde(rename = "$value")]
-    body: UpcaseUpcaseSimpleFieldTypeBody,
+    body: Vec<UpcaseUpcaseSimpleFieldTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1654,7 +1654,7 @@ pub enum UpcaseUpcasePolygonTypeBodyExtension {
 #[serde(rename_all = "camelCase")]
 pub struct UpcaseBoundaryType {
     #[serde(rename = "$value")]
-    body: UpcaseUpcaseBoundaryTypeBody,
+    body: Vec<UpcaseUpcaseBoundaryTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -2221,7 +2221,7 @@ pub enum UpcaseUpcaseTimeSpanTypeBodyExtension {
 #[serde(rename_all = "camelCase")]
 pub struct UpcaseUpdateType {
     #[serde(rename = "$value")]
-    body: UpcaseUpcaseUpdateTypeBody,
+    body: Vec<UpcaseUpcaseUpdateTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -2233,7 +2233,7 @@ pub enum UpcaseUpcaseUpdateTypeBody {
 #[serde(rename_all = "camelCase")]
 pub struct UpcaseCreateType {
     #[serde(rename = "$value")]
-    body: UpcaseUpcaseCreateTypeBody,
+    body: Vec<UpcaseUpcaseCreateTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -2244,7 +2244,7 @@ pub enum UpcaseUpcaseCreateTypeBody {
 #[serde(rename_all = "camelCase")]
 pub struct UpcaseDeleteType {
     #[serde(rename = "$value")]
-    body: UpcaseUpcaseDeleteTypeBody,
+    body: Vec<UpcaseUpcaseDeleteTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -2255,7 +2255,7 @@ pub enum UpcaseUpcaseDeleteTypeBody {
 #[serde(rename_all = "camelCase")]
 pub struct UpcaseChangeType {
     #[serde(rename = "$value")]
-    body: UpcaseUpcaseChangeTypeBody,
+    body: Vec<UpcaseUpcaseChangeTypeBody>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
