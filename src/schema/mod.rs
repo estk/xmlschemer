@@ -1,12 +1,13 @@
-use heck::CamelCase;
-use if_chain::if_chain;
 use log::{debug, trace};
 use proc_macro2::{Span, TokenStream};
 use quote::{quote, TokenStreamExt};
 use serde_derive::{Deserialize, Serialize};
-use std::collections::hash_map::HashMap;
-use std::fmt::{self, Display};
 use syn::{self, Ident};
+
+mod resolution;
+use resolution::{format_doc_block, make_struct, CodeGenerator, Context, GenResult};
+mod root;
+pub use root::Schema;
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -72,6 +73,15 @@ pub struct Element {
 	body: Option<Vec<ElementBody>>,
 }
 
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+#[serde(deny_unknown_fields)]
+pub enum ElementBody {
+	Annotation(Annotation),
+	ComplexType(ComplexType),
+	Key(Key),
+}
+
 impl Element {
 	fn get_doc(&self) -> Option<String> {
 		if let Some(body) = self.body.as_ref() {
@@ -87,7 +97,7 @@ impl Element {
 
 impl CodeGenerator for Element {
 	fn codegen(&self, ctx: &Context) -> GenResult {
-		debug!("codegen element: {:?}", self.name);
+		trace!("codegen element: {:?}", self.name);
 		let name = ctx.make_type(&self.name.as_ref().unwrap());
 		let docs = format_doc_block(self.get_doc());
 		let doc = quote!(
@@ -115,15 +125,6 @@ impl CodeGenerator for Element {
 		};
 		GenResult::new(name, def)
 	}
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
-#[serde(deny_unknown_fields)]
-pub enum ElementBody {
-	Annotation(Annotation),
-	ComplexType(ComplexType),
-	Key(Key),
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -163,6 +164,18 @@ pub struct SimpleType {
 	body: Option<Vec<SimpleBody>>,
 }
 
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+#[serde(deny_unknown_fields)]
+pub enum SimpleBody {
+	Annotation(Annotation),
+	Documentation(Documentation),
+	Restriction(Restriction),
+	Extension(Extension),
+	Union(Union),
+	List(List),
+}
+
 impl SimpleType {
 	fn get_doc(&self) -> Option<String> {
 		if let Some(body) = self.body.as_ref() {
@@ -178,7 +191,7 @@ impl SimpleType {
 
 impl CodeGenerator for SimpleType {
 	fn codegen(&self, ctx: &Context) -> GenResult {
-		debug!("making simpletype: {:?}", self);
+		trace!("codegen simpletype: {:?}", self.name);
 		let name = ctx.make_type(&self.name.as_ref().unwrap().0);
 		let docs = format_doc_block(self.get_doc());
 		let doc = quote!(
@@ -201,17 +214,7 @@ impl CodeGenerator for SimpleType {
 		GenResult::new(name, def)
 	}
 }
-#[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
-#[serde(deny_unknown_fields)]
-pub enum SimpleBody {
-	Annotation(Annotation),
-	Documentation(Documentation),
-	Restriction(Restriction),
-	Extension(Extension),
-	Union(Union),
-	List(List),
-}
+
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
@@ -242,6 +245,23 @@ pub struct ComplexType {
 	body: Option<Vec<ComplexBody>>,
 }
 
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+#[serde(deny_unknown_fields)]
+pub enum ComplexBody {
+	All(All),
+	Assert(Assert),
+	Annotation(Annotation),
+	Sequence(Sequence),
+	Attribute(Attribute),
+	AttributeGroup(AttributeGroup),
+	AnyAttribute(AnyAttribute),
+	Group(Group),
+	ComplexContent(ComplexContent),
+	SimpleContent(SimpleContent),
+	Choice(Choice),
+}
+
 impl ComplexType {
 	fn get_doc(&self) -> Option<String> {
 		if let Some(body) = self.body.as_ref() {
@@ -261,7 +281,7 @@ impl CodeGenerator for ComplexType {
 		} else {
 			&self.name.as_ref().unwrap().0[..]
 		};
-		debug!("Building complex type: {}", name_str);
+		trace!("codegen complextype: {}", name_str);
 		let name = ctx.make_type(&name_str);
 
 		let mut attrs = vec![];
@@ -316,40 +336,6 @@ impl CodeGenerator for ComplexType {
 		};
 		GenResult::new(name, def)
 	}
-}
-fn make_struct(
-	name: &proc_macro2::Ident,
-	docs: Option<String>,
-	fields: TokenStream,
-	defs: TokenStream,
-) -> TokenStream {
-	let doc = format_doc_block(docs);
-	quote!(
-		#doc
-		#[derive(Serialize, Deserialize, Debug)]
-		#[serde(rename_all = "camelCase")]
-		pub struct #name {
-			#fields
-		}
-		#defs
-	)
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
-#[serde(deny_unknown_fields)]
-pub enum ComplexBody {
-	All(All),
-	Assert(Assert),
-	Annotation(Annotation),
-	Sequence(Sequence),
-	Attribute(Attribute),
-	AttributeGroup(AttributeGroup),
-	AnyAttribute(AnyAttribute),
-	Group(Group),
-	ComplexContent(ComplexContent),
-	SimpleContent(SimpleContent),
-	Choice(Choice),
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -579,14 +565,8 @@ impl Attribute {
 	// Since attributes are an embedded type, its not really appropriate to use
 	// the codegen trait.
 	pub fn gen_field(&self, ctx: &Context) -> (TokenStream, TokenStream) {
-		let name = {
-			let n = self.name.clone().unwrap();
-			if n == "type" {
-				syn::parse_str("r#type").unwrap()
-			} else {
-				Ident::new(&n, Span::call_site())
-			}
-		};
+		let name = ctx.resolve_ident(&self.name.as_ref().unwrap());
+		trace!("gen_field attribute: {:?}", name);
 		let doc_ts = format_doc_block(self.get_doc());
 
 		let GenResult(ty, defs) = self.codegen(ctx);
@@ -672,6 +652,7 @@ pub struct Sequence {
 impl CodeGenerator for Sequence {
 	fn codegen(&self, ctx: &Context) -> GenResult {
 		let name = ctx.make_type(&ctx.name.as_ref().unwrap());
+		trace!("codegen sequence: {:?}", name);
 
 		// TODO: move into element codegen?
 		let variants: Vec<TokenStream> = self
@@ -904,409 +885,4 @@ pub struct DefaultOpenContentt {
 pub enum OpenContentMode {
 	Interleave,
 	Suffix,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
-#[serde(deny_unknown_fields)]
-pub enum SchemaBody {
-	Include,
-	Import(Import),
-	Redefine,
-	Override,
-	Annotation(Annotation),
-	DefaultOpenContent(DefaultOpenContentt),
-	SimpleType(SimpleType),
-	ComplexType(ComplexType),
-	Group(Group),
-	AttributeGroup(AttributeGroup),
-	// boxed to reduce enum size
-	Element(Box<Element>),
-	Attribute,
-	Notation(Notation),
-}
-impl CodeGenerator for SchemaBody {
-	fn codegen(&self, ctx: &Context) -> GenResult {
-		match self {
-			Self::Include => GenResult::default(),
-			Self::Import(_) => GenResult::default(),
-			Self::Redefine => GenResult::default(),
-			Self::Override => GenResult::default(),
-			Self::Annotation(_) => GenResult::default(),
-			Self::DefaultOpenContent(_) => GenResult::default(),
-			Self::SimpleType(i) => i.codegen(ctx),
-			Self::ComplexType(i) => i.codegen(ctx),
-			Self::Group(_) => GenResult::default(),
-			Self::AttributeGroup(_) => GenResult::default(),
-			Self::Element(i) => i.codegen(ctx),
-			Self::Attribute => GenResult::default(),
-			Self::Notation(_) => GenResult::default(),
-		}
-	}
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
-#[serde(deny_unknown_fields)]
-pub struct Schema {
-	// Collect all the namespaces
-	#[serde(rename = "$xmlns")]
-	pub xmlns: HashMap<String, String>,
-	// default unqualified
-	attribute_form_default: Option<AttributeForm>,
-	// default empty
-	// could be #all, which would block all
-	block_default: Option<Block>,
-	// TODO
-	default_attributes: Option<String>,
-	// default ##local
-	// ##defaultNamespace | ##targetNamespace | ##local)
-	xpath_default_namespace: Option<URI>,
-	// default unqualified
-	element_form_default: Option<AttributeForm>,
-	// default empty
-	final_default: Option<Vec<Final>>,
-	id: Option<ID>,
-	// The namespace for the declarations herein
-	pub target_namespace: Option<URI>,
-	// TODO
-	version: Option<String>,
-	// TODO
-	min_version: Option<String>,
-	// TODO
-	#[serde(rename = "lang")]
-	xml_lang: Option<String>,
-
-	#[serde(rename = "$value")]
-	body: Option<Vec<SchemaBody>>,
-}
-
-impl Schema {
-	pub fn codegen(&self) -> TokenStream {
-		let ctx = self.gen_ctx();
-		CodeGenerator::codegen(self, &ctx).1
-	}
-	fn gen_ctx(&self) -> Context {
-		let target = &self.target_namespace.as_ref().unwrap().0;
-		// Get the name of the current namespace
-		let ns_str = self.xmlns.iter().find(|&(_, ns)| ns == target).unwrap().0;
-		let ns = if ns_str.is_empty() {
-			None
-		} else {
-			Some(ns_str.to_string())
-		};
-		let schema_str = self
-			.xmlns
-			.iter()
-			.find(|&(_, ns)| ns == "http://www.w3.org/2001/XMLSchema")
-			.unwrap()
-			.0;
-		let schema_ns = if schema_str.is_empty() {
-			None
-		} else {
-			Some(schema_str.to_string())
-		};
-
-		Context::new(ns, schema_ns, self.xmlns.clone())
-	}
-}
-
-impl CodeGenerator for Schema {
-	fn codegen(&self, ctx: &Context) -> GenResult {
-		let mut root = None;
-		let mut elements = vec![];
-		let mut simple_types = vec![];
-		let mut complex_types = vec![];
-		if let Some(body) = self.body.as_ref() {
-			for item in body {
-				match item {
-					SchemaBody::Element(x) => {
-						if x.name == ctx.ns {
-							root = Some(x);
-						} else {
-							elements.push(x);
-						}
-					}
-					SchemaBody::ComplexType(x) => complex_types.push(x),
-					SchemaBody::SimpleType(x) => simple_types.push(x),
-					_ => (),
-				}
-			}
-		}
-		let mut root_ts = TokenStream::new();
-		let mut defs = TokenStream::new();
-
-		let root_name_str = root
-			.map(|r| r.name.clone().unwrap())
-			.unwrap_or(String::from("unnamed"));
-
-		let (root_tn, root_doc) = if let Some(r) = root {
-			let mut doc_ts = TokenStream::new();
-			let doc = format_doc_block(r.get_doc());
-
-			doc_ts.append_all(quote!(
-				#doc
-				#[serde(rename = #root_name_str)]
-			));
-
-			if let Some(name) = r.r#type.as_ref() {
-				(name.0.clone(), doc_ts)
-			} else {
-				for x in r.body.as_ref().unwrap() {
-					if let ElementBody::ComplexType(t) = x {
-						debug!("building with root name: {}", root_name_str);
-						defs.append_all(t.codegen(&ctx.with_name(&root_name_str)).1);
-					}
-				}
-				(root_name_str.to_string(), doc_ts)
-			}
-		} else {
-			("".to_string(), TokenStream::new())
-		};
-
-		for t in simple_types {
-			defs.append_all(t.codegen(ctx).1);
-		}
-		for e in elements {
-			println!("codegen for {:?}", e);
-			defs.append_all(e.codegen(ctx).1)
-		}
-		for t in complex_types {
-			if_chain! {
-				if let Some(n) = t.name.as_ref();
-				if n.0 == root_tn;
-				then {
-					root_ts.append_all(root_doc.clone());
-					root_ts.append_all(t.codegen(ctx).1);
-				} else {
-					debug!("genning for {:?}", t);
-					defs.append_all(t.codegen(ctx).1);
-				}
-			};
-		}
-		GenResult::new(
-			Ident::new("schema", Span::call_site()),
-			quote!(
-				use serde_derive::{Deserialize, Serialize};
-				use std::collections::HashMap;
-				use chrono::{Duration, DateTime, FixedOffset};
-
-				#root_ts
-				#defs
-			),
-		)
-	}
-}
-
-#[derive(Debug)]
-pub struct GenResult(pub proc_macro2::Ident, pub TokenStream);
-impl GenResult {
-	pub fn new(name: proc_macro2::Ident, def: TokenStream) -> Self {
-		GenResult(name, def)
-	}
-	pub fn append_all(&mut self, defs: GenResult) {
-		self.1.append_all(defs.1);
-	}
-}
-impl Default for GenResult {
-	fn default() -> Self {
-		let name = Ident::new("", Span::call_site());
-		let def = TokenStream::new();
-		GenResult::new(name, def)
-	}
-}
-impl Display for GenResult {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		write!(f, "name: {}, definition: {}", self.0, self.1)
-	}
-}
-
-pub trait CodeGenerator {
-	fn codegen(&self, ctx: &Context) -> GenResult;
-}
-
-#[derive(Clone)]
-pub struct Context {
-	name: Option<String>,
-	ns: Option<String>,
-	schema_ns: Option<String>,
-	nss: HashMap<String, String>,
-}
-impl Context {
-	pub fn new(
-		ns: Option<String>,
-		schema_ns: Option<String>,
-		nss: HashMap<String, String>,
-	) -> Self {
-		Context {
-			name: None,
-			ns,
-			schema_ns,
-			nss,
-		}
-	}
-	pub fn with_name(&self, name: &str) -> Self {
-		let mut me = self.clone();
-		me.name.replace(name.to_string());
-		me
-	}
-	pub fn add_ns(&mut self, ns: &str, v: &str) {
-		self.nss.insert(ns.to_string(), v.to_string());
-	}
-	pub fn resolve_ident(&self, s: &str) -> syn::Ident {
-		let tn = self.resolve_type_path(s).last().unwrap().clone();
-		if tn == "type" {
-			syn::parse_str("r#type").unwrap()
-		} else {
-			syn::parse_str(&tn).unwrap()
-		}
-	}
-
-	pub fn resolve_type(&self, s: &str) -> syn::TypePath {
-		let tp = self.resolve_type_path(s).join("::");
-
-		debug!("resolve_type: {}", &tp);
-		syn::parse_str(&tp).unwrap()
-	}
-
-	pub fn make_type(&self, s: &str) -> syn::Ident {
-		let typ = s
-			.split(':')
-			.map(|e| e.to_string())
-			.last()
-			.expect("make type called with empty string");
-		let tn = if typ.chars().next().unwrap().is_uppercase() {
-			format!("Upcase{}", typ.to_camel_case())
-		} else {
-			typ.to_camel_case()
-		};
-		if tn == "type" {
-			syn::parse_str("r#type").unwrap()
-		} else {
-			syn::parse_str(&tn).unwrap()
-		}
-	}
-
-	fn resolve_type_path(&self, s: &str) -> Vec<String> {
-		trace!("resolving {}", s);
-		let mut split = s.split(':').map(|e| e.to_string()).collect::<Vec<String>>();
-		assert_ne!(split.len(), 0);
-		let this_ns = if split.len() == 1 {
-			None
-		} else {
-			Some(split.first().as_ref().unwrap().to_string())
-		};
-
-		if self.in_xml_schema(&this_ns) {
-			if !translate_xsd(&mut split) {
-				let estr = format!("Unable to translate xsd type: {}", s);
-				panic!(estr);
-			}
-		} else if self.in_local_schema(&this_ns) {
-			// If its just a rando type, in our namespace, camel case it
-			if let Some(x) = split.last_mut() {
-				*x = if x.chars().next().unwrap().is_uppercase() {
-					format!("Upcase{}", x.to_camel_case())
-				} else {
-					x.to_camel_case()
-				};
-			}
-			if split.len() > 1 {
-				split.remove(0);
-			}
-		} else {
-			if let Some(x) = split.last_mut() {
-				*x = if x.chars().next().unwrap().is_uppercase() {
-					format!("Upcase{}", x.to_camel_case())
-				} else {
-					x.to_camel_case()
-				};
-			}
-		}
-
-		return split;
-
-		// For xsd elements translate them into primitives.
-		// Returns true if we were able to translate
-		fn translate_xsd(split: &mut Vec<String>) -> bool {
-			let last = split.last_mut().unwrap();
-
-			let swap = match &last[..] {
-				"anySimpleType" => Some("String"),
-				"dateTime" => Some("DateTime<FixedOffset>"),
-				"gYear" => Some("i32"),
-				"gMonth" => Some("u32"),
-				"gDay" => Some("u32"),
-				"duration" => Some("Duration"),
-				"ID" => Some("String"),
-				"string" => Some("String"),
-				"decimal" => Some("String"),
-				"double" => Some("f64"),
-				"float" => Some("f32"),
-				"boolean" => Some("bool"),
-				"int" => Some("i32"),
-				"long" => Some("i64"),
-				"unsignedInt" => Some("u32"),
-				"unsignedLong" => Some("u64"),
-				"nonNegativeInteger" => Some("String"),
-				"anyURI" => Some("String"),
-				_ => None,
-			};
-			if let Some(s) = swap {
-				*last = s.to_string();
-				if split.len() > 1 {
-					split.remove(0);
-				}
-				true
-			} else {
-				false
-			}
-		}
-	}
-
-	fn in_xml_schema(&self, ns: &Option<String>) -> bool {
-		if_chain! {
-			if let Some(sns) = &self.schema_ns;
-			if let Some(this_ns) = ns;
-			then {
-				sns == this_ns
-			} else {
-				self.schema_ns.is_none() && ns.is_none()
-			}
-		}
-	}
-	fn in_local_schema(&self, ns: &Option<String>) -> bool {
-		trace!("is local schema?: {:?}", ns);
-		if_chain! {
-			if let Some(lns) = &self.ns;
-			if let Some(this_ns) = ns;
-			then {
-				lns == this_ns
-			} else {
-				self.ns.is_none() && ns.is_none()
-			}
-		}
-	}
-}
-
-impl Default for Context {
-	fn default() -> Self {
-		Context {
-			name: None,
-			ns: None,
-			schema_ns: None,
-			nss: HashMap::new(),
-		}
-	}
-}
-
-fn format_doc_block(doc: Option<String>) -> TokenStream {
-	if let Some(bod) = doc {
-		let ts = syn::LitStr::new(&bod, Span::call_site());
-		quote!(
-			#[doc = #ts]
-		)
-	} else {
-		TokenStream::new()
-	}
 }

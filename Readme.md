@@ -12,10 +12,6 @@ cargo run -- -i [Input File] -o [Output rust file]
 We can deserialize gpx!
 
 Still to do:
-- [] Gen for atom.xsd
-	```
-	RUST_LOG=serde-xml-rs=trace RUST_BACKTRACE=1 cargo run -- -i tests/fixtures/atom-oasis.xsd -o ./tests/gen/atom.rs
-	```
 - [] Create type from naked <element>'s in <schema> body
 - [] Load External namespaces
 - [] Find an alternative to Prepending "Upcase"
@@ -23,9 +19,12 @@ Still to do:
 - [] Generate code for simpleType restrictions with a validation lib
 - [] Allow selection of struct-vec polymorphism vs vec-enum
 - [] Cleanup schema codegen
-- [] Move resolution stuff into its own module
+- [] Review struct visibility
 
 Done:
+- [x] Move resolution stuff into its own module
+- [x] Review logging
+- [x] Gen for atom.xsd
 - [x] Fix double upcase
 - [x] Handle xsd:ID
 - [x] Handle refs correctly: 
