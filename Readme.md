@@ -9,9 +9,15 @@ cargo run -- -i [Input File] -o [Output rust file]
 ```
 
 ## Status
+Currently the big limitations of this project are that serialization is waiting on [serde-xml-rs](https://github.com/RReverser/serde-xml-rs/pull/36), and that types defined using extensions of abstract types do not work.
+
+The plan is to work on type inheritance then to proceed to serialization. Additionally this project uses a fork
+of the serde-xml-rs project that allows namespaces to be parsed out of xml, I'm working on getting that merged
+upstream [here](https://github.com/RReverser/serde-xml-rs/pull/95).
 
 Still to do:
-- [] Create type from naked <element>'s in <schema> body
+- [] Type hirearchy
+- [] Handle Abstract types
 - [] Load External namespaces
 - [] Find an alternative to Prepending "Upcase"
 - [] Serialization
