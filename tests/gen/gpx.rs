@@ -1,26 +1,6 @@
 use chrono::{DateTime, Duration, FixedOffset};
 use serde_derive::{Deserialize, Serialize};
 use std::collections::HashMap;
-#[doc = "The latitude of the point.  Decimal degrees, WGS84 datum."]
-#[derive(Serialize, Deserialize, Debug)]
-#[serde(transparent)]
-pub struct LatitudeType(String);
-#[doc = "The longitude of the point.  Decimal degrees, WGS84 datum."]
-#[derive(Serialize, Deserialize, Debug)]
-#[serde(transparent)]
-pub struct LongitudeType(String);
-#[doc = "Used for bearing, heading, course.  Units are decimal degrees, true (not magnetic)."]
-#[derive(Serialize, Deserialize, Debug)]
-#[serde(transparent)]
-pub struct DegreesType(String);
-#[doc = "Type of GPS fix.  none means GPS had no fix.  To signify \"the fix info is unknown, leave out fixType entirely. pps = military signal used"]
-#[derive(Serialize, Deserialize, Debug)]
-#[serde(transparent)]
-pub struct FixType(String);
-#[doc = "Represents a differential GPS station."]
-#[derive(Serialize, Deserialize, Debug)]
-#[serde(transparent)]
-pub struct DgpsStationType(String);
 #[doc = "GPX is the root element in the XML file."]
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(transparent)]
@@ -257,3 +237,23 @@ pub struct BoundsType {
     #[doc = "The maximum longitude."]
     maxlon: LongitudeType,
 }
+#[doc = "The latitude of the point.  Decimal degrees, WGS84 datum."]
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct LatitudeType(String);
+#[doc = "The longitude of the point.  Decimal degrees, WGS84 datum."]
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct LongitudeType(String);
+#[doc = "Used for bearing, heading, course.  Units are decimal degrees, true (not magnetic)."]
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct DegreesType(String);
+#[doc = "Type of GPS fix.  none means GPS had no fix.  To signify \"the fix info is unknown, leave out fixType entirely. pps = military signal used"]
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct FixType(String);
+#[doc = "Represents a differential GPS station."]
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(transparent)]
+pub struct DgpsStationType(String);
