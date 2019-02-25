@@ -21,7 +21,7 @@ mod kml {
 
 	#[test]
 	fn test_read_kml_sample() {
-		let s: UpcaseKmlType = read_sample(KML_SAMPLE).unwrap();
+		let s: Kml = read_sample(KML_SAMPLE).unwrap();
 		eprintln!("{:#?}", s);
 	}
 }

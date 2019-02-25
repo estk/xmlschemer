@@ -1,4 +1,4 @@
-use heck::CamelCase;
+use heck::{CamelCase, MixedCase};
 use if_chain::if_chain;
 use log::trace;
 use proc_macro2::{Span, TokenStream};
@@ -77,10 +77,23 @@ impl Context {
 		syn::parse_str(&tp).unwrap()
 	}
 
+	pub fn mk_field(&self, s: &str) -> syn::Ident {
+		let typ = s
+			.split(':')
+			.map(ToString::to_string)
+			.last()
+			.expect("make type called with empty string");
+		let tn = &typ.to_mixed_case();
+		if tn == "type" {
+			syn::parse_str("r#type").unwrap()
+		} else {
+			syn::parse_str(&tn).unwrap()
+		}
+	}
 	pub fn make_type(&self, s: &str) -> syn::Ident {
 		let typ = s
 			.split(':')
-			.map(|e| e.to_string())
+			.map(ToString::to_string)
 			.last()
 			.expect("make type called with empty string");
 		let tn = if typ.chars().next().unwrap().is_uppercase() {

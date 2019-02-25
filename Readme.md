@@ -19,6 +19,7 @@ Still to do:
 - [] Cleanup schema codegen
 - [] Review struct visibility
 - [] Generate code for simpleType restrictions with a validation lib
+- [] change codegen to return a Result
 
 Done:
 - [x] Move resolution stuff into its own module
