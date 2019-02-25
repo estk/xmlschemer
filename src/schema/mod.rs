@@ -565,7 +565,7 @@ impl Attribute {
 	// Since attributes are an embedded type, its not really appropriate to use
 	// the codegen trait.
 	pub fn gen_field(&self, ctx: &Context) -> (TokenStream, TokenStream) {
-		let name = ctx.resolve_ident(&self.name.as_ref().unwrap());
+		let name = ctx.make_type(&self.name.as_ref().unwrap());
 		trace!("gen_field attribute: {:?}", name);
 		let doc_ts = format_doc_block(self.get_doc());
 

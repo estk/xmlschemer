@@ -1052,10 +1052,10 @@ pub struct UpcaseChange(UpcaseChangeType);
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct Vec2Type {
-    x: f64,
-    y: f64,
-    xunits: UnitsEnumType,
-    yunits: UnitsEnumType,
+    X: f64,
+    Y: f64,
+    Xunits: UnitsEnumType,
+    Yunits: UnitsEnumType,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1199,7 +1199,7 @@ pub struct UpcaseSchemaDataType {
 pub struct UpcaseSchemaDataTypeBody {
     base: UpcaseAbstractObjectType,
     body: UpcaseUpcaseSchemaDataTypeBodyExtension,
-    schemaUrl: String,
+    SchemaUrl: String,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1220,7 +1220,7 @@ pub struct UpcaseDataType {
 pub struct UpcaseDataTypeBody {
     base: UpcaseAbstractObjectType,
     body: UpcaseUpcaseDataTypeBodyExtension,
-    name: String,
+    Name: String,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -1328,7 +1328,7 @@ pub enum UpcaseUpcaseAbstractTimePrimitiveTypeBodyExtension {
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct UpcaseKmlType {
-    hint: String,
+    Hint: String,
     #[serde(rename = "$value")]
     body: Vec<UpcaseUpcaseKmlTypeBody>,
 }
@@ -1384,8 +1384,8 @@ pub enum UpcaseUpcaseDocumentTypeBodyExtension {
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct UpcaseSchemaType {
-    name: String,
-    id: String,
+    Name: String,
+    Id: String,
     #[serde(rename = "$value")]
     body: Vec<UpcaseUpcaseSchemaTypeBody>,
 }
@@ -1398,8 +1398,8 @@ pub enum UpcaseUpcaseSchemaTypeBody {
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct UpcaseSimpleFieldType {
-    r#type: String,
-    name: String,
+    Type: String,
+    Name: String,
     #[serde(rename = "$value")]
     body: Vec<UpcaseUpcaseSimpleFieldTypeBody>,
 }

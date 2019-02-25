@@ -9,17 +9,16 @@ cargo run -- -i [Input File] -o [Output rust file]
 ```
 
 ## Status
-We can deserialize gpx!
 
 Still to do:
 - [] Create type from naked <element>'s in <schema> body
 - [] Load External namespaces
 - [] Find an alternative to Prepending "Upcase"
 - [] Serialization
-- [] Generate code for simpleType restrictions with a validation lib
 - [] Allow selection of struct-vec polymorphism vs vec-enum
 - [] Cleanup schema codegen
 - [] Review struct visibility
+- [] Generate code for simpleType restrictions with a validation lib
 
 Done:
 - [x] Move resolution stuff into its own module
