@@ -7,31 +7,12 @@ use std::collections::hash_map::HashMap;
 use std::fmt::{self, Display};
 use syn::{self, Ident};
 
-#[derive(Debug)]
-pub struct GenResult(pub proc_macro2::Ident, pub TokenStream);
-impl GenResult {
-	pub fn new(name: proc_macro2::Ident, def: TokenStream) -> Self {
-		GenResult(name, def)
-	}
-	pub fn append_all(&mut self, defs: GenResult) {
-		self.1.append_all(defs.1);
-	}
-}
-impl Default for GenResult {
-	fn default() -> Self {
-		let name = Ident::new("", Span::call_site());
-		let def = TokenStream::new();
-		GenResult::new(name, def)
-	}
-}
-impl Display for GenResult {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		write!(f, "name: {}, definition: {}", self.0, self.1)
-	}
+pub trait Identifiable {
+	fn ident(&self, ctx: &Context) -> syn::Ident;
 }
 
-pub trait CodeGenerator {
-	fn codegen(&self, ctx: &Context) -> GenResult;
+pub trait Genable {
+	fn gen(&self, ctx: &Context) -> TokenStream;
 }
 
 #[derive(Clone)]
@@ -62,13 +43,37 @@ impl Context {
 	pub fn add_ns(&mut self, ns: &str, v: &str) {
 		self.nss.insert(ns.to_string(), v.to_string());
 	}
+
+	fn resolve_ident_str(&self, s: &str) -> String {
+		let tn = if s.chars().next().unwrap().is_uppercase() && !s.starts_with("Upcase") {
+			format!("Upcase{}", s.to_camel_case())
+		} else {
+			s.to_camel_case()
+		};
+		if tn == "type" {
+			"r#type".to_string()
+		} else {
+			tn
+		}
+	}
 	pub fn resolve_ident(&self, s: &str) -> syn::Ident {
-		let tn = self.resolve_type_path(s).last().unwrap().clone();
+		syn::parse_str(&self.resolve_ident_str(s)).unwrap()
+	}
+	pub fn mk_field(&self, s: &str) -> syn::Ident {
+		let tn = &s.to_mixed_case();
 		if tn == "type" {
 			syn::parse_str("r#type").unwrap()
 		} else {
 			syn::parse_str(&tn).unwrap()
 		}
+	}
+	pub fn mk_type(&self, s: &str) -> syn::Ident {
+		let typ = s
+			.split(':')
+			.map(ToString::to_string)
+			.last()
+			.expect("make type called with empty string");
+		self.resolve_ident(&typ)
 	}
 
 	pub fn resolve_type(&self, s: &str) -> syn::TypePath {
@@ -77,40 +82,13 @@ impl Context {
 		syn::parse_str(&tp).unwrap()
 	}
 
-	pub fn mk_field(&self, s: &str) -> syn::Ident {
-		let typ = s
-			.split(':')
-			.map(ToString::to_string)
-			.last()
-			.expect("make type called with empty string");
-		let tn = &typ.to_mixed_case();
-		if tn == "type" {
-			syn::parse_str("r#type").unwrap()
-		} else {
-			syn::parse_str(&tn).unwrap()
-		}
-	}
-	pub fn make_type(&self, s: &str) -> syn::Ident {
-		let typ = s
-			.split(':')
-			.map(ToString::to_string)
-			.last()
-			.expect("make type called with empty string");
-		let tn = if typ.chars().next().unwrap().is_uppercase() {
-			format!("Upcase{}", typ.to_camel_case())
-		} else {
-			typ.to_camel_case()
-		};
-		if tn == "type" {
-			syn::parse_str("r#type").unwrap()
-		} else {
-			syn::parse_str(&tn).unwrap()
-		}
-	}
-
 	fn resolve_type_path(&self, s: &str) -> Vec<String> {
-		trace!("resolving {}", s);
-		let mut split = s.split(':').map(|e| e.to_string()).collect::<Vec<String>>();
+		trace!("resolving type {}", s);
+		let mut split = s
+			.split(':')
+			.map(ToString::to_string)
+			.collect::<Vec<String>>();
+
 		assert_ne!(split.len(), 0);
 		let this_ns = if split.len() == 1 {
 			None
@@ -126,22 +104,14 @@ impl Context {
 		} else if self.in_local_schema(&this_ns) {
 			// If its just a rando type, in our namespace, camel case it
 			if let Some(x) = split.last_mut() {
-				*x = if x.chars().next().unwrap().is_uppercase() {
-					format!("Upcase{}", x.to_camel_case())
-				} else {
-					x.to_camel_case()
-				};
+				*x = self.resolve_ident_str(x)
 			}
 			if split.len() > 1 {
 				split.remove(0);
 			}
 		} else {
 			if let Some(x) = split.last_mut() {
-				*x = if x.chars().next().unwrap().is_uppercase() {
-					format!("Upcase{}", x.to_camel_case())
-				} else {
-					x.to_camel_case()
-				};
+				*x = self.resolve_ident_str(x)
 			}
 		}
 
@@ -183,7 +153,7 @@ impl Default for Context {
 	}
 }
 
-pub fn format_doc_block(doc: Option<String>) -> TokenStream {
+pub fn fmt_doc(doc: Option<String>) -> TokenStream {
 	if let Some(bod) = doc {
 		let ts = syn::LitStr::new(&bod, Span::call_site());
 		quote!(
@@ -201,7 +171,7 @@ pub fn make_struct(
 	defs: TokenStream,
 ) -> TokenStream {
 	trace!("making struct {:?}", name);
-	let doc = format_doc_block(docs);
+	let doc = fmt_doc(docs);
 	quote!(
 		#doc
 		#[derive(Serialize, Deserialize, Debug)]

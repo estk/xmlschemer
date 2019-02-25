@@ -1,5 +1,3 @@
-use if_chain::if_chain;
-use log::debug;
 use proc_macro2::{Span, TokenStream};
 use quote::{quote, TokenStreamExt};
 use serde_derive::{Deserialize, Serialize};
@@ -8,7 +6,7 @@ use syn::{self, Ident};
 
 use super::resolution;
 use super::*;
-use resolution::{format_doc_block, CodeGenerator, Context, GenResult};
+use resolution::{Context, Genable};
 
 const XML_SCHEMA_NS: &str = "http://www.w3.org/2001/XMLSchema";
 
@@ -31,22 +29,22 @@ pub enum SchemaBody {
 	Attribute,
 	Notation(Notation),
 }
-impl CodeGenerator for SchemaBody {
-	fn codegen(&self, ctx: &Context) -> GenResult {
+impl Genable for SchemaBody {
+	fn gen(&self, ctx: &Context) -> TokenStream {
 		match self {
-			Self::Include => GenResult::default(),
-			Self::Import(_) => GenResult::default(),
-			Self::Redefine => GenResult::default(),
-			Self::Override => GenResult::default(),
-			Self::Annotation(_) => GenResult::default(),
-			Self::DefaultOpenContent(_) => GenResult::default(),
-			Self::SimpleType(i) => i.codegen(ctx),
-			Self::ComplexType(i) => i.codegen(ctx),
-			Self::Group(_) => GenResult::default(),
-			Self::AttributeGroup(_) => GenResult::default(),
-			Self::Element(i) => i.codegen(ctx),
-			Self::Attribute => GenResult::default(),
-			Self::Notation(_) => GenResult::default(),
+			Self::Include => TokenStream::new(),
+			Self::Import(_) => TokenStream::new(),
+			Self::Redefine => TokenStream::new(),
+			Self::Override => TokenStream::new(),
+			Self::Annotation(_) => TokenStream::new(),
+			Self::DefaultOpenContent(_) => TokenStream::new(),
+			Self::SimpleType(i) => i.gen(ctx),
+			Self::ComplexType(i) => i.gen(ctx),
+			Self::Group(_) => TokenStream::new(),
+			Self::AttributeGroup(_) => TokenStream::new(),
+			Self::Element(i) => i.gen(ctx),
+			Self::Attribute => TokenStream::new(),
+			Self::Notation(_) => TokenStream::new(),
 		}
 	}
 }
@@ -88,8 +86,8 @@ pub struct Schema {
 }
 
 impl Schema {
-	pub fn codegen(&self) -> TokenStream {
-		CodeGenerator::codegen(self, &self.gen_ctx()).1
+	pub fn gen(&self) -> TokenStream {
+		Genable::gen(self, &self.gen_ctx())
 	}
 	fn gen_ctx(&self) -> Context {
 		let target_ns = self.target_ns();
@@ -131,66 +129,69 @@ impl Schema {
 			Some(schema_str.to_string())
 		}
 	}
-	// TODO: unless we need the docs, this is basically useless
-	// fn codegen_root(&self, root: Element, ctx: Context) -> TokenStream {
-	// 	let root_name_str = ctx.ns.expect("Schema does not have a target ns");
+	fn parse_pass(&self, ctx: &Context) -> ParseResult {
+		let mut pr = ParseResult::new();
+		let body = self.body.as_ref().expect("Schema has no body");
 
-	// 	let doc = format_doc_block(root.get_doc());
-	// 	let doc_ts = quote!(
-	// 		#doc
-	// 		#[serde(rename = #root_name_str)]
-	// 	);
-
-	// 	if let Some(name) = root.r#type.as_ref() {
-	// 		(name.0.clone(), doc_ts)
-	// 	} else {
-	// 		for x in r.body.as_ref().unwrap() {
-	// 			if let ElementBody::ComplexType(t) = x {
-	// 				debug!("building with root name: {}", root_name_str);
-	// 				defs.append_all(t.codegen(&ctx.with_name(&root_name_str)).1);
-	// 			}
-	// 		}
-	// 		(root_name_str.to_string(), doc_ts)
-	// 	}
-	// 	quote!(
-	// 		#doc_ts
-	// 		#root
-	// 	)
-	// }
-}
-
-impl CodeGenerator for Schema {
-	fn codegen(&self, ctx: &Context) -> GenResult {
-		// let mut root = None;
-		let mut defs = TokenStream::new();
-		if let Some(body) = self.body.as_ref() {
-			for item in body {
-				match item {
-					SchemaBody::Element(x) => {
-						// if x.name == ctx.ns {
-						// 	debug!("Found root: {:?}", x.name);
-						// 	root = Some(*(x.clone()));
-						// } else {
-						defs.append_all(x.codegen(ctx).1);
-						// }
-					}
-					SchemaBody::ComplexType(x) => defs.append_all(x.codegen(ctx).1),
-					SchemaBody::SimpleType(x) => defs.append_all(x.codegen(ctx).1),
-					_ => (),
-				}
+		for item in body {
+			match item {
+				SchemaBody::Element(x) => pr.add_element(x.ident(ctx), &*x),
+				SchemaBody::ComplexType(x) => pr.add_complex_type(x.ident(ctx), x),
+				SchemaBody::SimpleType(x) => pr.add_simple_type(x.ident(ctx), x),
+				_ => (),
 			}
 		}
-		// let root_ts = self.codegen_root(root.expect("Unable to find root element"), ctx.clone());
+		pr
+	}
+	fn gen_pass(&self, ctx: &Context, pr: ParseResult) -> TokenStream {
+		let mut defs = TokenStream::new();
+		for (_, v) in pr.elements.iter() {
+			defs.append_all(v.gen(ctx))
+		}
+		for (_, v) in pr.complex_types.iter() {
+			defs.append_all(v.gen(ctx))
+		}
+		for (_, v) in pr.simple_types.iter() {
+			defs.append_all(v.gen(ctx))
+		}
 
-		GenResult::new(
-			Ident::new("schema", Span::call_site()),
-			quote!(
-				use serde_derive::{Deserialize, Serialize};
-				use std::collections::HashMap;
-				use chrono::{Duration, DateTime, FixedOffset};
+		quote!(
+			use serde_derive::{Deserialize, Serialize};
+			use std::collections::HashMap;
+			use chrono::{Duration, DateTime, FixedOffset};
 
-				#defs
-			),
+			#defs
 		)
+	}
+}
+pub struct ParseResult<'s> {
+	elements: HashMap<Ident, &'s Element>,
+	complex_types: HashMap<Ident, &'s ComplexType>,
+	simple_types: HashMap<Ident, &'s SimpleType>,
+}
+
+impl<'a> ParseResult<'a> {
+	pub fn new() -> Self {
+		ParseResult {
+			elements: HashMap::new(),
+			complex_types: HashMap::new(),
+			simple_types: HashMap::new(),
+		}
+	}
+	pub fn add_element(&mut self, ident: syn::Ident, x: &'a Element) {
+		self.elements.insert(ident, x);
+	}
+	pub fn add_complex_type(&mut self, ident: syn::Ident, x: &'a ComplexType) {
+		self.complex_types.insert(ident, x);
+	}
+	pub fn add_simple_type(&mut self, ident: syn::Ident, x: &'a SimpleType) {
+		self.simple_types.insert(ident, x);
+	}
+}
+
+impl Genable for Schema {
+	fn gen(&self, ctx: &Context) -> TokenStream {
+		let parsed = self.parse_pass(ctx);
+		self.gen_pass(ctx, parsed)
 	}
 }

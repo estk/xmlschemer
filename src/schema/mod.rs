@@ -5,7 +5,7 @@ use serde_derive::{Deserialize, Serialize};
 use syn::{self, Ident};
 
 mod resolution;
-use resolution::{format_doc_block, make_struct, CodeGenerator, Context, GenResult};
+use resolution::{fmt_doc, make_struct, Context, Genable, Identifiable};
 mod root;
 pub use root::Schema;
 
@@ -95,19 +95,24 @@ impl Element {
 	}
 }
 
-impl CodeGenerator for Element {
-	fn codegen(&self, ctx: &Context) -> GenResult {
+impl Identifiable for Element {
+	fn ident(&self, ctx: &Context) -> syn::Ident {
+		ctx.mk_type(&self.name.as_ref().unwrap())
+	}
+}
+impl Genable for Element {
+	fn gen(&self, ctx: &Context) -> TokenStream {
+		let name = self.ident(ctx);
 		trace!("codegen element: {:?}", self.name);
-		let name = ctx.make_type(&self.name.as_ref().unwrap());
-		let docs = format_doc_block(self.get_doc());
+		let docs = fmt_doc(self.get_doc());
 		let doc = quote!(
 			#docs
 			#[derive(Serialize, Deserialize, Debug)]
 			#[serde(transparent)]
 		);
 
-		// element is of a remote type
-		let def = if let Some(t) = self.r#type.as_ref() {
+		// element is a remote type
+		if let Some(t) = self.r#type.as_ref() {
 			let typ = ctx.resolve_type(&t.0);
 			quote!(
 				#doc
@@ -122,8 +127,7 @@ impl CodeGenerator for Element {
 					other: HashMap<String, String>,
 				}
 			)
-		};
-		GenResult::new(name, def)
+		}
 	}
 }
 
@@ -189,11 +193,16 @@ impl SimpleType {
 	}
 }
 
-impl CodeGenerator for SimpleType {
-	fn codegen(&self, ctx: &Context) -> GenResult {
+impl Identifiable for SimpleType {
+	fn ident(&self, ctx: &Context) -> syn::Ident {
+		ctx.mk_type(&self.name.as_ref().unwrap().0)
+	}
+}
+impl Genable for SimpleType {
+	fn gen(&self, ctx: &Context) -> TokenStream {
+		let name = self.ident(ctx);
 		trace!("codegen simpletype: {:?}", self.name);
-		let name = ctx.make_type(&self.name.as_ref().unwrap().0);
-		let docs = format_doc_block(self.get_doc());
+		let docs = fmt_doc(self.get_doc());
 		let doc = quote!(
 			#docs
 			#[derive(Serialize, Deserialize, Debug)]
@@ -211,7 +220,7 @@ impl CodeGenerator for SimpleType {
 				pub struct #name(String);
 			)
 		};
-		GenResult::new(name, def)
+		def
 	}
 }
 
@@ -274,15 +283,20 @@ impl ComplexType {
 		None
 	}
 }
-impl CodeGenerator for ComplexType {
-	fn codegen(&self, ctx: &Context) -> GenResult {
+impl Identifiable for ComplexType {
+	fn ident(&self, ctx: &Context) -> syn::Ident {
 		let name_str = if let Some(n) = ctx.name.as_ref() {
 			&n[..]
 		} else {
 			&self.name.as_ref().unwrap().0[..]
 		};
-		trace!("codegen complextype: {}", name_str);
-		let name = ctx.make_type(&name_str);
+		ctx.mk_type(&name_str)
+	}
+}
+impl Genable for ComplexType {
+	fn gen(&self, ctx: &Context) -> TokenStream {
+		let name = self.ident(ctx);
+		trace!("gen complextype: {}", name);
 
 		let mut attrs = vec![];
 		let mut sequence = None;
@@ -316,7 +330,7 @@ impl CodeGenerator for ComplexType {
 		let body_ctx = ctx.with_name(body_name);
 
 		let def = if let Some(seq) = sequence {
-			let GenResult(body_type, body) = seq.codegen(&body_ctx);
+			let (body_type, body) = (seq.ident(&body_ctx), seq.gen(&body_ctx));
 
 			fields.append_all(quote!(
 				#[serde(rename="$value")]
@@ -324,7 +338,7 @@ impl CodeGenerator for ComplexType {
 			));
 			make_struct(&name, self.get_doc(), fields, body)
 		} else if let Some(cc) = complex_content {
-			let GenResult(body_type, body) = cc.codegen(&body_ctx);
+			let (body_type, body) = (cc.ident(&body_ctx), cc.gen(&body_ctx));
 
 			fields.append_all(quote!(
 				#[serde(rename="$value")]
@@ -334,7 +348,7 @@ impl CodeGenerator for ComplexType {
 		} else {
 			make_struct(&name, self.get_doc(), fields, TokenStream::new())
 		};
-		GenResult::new(name, def)
+		def
 	}
 }
 
@@ -372,11 +386,15 @@ pub enum ComplexContentBody {
 	Extension(Extension),
 }
 
-impl ComplexContent {}
-impl CodeGenerator for ComplexContent {
-	fn codegen(&self, ctx: &Context) -> GenResult {
+impl Identifiable for ComplexContent {
+	fn ident(&self, ctx: &Context) -> syn::Ident {
 		let name_str = ctx.name.as_ref().unwrap();
-		let name = Ident::new(name_str, Span::call_site());
+		ctx.mk_type(name_str)
+	}
+}
+impl Genable for ComplexContent {
+	fn gen(&self, ctx: &Context) -> TokenStream {
+		let name = self.ident(ctx);
 		let mut doc = quote!(
 			#[derive(Serialize, Deserialize, Debug)]
 		);
@@ -407,12 +425,11 @@ impl CodeGenerator for ComplexContent {
 							_ => panic!("unhandled extension body element {:?}", x),
 						}
 					}
-					let body_name = &format!("{}Extension", name);
-					let body_ctx = ctx.with_name(body_name);
-					let GenResult(body_type, body) = seq.unwrap().codegen(&body_ctx);
+					let seq_ctx = ctx.with_name(&format!("{}Extension", name));
+					let seq = seq.expect("Complex type extension declared but no seq found");
+					let body_type = seq.ident(&seq_ctx);
+					let body_defs = seq.gen(&seq_ctx);
 
-					debug!("made seq body: {}", body);
-					debug!("made seq defs: {}", defs);
 					defs.append_all(quote!(
 						#doc
 						pub struct #name {
@@ -420,13 +437,13 @@ impl CodeGenerator for ComplexContent {
 							body: #body_type,
 							#attrs
 						}
-						#body
+						#body_defs
 					));
 				}
 				ComplexContentBody::Restriction(_) => panic!("unhandled extension body element"),
 			}
 		}
-		GenResult::new(name, defs)
+		defs
 	}
 }
 
@@ -567,16 +584,25 @@ impl Attribute {
 	pub fn gen_field(&self, ctx: &Context) -> (TokenStream, TokenStream) {
 		let name = ctx.mk_field(&self.name.as_ref().unwrap());
 		trace!("gen_field attribute: {:?}", name);
-		let doc_ts = format_doc_block(self.get_doc());
+		let doc_ts = fmt_doc(self.get_doc());
 
-		let GenResult(ty, defs) = self.codegen(ctx);
+		let typ = self.get_type(ctx);
+		let defs = self.gen(ctx);
 		(
 			quote!(
 				#doc_ts
-				#name: #ty
+				#name: #typ
 			),
 			defs,
 		)
+	}
+	fn get_type(&self, ctx: &Context) -> syn::TypePath {
+		if let Some(ty) = &self.r#type.as_ref() {
+			ctx.resolve_type(&ty.0)
+		} else {
+			debug!("Unable to identify attribute, it'll be a string for now");
+			ctx.resolve_type("String")
+		}
 	}
 	fn get_doc(&self) -> Option<String> {
 		if let Some(es) = self.body.as_ref() {
@@ -589,29 +615,31 @@ impl Attribute {
 		None
 	}
 }
-impl CodeGenerator for Attribute {
-	fn codegen(&self, ctx: &Context) -> GenResult {
-		let (ty, defs) = if let Some(ty) = &self.r#type.as_ref() {
-			let ty = ctx.resolve_ident(&ty.0);
-			(ty, TokenStream::new())
-		} else {
-			// TODO: gen anon type
-			// let st = self
-			// 	.body
-			// 	.as_ref()
-			// 	.unwrap()
-			// 	.iter()
-			// 	.filter_map(|x| match x {
-			// 		AttributeBody::SimpleType(e) => Some(e),
-			// 		_ => None,
-			// 	})
-			// 	.next()
-			// 	.expect("No type or body found for attribute");
-			// let defs = st.codegen(ctx);
-			// (defs.0, defs.1)
-			(ctx.resolve_ident("String"), TokenStream::new())
-		};
-		GenResult::new(ty, defs)
+
+impl Genable for Attribute {
+	fn gen(&self, ctx: &Context) -> TokenStream {
+		// TODO: make an anon type if neccessary
+		TokenStream::new()
+		// let (ty, defs) = if let Some(ty) = &self.r#type.as_ref() {
+		// 	let ty = ctx.resolve_ident(&ty.0);
+		// 	(ty, TokenStream::new())
+		// } else {
+		// TODO: gen anon type
+		// let st = self
+		// 	.body
+		// 	.as_ref()
+		// 	.unwrap()
+		// 	.iter()
+		// 	.filter_map(|x| match x {
+		// 		AttributeBody::SimpleType(e) => Some(e),
+		// 		_ => None,
+		// 	})
+		// 	.next()
+		// 	.expect("No type or body found for attribute");
+		// let defs = st.gen(tx);
+		// (defs.0, defs.1)
+		// 	(ctx.resolve_ident("String"), TokenStream::new())
+		// };
 	}
 }
 
@@ -649,9 +677,15 @@ pub struct Sequence {
 	body: Option<Vec<SequenceBody>>,
 }
 
-impl CodeGenerator for Sequence {
-	fn codegen(&self, ctx: &Context) -> GenResult {
-		let name = ctx.make_type(&ctx.name.as_ref().unwrap());
+impl Identifiable for Sequence {
+	fn ident(&self, ctx: &Context) -> syn::Ident {
+		ctx.mk_type(&ctx.name.as_ref().expect("Name not given to sequence"))
+	}
+}
+
+impl Genable for Sequence {
+	fn gen(&self, ctx: &Context) -> TokenStream {
+		let name = self.ident(ctx);
 		trace!("codegen sequence: {:?}", name);
 
 		// TODO: move into element codegen?
@@ -679,7 +713,7 @@ impl CodeGenerator for Sequence {
 				} else {
 					panic!("element should have either a name, type pair or a ref")
 				};
-				let name = ctx.make_type(&name);
+				let name = ctx.mk_type(&name);
 				let ty_name = ctx.resolve_type(&ty);
 				quote!(
 					#name(#ty_name)
@@ -698,13 +732,12 @@ impl CodeGenerator for Sequence {
 			#[serde(rename_all = "camelCase")]
 		);
 
-		let companion_type = quote!(
+		quote!(
 			#doc
 			pub enum #name {
 				#variant_stream
 			}
-		);
-		GenResult::new(name, companion_type)
+		)
 	}
 }
 

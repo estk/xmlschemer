@@ -46,7 +46,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 	let schema: Schema = from_reader(reader)?;
 	dbg!(&schema.xmlns);
 	dbg!(&schema.target_namespace);
-	let res = schema.codegen();
+	let res = schema.gen();
 
 	let mut out_writer = BufWriter::new(out_file);
 	out_writer.write_all(&res.to_string().as_bytes())?;

@@ -41,6 +41,8 @@ Still to do:
 - [ ] Review struct visibility
 - [ ] Generate code for simpleType restrictions with a validation lib
 - [ ] change codegen to return a Result
+- [ ] selective imports in generated files
+- [ ] comment on generated files that explain that they are generated
 
 Done:
 - [x] Move resolution stuff into its own module
