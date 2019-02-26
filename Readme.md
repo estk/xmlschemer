@@ -32,6 +32,10 @@ upstream [here](https://github.com/RReverser/serde-xml-rs/pull/95).
 
 Still to do:
 - [ ] Type hirearchy
+	- [ ] use serde `flatten` to build child types
+	- [x] make connection between parent and child types
+	- When a child is found, parent types should be converted to enums which can either be 
+	  themselves (if not abstract) or any of their children.
 - [ ] Handle Abstract types
 - [ ] Load External namespaces
 - [ ] Find an alternative to Prepending "Upcase"

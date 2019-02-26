@@ -1,4 +1,4 @@
-use proc_macro2::{Span, TokenStream};
+use proc_macro2::TokenStream;
 use quote::{quote, TokenStreamExt};
 use serde_derive::{Deserialize, Serialize};
 use std::collections::hash_map::HashMap;
@@ -6,7 +6,7 @@ use syn::{self, Ident};
 
 use super::resolution;
 use super::*;
-use resolution::{Context, Genable};
+use resolution::{Context, Genable, ParseResult};
 
 const XML_SCHEMA_NS: &str = "http://www.w3.org/2001/XMLSchema";
 
@@ -135,15 +135,25 @@ impl Schema {
 
 		for item in body {
 			match item {
-				SchemaBody::Element(x) => pr.add_element(x.ident(ctx), &*x),
-				SchemaBody::ComplexType(x) => pr.add_complex_type(x.ident(ctx), x),
-				SchemaBody::SimpleType(x) => pr.add_simple_type(x.ident(ctx), x),
+				SchemaBody::Element(x) => {
+					pr.elements.insert(x.ident(ctx), &*x);
+				}
+				SchemaBody::ComplexType(x) => {
+					pr.complex_types.insert(x.ident(ctx), x);
+				}
+				SchemaBody::SimpleType(x) => {
+					pr.simple_types.insert(x.ident(ctx), x);
+				}
 				_ => (),
 			}
 		}
 		pr
 	}
-	fn gen_pass(&self, ctx: &Context, pr: ParseResult) -> TokenStream {
+	fn gen_pass(&self, ctx: &Context, mut pr: ParseResult) -> TokenStream {
+		for (_, v) in pr.complex_types.iter() {
+			v.resolve(ctx, &pr.complex_types, &mut pr.parents);
+		}
+
 		let mut defs = TokenStream::new();
 		for (_, v) in pr.elements.iter() {
 			defs.append_all(v.gen(ctx))
@@ -154,6 +164,9 @@ impl Schema {
 		for (_, v) in pr.simple_types.iter() {
 			defs.append_all(v.gen(ctx))
 		}
+		for (_, v) in pr.parents.iter() {
+			debug!("made parent {:?}", v);
+		}
 
 		quote!(
 			use serde_derive::{Deserialize, Serialize};
@@ -162,30 +175,6 @@ impl Schema {
 
 			#defs
 		)
-	}
-}
-pub struct ParseResult<'s> {
-	elements: HashMap<Ident, &'s Element>,
-	complex_types: HashMap<Ident, &'s ComplexType>,
-	simple_types: HashMap<Ident, &'s SimpleType>,
-}
-
-impl<'a> ParseResult<'a> {
-	pub fn new() -> Self {
-		ParseResult {
-			elements: HashMap::new(),
-			complex_types: HashMap::new(),
-			simple_types: HashMap::new(),
-		}
-	}
-	pub fn add_element(&mut self, ident: syn::Ident, x: &'a Element) {
-		self.elements.insert(ident, x);
-	}
-	pub fn add_complex_type(&mut self, ident: syn::Ident, x: &'a ComplexType) {
-		self.complex_types.insert(ident, x);
-	}
-	pub fn add_simple_type(&mut self, ident: syn::Ident, x: &'a SimpleType) {
-		self.simple_types.insert(ident, x);
 	}
 }
 

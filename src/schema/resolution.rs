@@ -1,10 +1,10 @@
+use super::*;
 use heck::{CamelCase, MixedCase};
 use if_chain::if_chain;
 use log::trace;
 use proc_macro2::{Span, TokenStream};
-use quote::{quote, TokenStreamExt};
+use quote::quote;
 use std::collections::hash_map::HashMap;
-use std::fmt::{self, Display};
 use syn::{self, Ident};
 
 pub trait Identifiable {
@@ -15,14 +15,54 @@ pub trait Genable {
 	fn gen(&self, ctx: &Context) -> TokenStream;
 }
 
+#[derive(Debug)]
+pub struct Parent<'a> {
+	base: &'a ComplexType,
+	children: Vec<Ident>,
+}
+
+impl<'a> Parent<'a> {
+	pub fn new_child(&mut self, id: Ident) {
+		self.children.push(id);
+	}
+	pub fn new(from: &'a ComplexType, child: Ident) -> Parent {
+		let mut children = vec![];
+		children.push(child);
+
+		Parent {
+			base: from,
+			children,
+		}
+	}
+}
+
+pub struct ParseResult<'s> {
+	pub elements: HashMap<Ident, &'s Element>,
+	pub complex_types: HashMap<Ident, &'s ComplexType>,
+	pub simple_types: HashMap<Ident, &'s SimpleType>,
+	pub parents: HashMap<Ident, Parent<'s>>,
+}
+
+impl<'a> ParseResult<'a> {
+	pub fn new() -> Self {
+		ParseResult {
+			elements: HashMap::new(),
+			complex_types: HashMap::new(),
+			simple_types: HashMap::new(),
+			parents: HashMap::new(),
+		}
+	}
+}
+
 #[derive(Clone)]
-pub struct Context {
+pub struct Context<'a> {
 	pub name: Option<String>,
 	pub ns: Option<String>,
 	schema_ns: Option<String>,
 	nss: HashMap<String, String>,
+	parse_result: Option<&'a ParseResult<'a>>,
 }
-impl Context {
+impl<'a> Context<'a> {
 	pub fn new(
 		ns: Option<String>,
 		schema_ns: Option<String>,
@@ -33,7 +73,11 @@ impl Context {
 			ns,
 			schema_ns,
 			nss,
+			parse_result: None,
 		}
+	}
+	pub fn set_pr(&mut self, pr: &'a ParseResult<'a>) {
+		self.parse_result.replace(pr);
 	}
 	pub fn with_name(&self, name: &str) -> Self {
 		let mut me = self.clone();
@@ -142,13 +186,14 @@ impl Context {
 	}
 }
 
-impl Default for Context {
+impl<'a> Default for Context<'a> {
 	fn default() -> Self {
 		Context {
 			name: None,
 			ns: None,
 			schema_ns: None,
 			nss: HashMap::new(),
+			parse_result: None,
 		}
 	}
 }

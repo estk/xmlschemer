@@ -1,11 +1,12 @@
 use log::{debug, trace};
-use proc_macro2::{Span, TokenStream};
+use proc_macro2::TokenStream;
 use quote::{quote, TokenStreamExt};
 use serde_derive::{Deserialize, Serialize};
-use syn::{self, Ident};
+use std::collections::HashMap;
+use syn;
 
 mod resolution;
-use resolution::{fmt_doc, make_struct, Context, Genable, Identifiable};
+use resolution::{fmt_doc, make_struct, Context, Genable, Identifiable, Parent, ParseResult};
 mod root;
 pub use root::Schema;
 
@@ -282,6 +283,37 @@ impl ComplexType {
 		}
 		None
 	}
+	fn resolve<'a>(
+		&self,
+		ctx: &Context,
+		ct: &HashMap<syn::Ident, &'a ComplexType>,
+		ps: &mut HashMap<syn::Ident, Parent<'a>>,
+	) {
+		let mut complex_content = None;
+		for x in self.body.as_ref().unwrap() {
+			if let ComplexBody::ComplexContent(c) = x {
+				complex_content.replace(c);
+			}
+		}
+
+		if let Some(cc) = complex_content {
+			let base = cc.get_base(ctx);
+			let parent = ct.iter().find(|&(name, _)| *name == base);
+
+			if let Some(p) = parent {
+				trace!("resolved: {:?}, with parent {:?}", self.ident(ctx), &base);
+				ps.insert(base, Parent::new(p.1, self.ident(ctx)));
+			} else {
+				let p = ps
+					.iter_mut()
+					.find(|&(name, _)| *name == base)
+					.expect("parent not found in complextypes or parent")
+					.1;
+				trace!("resolved: {:?}, with parent {:?}", self.ident(ctx), &base);
+				p.new_child(self.ident(ctx));
+			}
+		}
+	}
 }
 impl Identifiable for ComplexType {
 	fn ident(&self, ctx: &Context) -> syn::Ident {
@@ -384,6 +416,18 @@ pub enum ComplexContentBody {
 	Annotation(Annotation),
 	Restriction(Restriction),
 	Extension(Extension),
+}
+
+impl ComplexContent {
+	pub fn get_base(&self, ctx: &Context) -> syn::Ident {
+		for x in &self.body {
+			if let ComplexContentBody::Extension(ref r) = x {
+				let base = &r.base.0;
+				return ctx.mk_type(base);
+			}
+		}
+		panic!("no base found for complex content")
+	}
 }
 
 impl Identifiable for ComplexContent {
