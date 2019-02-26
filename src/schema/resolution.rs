@@ -17,6 +17,7 @@ pub trait Genable {
 
 #[derive(Debug)]
 pub struct Parent<'a> {
+	ident: syn::Ident,
 	base: &'a ComplexType,
 	children: Vec<Ident>,
 }
@@ -25,14 +26,30 @@ impl<'a> Parent<'a> {
 	pub fn new_child(&mut self, id: Ident) {
 		self.children.push(id);
 	}
-	pub fn new(from: &'a ComplexType, child: Ident) -> Parent {
-		let mut children = vec![];
-		children.push(child);
-
+	pub fn new(ident: Ident, base: &'a ComplexType, children: Vec<Ident>) -> Parent {
 		Parent {
-			base: from,
+			ident,
+			base,
 			children,
 		}
+	}
+}
+impl<'a> Identifiable for Parent<'a> {
+	fn ident(&self, _ctx: &Context) -> syn::Ident {
+		self.ident.clone()
+	}
+}
+impl<'a> Genable for Parent<'a> {
+	fn gen(&self, ctx: &Context) -> TokenStream {
+		debug!("Genning parent: {:?}", &self);
+		let ident = self.ident(ctx);
+		let variants: TokenStream = self.children.iter().map(|n| quote!( #n(#n), )).collect();
+		quote!(
+			enum #ident{
+				#variants
+			}
+
+		)
 	}
 }
 

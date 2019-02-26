@@ -2,11 +2,12 @@ use log::{debug, trace};
 use proc_macro2::TokenStream;
 use quote::{quote, TokenStreamExt};
 use serde_derive::{Deserialize, Serialize};
+use std::cell::Cell;
 use std::collections::HashMap;
 use syn;
 
 mod resolution;
-use resolution::{fmt_doc, make_struct, Context, Genable, Identifiable, Parent, ParseResult};
+use resolution::{fmt_doc, make_struct, Context, Genable, Identifiable, Parent};
 mod root;
 pub use root::Schema;
 
@@ -253,6 +254,8 @@ pub struct ComplexType {
 	r#type: Option<QName>,
 	#[serde(rename = "$value")]
 	body: Option<Vec<ComplexBody>>,
+	#[serde(skip)]
+	is_parent: Cell<bool>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -298,31 +301,37 @@ impl ComplexType {
 
 		if let Some(cc) = complex_content {
 			let base = cc.get_base(ctx);
-			let parent = ct.iter().find(|&(name, _)| *name == base);
+			let parent = ps.iter_mut().find(|&(name, _)| *name == base);
 
 			if let Some(p) = parent {
-				trace!("resolved: {:?}, with parent {:?}", self.ident(ctx), &base);
-				ps.insert(base, Parent::new(p.1, self.ident(ctx)));
+				p.1.new_child(self.ident(ctx));
 			} else {
-				let p = ps
-					.iter_mut()
+				let p = ct
+					.iter()
 					.find(|&(name, _)| *name == base)
-					.expect("parent not found in complextypes or parent")
+					.expect("parent not found in parents or complextypes")
 					.1;
-				trace!("resolved: {:?}, with parent {:?}", self.ident(ctx), &base);
-				p.new_child(self.ident(ctx));
+
+				// Mark the complextype as a parent
+				p.is_parent.replace(true);
+				let parent =
+					Parent::new((&base).to_owned(), p, vec![p.ident(ctx), self.ident(ctx)]);
+				ps.insert(base, parent);
 			}
 		}
 	}
 }
 impl Identifiable for ComplexType {
 	fn ident(&self, ctx: &Context) -> syn::Ident {
-		let name_str = if let Some(n) = ctx.name.as_ref() {
-			&n[..]
+		let mut name_str = if let Some(n) = ctx.name.as_ref() {
+			&n
 		} else {
 			&self.name.as_ref().unwrap().0[..]
 		};
-		ctx.mk_type(&name_str)
+		if self.is_parent.get() {
+			return ctx.mk_type(&format!("parent{}", name_str));
+		}
+		ctx.mk_type(name_str)
 	}
 }
 impl Genable for ComplexType {

@@ -165,7 +165,7 @@ impl Schema {
 			defs.append_all(v.gen(ctx))
 		}
 		for (_, v) in pr.parents.iter() {
-			debug!("made parent {:?}", v);
+			defs.append_all(v.gen(ctx))
 		}
 
 		quote!(
