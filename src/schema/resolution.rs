@@ -160,7 +160,7 @@ impl<'a> Context<'a> {
 		if self.in_xml_schema(&this_ns) {
 			if !translate_xsd(&mut split) {
 				let estr = format!("Unable to translate xsd type: {}", s);
-				panic!(estr);
+				panic!("{}", estr);
 			}
 		} else if self.in_local_schema(&this_ns) {
 			// If its just a rando type, in our namespace, camel case it
@@ -170,10 +170,8 @@ impl<'a> Context<'a> {
 			if split.len() > 1 {
 				split.remove(0);
 			}
-		} else {
-			if let Some(x) = split.last_mut() {
-				*x = self.resolve_ident_str(x)
-			}
+		} else if let Some(x) = split.last_mut() {
+			*x = self.resolve_ident_str(x)
 		}
 
 		split

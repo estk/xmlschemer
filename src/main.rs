@@ -1,18 +1,12 @@
-#![feature(unrestricted_attribute_tokens)]
-#![feature(type_alias_enum_variants)]
-#![feature(custom_attribute)]
-
 #[macro_use]
 extern crate clap;
 
 use clap::{app_from_crate, Arg};
 use log::debug;
-use rustfmt_nightly::{Config, Input, Session};
 use serde_xml_rs::from_reader;
 use std::error::Error;
 use std::fs::File;
-use std::io::{sink, BufReader, BufWriter, Write};
-use std::path::PathBuf;
+use std::io::{BufReader, BufWriter, Write};
 use xmlschemer::schema::Schema;
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -53,11 +47,11 @@ fn main() -> Result<(), Box<dyn Error>> {
 	out_writer.flush()?;
 	drop(out_writer);
 
-	let mut output = sink();
-	let fmt_res = Session::new(Config::default(), Some(&mut output))
-		.format(Input::File(PathBuf::from(out_filename)))
-		.map_err(|_| "Error formatting")?;
+	// let mut output = sink();
+	// let fmt_res = Session::new(Config::default(), Some(&mut output))
+	// 	.format(Input::File(PathBuf::from(out_filename)))
+	// 	.map_err(|_| "Error formatting")?;
 
-	println!("result: {}", fmt_res);
+	// println!("result: {}", fmt_res);
 	Ok(())
 }

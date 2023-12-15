@@ -67,7 +67,7 @@ pub struct Element {
 	r#type: Option<QName>,
 	substitution_group: Option<QName>,
 	min_occurs: Option<u32>,
-	#[serde(default = Some(MaxOccurs::Bounded(1)))]
+	#[serde(default = "some_one_bounded")]
 	max_occurs: Option<MaxOccurs>,
 	r#ref: Option<String>,
 
@@ -671,7 +671,7 @@ impl Attribute {
 
 impl Genable for Attribute {
 	fn gen(&self, ctx: &Context) -> TokenStream {
-		// TODO: make an anon type if neccessary
+		// TODO: make an anon type if necessary
 		TokenStream::new()
 		// let (ty, defs) = if let Some(ty) = &self.r#type.as_ref() {
 		// 	let ty = ctx.resolve_ident(&ty.0);
@@ -711,7 +711,7 @@ pub struct Any {
 	namespace: Option<String>,
 	process_contents: Option<String>,
 	min_occurs: Option<u32>,
-	#[serde(default = Some(MaxOccurs::Bounded(1)))]
+	#[serde(default = "some_one_bounded")]
 	max_occurs: Option<MaxOccurs>,
 
 	#[serde(rename = "$value")]
@@ -723,7 +723,7 @@ pub struct Any {
 #[serde(deny_unknown_fields)]
 pub struct Sequence {
 	min_occurs: Option<u32>,
-	#[serde(default = Some(MaxOccurs::Bounded(1)))]
+	#[serde(default = "some_one_bounded")]
 	max_occurs: Option<MaxOccurs>,
 
 	#[serde(rename = "$value")]
@@ -852,7 +852,7 @@ pub struct Group {
 	name: Option<String>,
 	r#ref: Option<String>,
 	min_occurs: Option<u32>,
-	#[serde(default = Some(MaxOccurs::Bounded(1)))]
+	#[serde(default = "some_one_bounded")]
 	max_occurs: Option<MaxOccurs>,
 	#[serde(rename = "$value")]
 	body: Option<Vec<GroupBody>>,
@@ -901,7 +901,7 @@ pub enum AllBody {
 #[serde(deny_unknown_fields)]
 pub struct Choice {
 	min_occurs: Option<u32>,
-	#[serde(default = Some(MaxOccurs::Bounded(1)))]
+	#[serde(default = "some_one_bounded")]
 	max_occurs: Option<MaxOccurs>,
 	#[serde(rename = "$value")]
 	body: Option<Vec<ChoiceBody>>,

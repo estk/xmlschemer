@@ -1,4 +1,3 @@
-#![feature(custom_attribute)]
 use serde::de::DeserializeOwned;
 use serde_xml_rs::from_reader;
 use std::fs::File;
